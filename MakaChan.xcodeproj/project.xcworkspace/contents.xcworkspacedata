@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:Makaba.xcodeproj">
+      location = "self:/Users/andrew/Developer/projects/iOS/Makaba/MakaChan.xcodeproj">
    </FileRef>
 </Workspace>
