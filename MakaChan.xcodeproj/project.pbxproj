@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		49AB299A2478460B00084A6C /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49AB29992478460B00084A6C /* SettingsViewController.swift */; };
 		49EA7BE12476DC8500BFEC13 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49EA7BE02476DC8500BFEC13 /* AppDelegate.swift */; };
 		49EA7BE32476DC8500BFEC13 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49EA7BE22476DC8500BFEC13 /* SceneDelegate.swift */; };
 		49EA7BE52476DC8500BFEC13 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49EA7BE42476DC8500BFEC13 /* ViewController.swift */; };
@@ -15,6 +16,8 @@
 		49EA7BF02476DC8A00BFEC13 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 49EA7BEE2476DC8A00BFEC13 /* LaunchScreen.storyboard */; };
 		49EA7BFB2476DC8B00BFEC13 /* MakabaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49EA7BFA2476DC8B00BFEC13 /* MakabaTests.swift */; };
 		49EA7C062476DC8B00BFEC13 /* MakabaUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49EA7C052476DC8B00BFEC13 /* MakabaUITests.swift */; };
+		49EBD0FF247807FA0051A348 /* BoardsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49EBD0FE247807FA0051A348 /* BoardsViewController.swift */; };
+		49EBD101247819450051A348 /* SavedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49EBD100247819450051A348 /* SavedViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,6 +38,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		49AB29992478460B00084A6C /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		49EA7BDD2476DC8500BFEC13 /* MakaChan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MakaChan.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		49EA7BE02476DC8500BFEC13 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		49EA7BE22476DC8500BFEC13 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -49,6 +53,8 @@
 		49EA7C012476DC8B00BFEC13 /* MakabaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MakabaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		49EA7C052476DC8B00BFEC13 /* MakabaUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MakabaUITests.swift; sourceTree = "<group>"; };
 		49EA7C072476DC8B00BFEC13 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		49EBD0FE247807FA0051A348 /* BoardsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardsViewController.swift; sourceTree = "<group>"; };
+		49EBD100247819450051A348 /* SavedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,9 +105,12 @@
 		49EA7BDF2476DC8500BFEC13 /* Makaba */ = {
 			isa = PBXGroup;
 			children = (
+				49AB29992478460B00084A6C /* SettingsViewController.swift */,
 				49EA7BE02476DC8500BFEC13 /* AppDelegate.swift */,
 				49EA7BE22476DC8500BFEC13 /* SceneDelegate.swift */,
 				49EA7BE42476DC8500BFEC13 /* ViewController.swift */,
+				49EBD100247819450051A348 /* SavedViewController.swift */,
+				49EBD0FE247807FA0051A348 /* BoardsViewController.swift */,
 				49EA7BEC2476DC8A00BFEC13 /* Assets.xcassets */,
 				49EA7BEE2476DC8A00BFEC13 /* LaunchScreen.storyboard */,
 				49EA7BF12476DC8A00BFEC13 /* Info.plist */,
@@ -259,9 +268,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				49EA7BEB2476DC8500BFEC13 /* Makaba.xcdatamodeld in Sources */,
+				49EBD101247819450051A348 /* SavedViewController.swift in Sources */,
 				49EA7BE52476DC8500BFEC13 /* ViewController.swift in Sources */,
 				49EA7BE12476DC8500BFEC13 /* AppDelegate.swift in Sources */,
 				49EA7BE32476DC8500BFEC13 /* SceneDelegate.swift in Sources */,
+				49EBD0FF247807FA0051A348 /* BoardsViewController.swift in Sources */,
+				49AB299A2478460B00084A6C /* SettingsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

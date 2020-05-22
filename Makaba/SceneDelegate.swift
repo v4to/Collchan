@@ -20,7 +20,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
         window?.makeKeyAndVisible()
-        window?.rootViewController = ViewController()
+        let tabBarController = UITabBarController()
+        let savedViewController = SavedViewController()
+        let boardsViewController = BoardsViewController()
+        let settingsViewController = SettingsViewController()
+        tabBarController.viewControllers = [
+            boardsViewController,
+            savedViewController,
+            settingsViewController
+        ]
+        window?.rootViewController = tabBarController
+        
+        
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
