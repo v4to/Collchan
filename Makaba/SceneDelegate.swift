@@ -21,10 +21,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScene)
         let tabBarController = UITabBarController()
         let savedViewController = SavedViewController()
-        let boardsViewController = BoardsViewController()
+        let boardsNavigationViewController = UINavigationController(
+            rootViewController: BoardsListTableViewController(
+                style: UITableView.Style.plain
+            )
+        )
         let settingsViewController = SettingsViewController()
         tabBarController.viewControllers = [
-            boardsViewController,
+            boardsNavigationViewController,
             savedViewController,
             settingsViewController
         ]
