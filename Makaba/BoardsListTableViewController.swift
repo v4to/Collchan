@@ -99,7 +99,7 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
         let identifier = "board"
         var cell = tableView.dequeueReusableCell(withIdentifier: identifier)
         if cell == nil {
-            cell = TestTableViewCell(
+            cell = BoardsListTableViewCell(
                 style: .subtitle,
                 reuseIdentifier: identifier
             )

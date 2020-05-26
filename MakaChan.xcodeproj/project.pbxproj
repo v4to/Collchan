@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		49210FEC2479D2650020ECBC /* TestTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49210FEB2479D2640020ECBC /* TestTableViewCell.swift */; };
+		49210FEC2479D2650020ECBC /* BoardsListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49210FEB2479D2640020ECBC /* BoardsListTableViewCell.swift */; };
 		4972058724785B840018D0B7 /* BoardsListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4972058624785B840018D0B7 /* BoardsListTableViewController.swift */; };
 		49AB299A2478460B00084A6C /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49AB29992478460B00084A6C /* SettingsViewController.swift */; };
 		49EA7BE12476DC8500BFEC13 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49EA7BE02476DC8500BFEC13 /* AppDelegate.swift */; };
@@ -39,7 +39,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		49210FEB2479D2640020ECBC /* TestTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestTableViewCell.swift; sourceTree = "<group>"; };
+		49210FEB2479D2640020ECBC /* BoardsListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardsListTableViewCell.swift; sourceTree = "<group>"; };
 		4972058624785B840018D0B7 /* BoardsListTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardsListTableViewController.swift; sourceTree = "<group>"; };
 		49AB29992478460B00084A6C /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		49EA7BDD2476DC8500BFEC13 /* MakaChan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MakaChan.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -107,7 +107,7 @@
 		49EA7BDF2476DC8500BFEC13 /* Makaba */ = {
 			isa = PBXGroup;
 			children = (
-				49210FEB2479D2640020ECBC /* TestTableViewCell.swift */,
+				49210FEB2479D2640020ECBC /* BoardsListTableViewCell.swift */,
 				49AB29992478460B00084A6C /* SettingsViewController.swift */,
 				49EA7BE02476DC8500BFEC13 /* AppDelegate.swift */,
 				49EA7BE22476DC8500BFEC13 /* SceneDelegate.swift */,
@@ -272,7 +272,7 @@
 			files = (
 				49EA7BEB2476DC8500BFEC13 /* Makaba.xcdatamodeld in Sources */,
 				49EBD101247819450051A348 /* SavedViewController.swift in Sources */,
-				49210FEC2479D2650020ECBC /* TestTableViewCell.swift in Sources */,
+				49210FEC2479D2650020ECBC /* BoardsListTableViewCell.swift in Sources */,
 				49EA7BE52476DC8500BFEC13 /* ViewController.swift in Sources */,
 				49EA7BE12476DC8500BFEC13 /* AppDelegate.swift in Sources */,
 				4972058724785B840018D0B7 /* BoardsListTableViewController.swift in Sources */,
