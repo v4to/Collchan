@@ -42,7 +42,7 @@
 		49210FEB2479D2640020ECBC /* BoardsListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardsListTableViewCell.swift; sourceTree = "<group>"; };
 		4972058624785B840018D0B7 /* BoardsListTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardsListTableViewController.swift; sourceTree = "<group>"; };
 		49AB29992478460B00084A6C /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
-		49EA7BDD2476DC8500BFEC13 /* MakaChan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MakaChan.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		49EA7BDD2476DC8500BFEC13 /* Thunder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Thunder.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		49EA7BE02476DC8500BFEC13 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		49EA7BE22476DC8500BFEC13 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		49EA7BE42476DC8500BFEC13 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -97,7 +97,7 @@
 		49EA7BDE2476DC8500BFEC13 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				49EA7BDD2476DC8500BFEC13 /* MakaChan.app */,
+				49EA7BDD2476DC8500BFEC13 /* Thunder.app */,
 				49EA7BF62476DC8B00BFEC13 /* MakabaTests.xctest */,
 				49EA7C012476DC8B00BFEC13 /* MakabaUITests.xctest */,
 			);
@@ -143,9 +143,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		49EA7BDC2476DC8500BFEC13 /* MakaChan */ = {
+		49EA7BDC2476DC8500BFEC13 /* Thunder */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 49EA7C0A2476DC8B00BFEC13 /* Build configuration list for PBXNativeTarget "MakaChan" */;
+			buildConfigurationList = 49EA7C0A2476DC8B00BFEC13 /* Build configuration list for PBXNativeTarget "Thunder" */;
 			buildPhases = (
 				49EA7BD92476DC8500BFEC13 /* Sources */,
 				49EA7BDA2476DC8500BFEC13 /* Frameworks */,
@@ -155,9 +155,9 @@
 			);
 			dependencies = (
 			);
-			name = MakaChan;
+			name = Thunder;
 			productName = Makaba;
-			productReference = 49EA7BDD2476DC8500BFEC13 /* MakaChan.app */;
+			productReference = 49EA7BDD2476DC8500BFEC13 /* Thunder.app */;
 			productType = "com.apple.product-type.application";
 		};
 		49EA7BF52476DC8B00BFEC13 /* MakabaTests */ = {
@@ -219,7 +219,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 49EA7BD82476DC8500BFEC13 /* Build configuration list for PBXProject "MakaChan" */;
+			buildConfigurationList = 49EA7BD82476DC8500BFEC13 /* Build configuration list for PBXProject "Thunder" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -232,7 +232,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				49EA7BDC2476DC8500BFEC13 /* MakaChan */,
+				49EA7BDC2476DC8500BFEC13 /* Thunder */,
 				49EA7BF52476DC8B00BFEC13 /* MakabaTests */,
 				49EA7C002476DC8B00BFEC13 /* MakabaUITests */,
 			);
@@ -302,12 +302,12 @@
 /* Begin PBXTargetDependency section */
 		49EA7BF82476DC8B00BFEC13 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 49EA7BDC2476DC8500BFEC13 /* MakaChan */;
+			target = 49EA7BDC2476DC8500BFEC13 /* Thunder */;
 			targetProxy = 49EA7BF72476DC8B00BFEC13 /* PBXContainerItemProxy */;
 		};
 		49EA7C032476DC8B00BFEC13 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 49EA7BDC2476DC8500BFEC13 /* MakaChan */;
+			target = 49EA7BDC2476DC8500BFEC13 /* Thunder */;
 			targetProxy = 49EA7C022476DC8B00BFEC13 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -451,7 +451,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = andrii.yehortsev.Makaba;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Thunder;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -470,7 +470,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = andrii.yehortsev.Makaba;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Thunder;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -563,7 +563,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		49EA7BD82476DC8500BFEC13 /* Build configuration list for PBXProject "MakaChan" */ = {
+		49EA7BD82476DC8500BFEC13 /* Build configuration list for PBXProject "Thunder" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				49EA7C082476DC8B00BFEC13 /* Debug */,
@@ -572,7 +572,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		49EA7C0A2476DC8B00BFEC13 /* Build configuration list for PBXNativeTarget "MakaChan" */ = {
+		49EA7C0A2476DC8B00BFEC13 /* Build configuration list for PBXNativeTarget "Thunder" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				49EA7C0B2476DC8B00BFEC13 /* Debug */,
