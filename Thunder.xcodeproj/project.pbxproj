@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		49210FEC2479D2650020ECBC /* BoardsListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49210FEB2479D2640020ECBC /* BoardsListTableViewCell.swift */; };
+		492758292480848600A60E51 /* BoardsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 492758282480848600A60E51 /* BoardsModel.swift */; };
+		494F6E5F248B32BE00D878A0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 494F6E5E248B32BE00D878A0 /* Constants.swift */; };
+		495ABBB224832A6700233583 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495ABBB124832A6700233583 /* NetworkService.swift */; };
+		495ABBB424832ACA00233583 /* BoardsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495ABBB324832ACA00233583 /* BoardsService.swift */; };
 		4972058724785B840018D0B7 /* BoardsListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4972058624785B840018D0B7 /* BoardsListTableViewController.swift */; };
 		49AB299A2478460B00084A6C /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49AB29992478460B00084A6C /* SettingsViewController.swift */; };
 		49EA7BE12476DC8500BFEC13 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49EA7BE02476DC8500BFEC13 /* AppDelegate.swift */; };
@@ -40,6 +44,10 @@
 
 /* Begin PBXFileReference section */
 		49210FEB2479D2640020ECBC /* BoardsListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardsListTableViewCell.swift; sourceTree = "<group>"; };
+		492758282480848600A60E51 /* BoardsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardsModel.swift; sourceTree = "<group>"; };
+		494F6E5E248B32BE00D878A0 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		495ABBB124832A6700233583 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
+		495ABBB324832ACA00233583 /* BoardsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardsService.swift; sourceTree = "<group>"; };
 		4972058624785B840018D0B7 /* BoardsListTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardsListTableViewController.swift; sourceTree = "<group>"; };
 		49AB29992478460B00084A6C /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		49EA7BDD2476DC8500BFEC13 /* Thunder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Thunder.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -84,6 +92,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		49653AB624801B1F00EB889E /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				495ABBB124832A6700233583 /* NetworkService.swift */,
+				495ABBB324832ACA00233583 /* BoardsService.swift */,
+				492758282480848600A60E51 /* BoardsModel.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		49EA7BD42476DC8500BFEC13 = {
 			isa = PBXGroup;
 			children = (
@@ -107,6 +125,7 @@
 		49EA7BDF2476DC8500BFEC13 /* Makaba */ = {
 			isa = PBXGroup;
 			children = (
+				49653AB624801B1F00EB889E /* Model */,
 				49210FEB2479D2640020ECBC /* BoardsListTableViewCell.swift */,
 				49AB29992478460B00084A6C /* SettingsViewController.swift */,
 				49EA7BE02476DC8500BFEC13 /* AppDelegate.swift */,
@@ -118,6 +137,7 @@
 				49EA7BF12476DC8A00BFEC13 /* Info.plist */,
 				49EA7BE92476DC8500BFEC13 /* Makaba.xcdatamodeld */,
 				4972058624785B840018D0B7 /* BoardsListTableViewController.swift */,
+				494F6E5E248B32BE00D878A0 /* Constants.swift */,
 			);
 			path = Makaba;
 			sourceTree = "<group>";
@@ -270,13 +290,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				495ABBB224832A6700233583 /* NetworkService.swift in Sources */,
 				49EA7BEB2476DC8500BFEC13 /* Makaba.xcdatamodeld in Sources */,
 				49EBD101247819450051A348 /* SavedViewController.swift in Sources */,
 				49210FEC2479D2650020ECBC /* BoardsListTableViewCell.swift in Sources */,
 				49EA7BE52476DC8500BFEC13 /* ViewController.swift in Sources */,
 				49EA7BE12476DC8500BFEC13 /* AppDelegate.swift in Sources */,
+				495ABBB424832ACA00233583 /* BoardsService.swift in Sources */,
+				494F6E5F248B32BE00D878A0 /* Constants.swift in Sources */,
 				4972058724785B840018D0B7 /* BoardsListTableViewController.swift in Sources */,
 				49EA7BE32476DC8500BFEC13 /* SceneDelegate.swift in Sources */,
+				492758292480848600A60E51 /* BoardsModel.swift in Sources */,
 				49AB299A2478460B00084A6C /* SettingsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -12,44 +12,9 @@ import AudioToolbox
 
 class BoardsListTableViewController: UITableViewController, UIGestureRecognizerDelegate {
     // MARK: - Properties
-
-    let boards = [
-        (
-            "Favorites",
-            [
-                ["/pr", "Программирование"],
-                ["/fag", "Фагготрия"],
-                ["/mobi", "Мобильные устройста и приложения"],
-                ["/wrk", "Работа и карьера"],
-                ["/mov", "Фильмы"],
-                ["/fiz", "Физкультура"],
-                ["/s", "Программы"],
-                ["/de", "Дизайн"]
-            ]
-        ),
-        (
-            "Техника и Софт",
-            [
-                ["/hw", "Компьютерное железо"],
-                ["/s", "Программы"],
-                ["/ra", "Радиотехника"],
-                ["/t", "Техника"]
-            ]
-        ),
-        (
-            "Творчество",
-            [
-                ["/wrk", "Работа и карьера"],
-                ["/diy", "Хобби"],
-                ["/pa", "Живопись"],
-                ["/mus", "Музыканты"],
-                ["/di", "Столовая"]
-            ]
-        )
-    ]
+    var boards: [String: [Boards.Board]]!
     
     // MARK: - Intialization
-
     override init(style: UITableView.Style) {
         super.init(style: style)
         UITabBar.appearance().tintColor = .systemOrange
@@ -63,33 +28,48 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
     }
     
     // MARK: - View Controller Lifecycle
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = "Boards"
         navigationController?.navigationBar.prefersLargeTitles = true
     }
     
-    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        BoardsService().getBoards(
+            onSuccess: { (boards) in
+                self.boards = boards.dictionary
+                
+                self.tableView.reloadData()
+            },
+            onFailure: { (error) in
+                print(error.localizedDescription)
+            }
+        )
+    }
     
     // MARK: - UITableViewDataSource
-
     override func numberOfSections(in tableView: UITableView) -> Int {
+        guard boards != nil else { return 0 }
         return boards.count
     }
 
-    override func tableView(
-        _ tableView: UITableView,
-        numberOfRowsInSection section: Int
-    ) -> Int {
-        return boards[section].1.count
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        guard boards != nil else { return 0 }
+
+        let arrayOfKeys = Array(boards.keys)
+        return boards[arrayOfKeys[section]]!.count
     }
 
     override func tableView(
         _ tableView: UITableView,
         titleForHeaderInSection section: Int
     ) -> String? {
-        return boards[section].0
+        guard boards != nil else { return nil }
+
+        let arrayOfKeys = Array(boards.keys)
+        return arrayOfKeys[section]
     }
 
     override func tableView(
@@ -108,15 +88,22 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
 
         let section = indexPath.section
         let row = indexPath.row
-        cell!.accessoryType = .none
-        cell!.textLabel?.text = boards[section].1[row][0]
-        cell!.textLabel?.textColor = .systemOrange
-        cell!.textLabel?.font = UIFont.systemFont(
-            ofSize: cell!.textLabel!.font.pointSize,
-            weight: UIFont.Weight.bold
-        )
-        cell!.detailTextLabel?.text = boards[section].1[row][1]
-        print(boards[indexPath.section].0)
+        
+        if boards != nil {
+            let arrayOfKeys = Array(boards.keys)
+            let categoryName = arrayOfKeys[section]
+            let boardName = boards[categoryName]![row].name
+            let boardID = boards[categoryName]![row].id
+            
+            cell!.accessoryType = .none
+            cell!.textLabel?.textColor = .systemOrange
+            cell!.textLabel?.text = boardID
+            cell!.textLabel?.font = UIFont.systemFont(
+                ofSize: cell!.textLabel!.font.pointSize,
+                weight: UIFont.Weight.bold
+            )
+            cell!.detailTextLabel?.text = boardName
+        }
         return cell!
     }
     
