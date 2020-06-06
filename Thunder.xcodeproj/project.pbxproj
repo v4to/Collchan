@@ -13,6 +13,8 @@
 		495ABBB224832A6700233583 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495ABBB124832A6700233583 /* NetworkService.swift */; };
 		495ABBB424832ACA00233583 /* BoardsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495ABBB324832ACA00233583 /* BoardsService.swift */; };
 		4972058724785B840018D0B7 /* BoardsListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4972058624785B840018D0B7 /* BoardsListTableViewController.swift */; };
+		499F7C3B248C5A9F0010B97A /* ThreadsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 499F7C3A248C5A9F0010B97A /* ThreadsModel.swift */; };
+		499F7C3D248C61A00010B97A /* ThreadsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 499F7C3C248C61A00010B97A /* ThreadsService.swift */; };
 		49AB299A2478460B00084A6C /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49AB29992478460B00084A6C /* SettingsViewController.swift */; };
 		49EA7BE12476DC8500BFEC13 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49EA7BE02476DC8500BFEC13 /* AppDelegate.swift */; };
 		49EA7BE32476DC8500BFEC13 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49EA7BE22476DC8500BFEC13 /* SceneDelegate.swift */; };
@@ -49,6 +51,8 @@
 		495ABBB124832A6700233583 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		495ABBB324832ACA00233583 /* BoardsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardsService.swift; sourceTree = "<group>"; };
 		4972058624785B840018D0B7 /* BoardsListTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardsListTableViewController.swift; sourceTree = "<group>"; };
+		499F7C3A248C5A9F0010B97A /* ThreadsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadsModel.swift; sourceTree = "<group>"; };
+		499F7C3C248C61A00010B97A /* ThreadsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadsService.swift; sourceTree = "<group>"; };
 		49AB29992478460B00084A6C /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		49EA7BDD2476DC8500BFEC13 /* Thunder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Thunder.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		49EA7BE02476DC8500BFEC13 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -97,7 +101,9 @@
 			children = (
 				495ABBB124832A6700233583 /* NetworkService.swift */,
 				495ABBB324832ACA00233583 /* BoardsService.swift */,
+				499F7C3C248C61A00010B97A /* ThreadsService.swift */,
 				492758282480848600A60E51 /* BoardsModel.swift */,
+				499F7C3A248C5A9F0010B97A /* ThreadsModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -296,6 +302,8 @@
 				49210FEC2479D2650020ECBC /* BoardsListTableViewCell.swift in Sources */,
 				49EA7BE52476DC8500BFEC13 /* ViewController.swift in Sources */,
 				49EA7BE12476DC8500BFEC13 /* AppDelegate.swift in Sources */,
+				499F7C3B248C5A9F0010B97A /* ThreadsModel.swift in Sources */,
+				499F7C3D248C61A00010B97A /* ThreadsService.swift in Sources */,
 				495ABBB424832ACA00233583 /* BoardsService.swift in Sources */,
 				494F6E5F248B32BE00D878A0 /* Constants.swift in Sources */,
 				4972058724785B840018D0B7 /* BoardsListTableViewController.swift in Sources */,

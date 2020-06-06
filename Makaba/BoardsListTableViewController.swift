@@ -12,7 +12,7 @@ import AudioToolbox
 
 class BoardsListTableViewController: UITableViewController, UIGestureRecognizerDelegate {
     // MARK: - Properties
-    var boards: [String: [Boards.Board]]!
+    var boards: [String: [Board]]!
     
     // MARK: - Intialization
     override init(style: UITableView.Style) {

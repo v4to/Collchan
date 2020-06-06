@@ -8,13 +8,7 @@
 
 import Foundation
 
-struct Boards: Codable {
-    struct Board: Codable {
-        let id: String
-        let name: String
-        let pages: Int
-    }
-    
+struct Boards: Decodable {
     let adult: [Board]
     let games: [Board]
     let politics: [Board]
@@ -51,6 +45,13 @@ struct Boards: Codable {
         ]
     }
 }
+
+struct Board: Decodable {
+    let id: String
+    let name: String
+    let pages: Int
+}
+
 
 // MARK: - Extension Dictionary
 // Converts all dictionary keys to array
