@@ -71,6 +71,9 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
         )
         navigationItem.rightBarButtonItem = addButton
         
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTap(sender:)))
+        view.addGestureRecognizer(tapGestureRecognizer)
+        
         setupKeyBoardObserver()
     }
     
@@ -88,6 +91,18 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
             }
         )
     }
+    
+    // MARK: - Gestures
+    @objc func handleTap(sender: UITapGestureRecognizer) {
+        print(sender)
+        if let textField = inputContainerView.subviews[0] as? UITextField {
+            textField.resignFirstResponder()
+            
+            inputContainerView.frame.origin.y = self.navigationController!.view.bounds.maxY
+            inputContainerView.removeFromSuperview()
+        }
+    }
+
     
     // MARK: - Keyboard Observers
     func setupKeyBoardObserver() {
