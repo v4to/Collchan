@@ -14,9 +14,39 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
     // MARK: - Properties
     var boards: [String: [Board]]!
     
+    lazy var inputContainerView: UIView = {
+        let view = UIView()
+        view.frame = CGRect(
+            x: 0,
+            y: self.navigationController!.view.bounds.maxY,
+            width: self.view.frame.width,
+            height: 60
+        )
+        view.backgroundColor = #colorLiteral(red: 0.07449694723, green: 0.08236028999, blue: 0.08625844866, alpha: 1)
+        view.layer.cornerRadius = 10.0
+        
+        let textField = UITextField()
+        textField.frame = CGRect(x: 10, y: 10, width: self.view.frame.width - 20, height: 40)
+        textField.placeholder = "Board"
+        textField.layer.borderColor = #colorLiteral(red: 0.1921322048, green: 0.2078579366, blue: 0.2431031168, alpha: 1)
+        textField.layer.borderWidth = 1.0
+        textField.layer.cornerRadius = 10.0
+        textField.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+        textField.clearButtonMode = .always
+        
+        // Add left padding inside UITextView
+        textField.leftView = UIView()
+        textField.leftView?.frame = CGRect(x: 0, y: 0, width: 15.0, height: 40)
+        textField.leftViewMode = .always
+        
+        view.addSubview(textField)
+        return view
+    }()
+    
     // MARK: - Intialization
     override init(style: UITableView.Style) {
         super.init(style: style)
+        
         UITabBar.appearance().tintColor = .systemOrange
         tabBarItem.title = "Boards"
         tabBarItem.image = UIImage(named: "boards-tab-image")
@@ -30,8 +60,18 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
     // MARK: - View Controller Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         navigationItem.title = "Boards"
         navigationController?.navigationBar.prefersLargeTitles = true
+        
+        let addButton = UIBarButtonItem(
+            barButtonSystemItem: UIBarButtonItem.SystemItem.add,
+            target: self,
+            action: #selector(actionAdd(_:))
+        )
+        navigationItem.rightBarButtonItem = addButton
+        
+        setupKeyBoardObserver()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -48,6 +88,39 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
             }
         )
     }
+    
+    // MARK: - Keyboard Observers
+    func setupKeyBoardObserver() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleKeyboardWillShow),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+    }
+
+    // MARK: - Keyboard Notifications
+    @objc func handleKeyboardWillShow(notification: NSNotification) {
+        
+        if
+            let userInfo = notification.userInfo,
+            let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect
+        {
+            var frame = inputContainerView.frame
+            frame.origin.y = keyboardFrame.origin.y - frame.height - 10
+            inputContainerView.frame = frame
+        }
+    }
+    
+    // MARK: - Actions
+    @objc func actionAdd(_ sender: UIBarButtonItem) {        
+        navigationController?.view.addSubview(inputContainerView)
+
+        if let textField = inputContainerView.subviews.first as? UITextField {
+            textField.becomeFirstResponder()
+        }
+    }
+    
     
     // MARK: - UITableViewDataSource
     override func numberOfSections(in tableView: UITableView) -> Int {
