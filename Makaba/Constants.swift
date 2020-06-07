@@ -14,4 +14,5 @@ struct BaseUrls {
 
 struct EndPoints {
     static let boards = "/makaba/mobile.fcgi"
+    static let threads = "/catalog.json"
 }
