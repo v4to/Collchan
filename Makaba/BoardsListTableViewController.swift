@@ -11,37 +11,24 @@ import CoreHaptics
 import AudioToolbox
 
 class BoardsListTableViewController: UITableViewController, UIGestureRecognizerDelegate {
+    
     // MARK: - Properties
     var boards: [String: [Board]]!
     
-    lazy var inputContainerView: UIView = {
-        let view = UIView()
-        view.frame = CGRect(
-            x: 0,
-            y: self.navigationController!.view.bounds.maxY,
-            width: self.view.frame.width,
-            height: 60
+    lazy var addBoardView: AddBoardView = {
+       let view = AddBoardView()
+        view.frame = self.navigationController!.view.bounds
+        
+        let tapGestureRecognizer = UITapGestureRecognizer(
+            target: self,
+            action: #selector(handleTap(_:))
         )
-        view.backgroundColor = #colorLiteral(red: 0.07449694723, green: 0.08236028999, blue: 0.08625844866, alpha: 1)
-        view.layer.cornerRadius = 10.0
         
-        let textField = UITextField()
-        textField.frame = CGRect(x: 10, y: 10, width: self.view.frame.width - 20, height: 40)
-        textField.placeholder = "Board"
-        textField.layer.borderColor = #colorLiteral(red: 0.1921322048, green: 0.2078579366, blue: 0.2431031168, alpha: 1)
-        textField.layer.borderWidth = 1.0
-        textField.layer.cornerRadius = 10.0
-        textField.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-        textField.clearButtonMode = .always
-        
-        // Add left padding inside UITextView
-        textField.leftView = UIView()
-        textField.leftView?.frame = CGRect(x: 0, y: 0, width: 15.0, height: 40)
-        textField.leftViewMode = .always
-        
-        view.addSubview(textField)
+        view.addGestureRecognizer(tapGestureRecognizer)
         return view
     }()
+    
+    
     
     // MARK: - Intialization
     override init(style: UITableView.Style) {
@@ -57,6 +44,9 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
         fatalError("init(coder:) has not been implemented")
     }
     
+    
+    
+    
     // MARK: - View Controller Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -70,9 +60,6 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
             action: #selector(actionAdd(_:))
         )
         navigationItem.rightBarButtonItem = addButton
-        
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTap(sender:)))
-        view.addGestureRecognizer(tapGestureRecognizer)
         
         setupKeyBoardObserver()
     }
@@ -92,17 +79,35 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
         )
     }
     
+    
+    
+    // MARK: - Instance Methods
+ 
+
+    
+    
     // MARK: - Gestures
-    @objc func handleTap(sender: UITapGestureRecognizer) {
-        print(sender)
-        if let textField = inputContainerView.subviews[0] as? UITextField {
-            textField.resignFirstResponder()
-            
-            inputContainerView.frame.origin.y = self.navigationController!.view.bounds.maxY
-            inputContainerView.removeFromSuperview()
-        }
+    @objc func handleTap(_ sender: UITapGestureRecognizer) {
+        switch sender.state {
+            case .ended:
+                addBoardView.addBoardTextFieldView.resignFirstResponder()
+                addBoardView.textFieldContainerView.frame.origin.y = addBoardView.bounds.maxY
+                addBoardView.removeFromSuperview()
+                
+            default:
+                break
+            }
     }
 
+    
+    
+    // MARK: - Actions
+    @objc func actionAdd(_ sender: UIBarButtonItem) {
+        navigationController?.view.addSubview(addBoardView)
+        addBoardView.addBoardTextFieldView.becomeFirstResponder()
+    }
+    
+    
     
     // MARK: - Keyboard Observers
     func setupKeyBoardObserver() {
@@ -113,28 +118,23 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
             object: nil
         )
     }
-
+    
+    
+    
+    
     // MARK: - Keyboard Notifications
     @objc func handleKeyboardWillShow(notification: NSNotification) {
-        
         if
             let userInfo = notification.userInfo,
             let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect
-        {
-            var frame = inputContainerView.frame
-            frame.origin.y = keyboardFrame.origin.y - frame.height - 10
-            inputContainerView.frame = frame
-        }
+            {
+                var frame = addBoardView.textFieldContainerView.frame
+                frame.origin.y = keyboardFrame.origin.y - frame.height - 10
+                addBoardView.textFieldContainerView.frame = frame
+            }
     }
     
-    // MARK: - Actions
-    @objc func actionAdd(_ sender: UIBarButtonItem) {        
-        navigationController?.view.addSubview(inputContainerView)
-
-        if let textField = inputContainerView.subviews.first as? UITextField {
-            textField.becomeFirstResponder()
-        }
-    }
+    
     
     
     // MARK: - UITableViewDataSource
