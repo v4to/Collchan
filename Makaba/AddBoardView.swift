@@ -94,10 +94,10 @@ class AddBoardView: UIView, UITableViewDataSource {
         )
  
         addBoardTextFieldView.frame = CGRect(
-            x: 10,
-            y: 10,
-            width: self.bounds.width - 20 - 12,
-            height: 36
+            x: 8,
+            y: 8,
+            width: self.bounds.width - 16 - 12,
+            height: 40
         )
         
         actionSheetsTableView.frame = CGRect(
