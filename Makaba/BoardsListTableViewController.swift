@@ -14,6 +14,7 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
     
     // MARK: - Properties
     var boards: [String: [Board]]!
+    var categories: [String]!
     
     lazy var addBoardView: AddBoardView = {
        let view = AddBoardView()
@@ -69,7 +70,7 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
         BoardsService().getBoards(
             onSuccess: { (boards) in
                 self.boards = boards.dictionary
-                
+                self.categories = Array(boards.dictionary.keys).sorted { $0 < $1 }
                 self.tableView.reloadData()
             },
             onFailure: { (error) in
@@ -146,8 +147,8 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard boards != nil else { return 0 }
 
-        let arrayOfKeys = Array(boards.keys)
-        return boards[arrayOfKeys[section]]!.count
+        return boards[categories[section]]!.count
+
     }
 
     override func tableView(
@@ -156,8 +157,7 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
     ) -> String? {
         guard boards != nil else { return nil }
 
-        let arrayOfKeys = Array(boards.keys)
-        return arrayOfKeys[section]
+        return categories[section]
     }
 
     override func tableView(
@@ -178,10 +178,10 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
         let row = indexPath.row
         
         if boards != nil {
-            let arrayOfKeys = Array(boards.keys)
-            let categoryName = arrayOfKeys[section]
-            let boardName = boards[categoryName]![row].name
-            let boardID = boards[categoryName]![row].id
+            let categoryName = categories[section]
+            let sortedBoard = boards[categoryName]!.sorted { $0.id < $1.id }
+            let boardName = sortedBoard[row].name
+            let boardID = sortedBoard[row].id
             
             cell!.accessoryType = .none
             cell!.textLabel?.textColor = .systemBlue
@@ -190,7 +190,9 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
                 ofSize: cell!.textLabel!.font.pointSize,
                 weight: UIFont.Weight.bold
             )
+            cell!.textLabel?.font = UIFont.preferredFont(forTextStyle: .headline).withSize(16.0)
             cell!.detailTextLabel?.text = boardName
+            cell!.detailTextLabel?.font = UIFont.preferredFont(forTextStyle: .body).withSize(15.0)
         }
         return cell!
     }
