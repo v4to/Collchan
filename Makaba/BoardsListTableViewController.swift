@@ -34,7 +34,6 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
     override init(style: UITableView.Style) {
         super.init(style: style)
         
-        UITabBar.appearance().tintColor = .systemOrange
         tabBarItem.title = "Boards"
         tabBarItem.image = UIImage(named: "boards-tab-image")
        
@@ -60,7 +59,7 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
             action: #selector(actionAdd(_:))
         )
         navigationItem.rightBarButtonItem = addButton
-        
+                
         setupKeyBoardObserver()
     }
     
@@ -91,9 +90,9 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
         switch sender.state {
             case .ended:
                 addBoardView.addBoardTextFieldView.resignFirstResponder()
-                addBoardView.textFieldContainerView.frame.origin.y = addBoardView.bounds.maxY
+                addBoardView.frame = self.navigationController!.view.bounds
+                addBoardView.addBoardTextFieldView.text = ""
                 addBoardView.removeFromSuperview()
-                
             default:
                 break
             }
@@ -128,9 +127,10 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
             let userInfo = notification.userInfo,
             let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect
             {
-                var frame = addBoardView.textFieldContainerView.frame
-                frame.origin.y = keyboardFrame.origin.y - frame.height - 10
-                addBoardView.textFieldContainerView.frame = frame
+                if addBoardView.frame.intersects(keyboardFrame) {
+                    addBoardView.frame.origin.y = addBoardView.frame.origin.y - keyboardFrame.height
+                }
+    
             }
     }
     
@@ -184,7 +184,7 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
             let boardID = boards[categoryName]![row].id
             
             cell!.accessoryType = .none
-            cell!.textLabel?.textColor = .systemOrange
+            cell!.textLabel?.textColor = .systemBlue
             cell!.textLabel?.text = boardID
             cell!.textLabel?.font = UIFont.systemFont(
                 ofSize: cell!.textLabel!.font.pointSize,
