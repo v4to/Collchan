@@ -142,7 +142,7 @@ class AddBoardView: UIView, UITableViewDataSource {
                 top: 0,
                 left: 0,
                 bottom: 0,
-                right: UIScreen.main.bounds.width - 100
+                right: UIScreen.main.bounds.width
 
             )
             cell!.textLabel?.textColor = UIColor.systemBlue
