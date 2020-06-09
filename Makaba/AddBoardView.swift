@@ -13,7 +13,6 @@ class AddBoardView: UIView, UITableViewDataSource {
     // MARK: - Instance Properties
     lazy var textFieldContainerView: UIView = {
         let view = UIView()
-        view.frame = CGRect(x: 6, y: self.bounds.maxY - 200, width: self.bounds.width - 12, height: 56)
         view.backgroundColor = #colorLiteral(red: 0.07449694723, green: 0.08236028999, blue: 0.08625844866, alpha: 1)
         view.layer.cornerRadius = 10.0
         return view
@@ -21,7 +20,6 @@ class AddBoardView: UIView, UITableViewDataSource {
     
     lazy var addBoardTextFieldView: UITextField = {
         let textField = UITextField()
-        textField.frame = CGRect(x: 10, y: 10, width: self.bounds.width - 20 - 12, height: 36)
         textField.placeholder = "Board"
         textField.layer.borderColor = #colorLiteral(red: 0.1921322048, green: 0.2078579366, blue: 0.2431031168, alpha: 1)
         textField.layer.borderWidth = 1.0
@@ -36,11 +34,8 @@ class AddBoardView: UIView, UITableViewDataSource {
         return textField
     }()
     
-    lazy var actionTableView: UITableView = {
-        let tableView = UITableView(
-            frame: CGRect(x: 6, y: self.bounds.maxY - 120, width: self.bounds.width - 12, height: 120),
-            style: .plain
-        )
+    lazy var actionSheetsTableView: UITableView = {
+        let tableView = UITableView()
         tableView.rowHeight = 56.0
         tableView.layer.cornerRadius = 10.0
         tableView.isScrollEnabled = false
@@ -61,6 +56,11 @@ class AddBoardView: UIView, UITableViewDataSource {
             action: #selector(textFieldDidChange(_:)),
             for: .editingChanged
         )
+        
+        textFieldContainerView.addSubview(addBoardTextFieldView)
+        
+        addSubview(textFieldContainerView)
+        addSubview(actionSheetsTableView)
     }
     
     required init?(coder: NSCoder) {
@@ -71,7 +71,7 @@ class AddBoardView: UIView, UITableViewDataSource {
     
     // MARK: - Actions
     @objc func textFieldDidChange(_ textField: UITextField) {
-        if let cell = actionTableView.cellForRow(at: IndexPath(row: 0, section: 0)) {
+        if let cell = actionSheetsTableView.cellForRow(at: IndexPath(row: 0, section: 0)) {
             cell.textLabel?.textColor = textField.text == "" ? #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1) : UIColor.systemBlue
         }
     }
@@ -81,20 +81,18 @@ class AddBoardView: UIView, UITableViewDataSource {
     // MARK: - Instance Methods
     override func layoutSubviews() {
         super.layoutSubviews()
-        setupViews()
+        
+        updateSubviewsFrame()
     }
     
-    func setupViews() {
-        actionTableView.frame = CGRect(
+    func updateSubviewsFrame() {
+        textFieldContainerView.frame = CGRect(
             x: 6,
-            y: self.bounds.maxY - 112 - 10,
+            y: self.bounds.maxY - 188,
             width: self.bounds.width - 12,
-            height: 112
+            height: 56
         )
-        
-        textFieldContainerView.frame.origin.y = self.bounds.maxY -
-            actionTableView.frame.height - textFieldContainerView.frame.height - 20
-        
+ 
         addBoardTextFieldView.frame = CGRect(
             x: 10,
             y: 10,
@@ -102,10 +100,12 @@ class AddBoardView: UIView, UITableViewDataSource {
             height: 36
         )
         
-        textFieldContainerView.addSubview(addBoardTextFieldView)
- 
-        addSubview(textFieldContainerView)
-        addSubview(actionTableView)
+        actionSheetsTableView.frame = CGRect(
+            x: 6,
+            y: self.bounds.maxY - 112 - 10,
+            width: self.bounds.width - 12,
+            height: 112
+        )
     }
     
     
@@ -117,7 +117,7 @@ class AddBoardView: UIView, UITableViewDataSource {
         
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // Ask for a cell of the appropriate type.
-        let identifier = "actionCell"
+        let identifier = "actionSheetCell"
         var cell = tableView.dequeueReusableCell(withIdentifier: identifier)
         if cell == nil {
             cell = UITableViewCell(
@@ -125,8 +125,8 @@ class AddBoardView: UIView, UITableViewDataSource {
                reuseIdentifier: identifier
             )
             cell?.translatesAutoresizingMaskIntoConstraints = false
-       }
-
+        }
+        
         // Configure the cell’s contents with the row and section number.
         // The Basic cell style guarantees a label view is present in textLabel.
         cell!.textLabel!.text = indexPath.row == 0 ? "Favorite" : "Cancel"
@@ -142,7 +142,8 @@ class AddBoardView: UIView, UITableViewDataSource {
                 top: 0,
                 left: 0,
                 bottom: 0,
-                right: UIScreen.main.bounds.width
+                right: UIScreen.main.bounds.width - 100
+
             )
             cell!.textLabel?.textColor = UIColor.systemBlue
             
