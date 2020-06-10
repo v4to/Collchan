@@ -55,7 +55,6 @@ class AddBoardView: UIView, UITextFieldDelegate {
     
     var addButton: ActionSheetButton = {
         let button = ActionSheetButton(frame: .zero, title: "Favorite", textColor: #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1))
-        button.bottomBorder = true
         button.isEnabled = false
         return button
     }()
@@ -92,7 +91,6 @@ class AddBoardView: UIView, UITextFieldDelegate {
     
     // MARK: - Actions
     @objc func textFieldDidChange(_ textField: UITextField) {
-        print(textField.text! != "")
         if textField.text! == "" {
             addButton.isEnabled = false
             addButton.setTitleColor(#colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1), for: .normal)
