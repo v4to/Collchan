@@ -10,6 +10,7 @@
 		49210FEC2479D2650020ECBC /* BoardsListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49210FEB2479D2640020ECBC /* BoardsListTableViewCell.swift */; };
 		492758292480848600A60E51 /* BoardsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 492758282480848600A60E51 /* BoardsModel.swift */; };
 		4949BB51248EC8B7005AA6FE /* AddBoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4949BB50248EC8B7005AA6FE /* AddBoardView.swift */; };
+		4949BB5324908922005AA6FE /* ActionSheetButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4949BB5224908922005AA6FE /* ActionSheetButton.swift */; };
 		494F6E5F248B32BE00D878A0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 494F6E5E248B32BE00D878A0 /* Constants.swift */; };
 		495ABBB224832A6700233583 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495ABBB124832A6700233583 /* NetworkService.swift */; };
 		495ABBB424832ACA00233583 /* BoardsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495ABBB324832ACA00233583 /* BoardsService.swift */; };
@@ -49,6 +50,7 @@
 		49210FEB2479D2640020ECBC /* BoardsListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardsListTableViewCell.swift; sourceTree = "<group>"; };
 		492758282480848600A60E51 /* BoardsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardsModel.swift; sourceTree = "<group>"; };
 		4949BB50248EC8B7005AA6FE /* AddBoardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddBoardView.swift; sourceTree = "<group>"; };
+		4949BB5224908922005AA6FE /* ActionSheetButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionSheetButton.swift; sourceTree = "<group>"; };
 		494F6E5E248B32BE00D878A0 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		495ABBB124832A6700233583 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		495ABBB324832ACA00233583 /* BoardsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardsService.swift; sourceTree = "<group>"; };
@@ -133,6 +135,7 @@
 		49EA7BDF2476DC8500BFEC13 /* Makaba */ = {
 			isa = PBXGroup;
 			children = (
+				4949BB5224908922005AA6FE /* ActionSheetButton.swift */,
 				4949BB50248EC8B7005AA6FE /* AddBoardView.swift */,
 				49653AB624801B1F00EB889E /* Model */,
 				49210FEB2479D2640020ECBC /* BoardsListTableViewCell.swift */,
@@ -304,6 +307,7 @@
 				49EBD101247819450051A348 /* SavedViewController.swift in Sources */,
 				49210FEC2479D2650020ECBC /* BoardsListTableViewCell.swift in Sources */,
 				49EA7BE52476DC8500BFEC13 /* ViewController.swift in Sources */,
+				4949BB5324908922005AA6FE /* ActionSheetButton.swift in Sources */,
 				49EA7BE12476DC8500BFEC13 /* AppDelegate.swift in Sources */,
 				499F7C3B248C5A9F0010B97A /* ThreadsModel.swift in Sources */,
 				499F7C3D248C61A00010B97A /* ThreadsService.swift in Sources */,

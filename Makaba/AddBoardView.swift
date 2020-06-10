@@ -8,10 +8,10 @@
 
 import UIKit
 
-class AddBoardView: UIView, UITableViewDataSource {
+class AddBoardView: UIView, UITextFieldDelegate {
     
     // MARK: - Instance Properties
-    lazy var textFieldContainerView: UIView = {
+    var textFieldContainerView: UIView = {
         let view = UIView()
         view.backgroundColor = #colorLiteral(red: 0.07449694723, green: 0.08236028999, blue: 0.08625844866, alpha: 1)
         view.layer.cornerRadius = 10.0
@@ -26,6 +26,7 @@ class AddBoardView: UIView, UITableViewDataSource {
         textField.layer.cornerRadius = 10.0
         textField.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
         textField.clearButtonMode = .always
+        textField.delegate = self
         
         // Add left padding inside UITextView
         textField.leftView = UIView()
@@ -34,6 +35,7 @@ class AddBoardView: UIView, UITableViewDataSource {
         return textField
     }()
     
+    /*
     lazy var actionSheetsTableView: UITableView = {
         let tableView = UITableView()
         tableView.rowHeight = 56.0
@@ -42,7 +44,23 @@ class AddBoardView: UIView, UITableViewDataSource {
         tableView.dataSource = self
         return tableView
     }()
+    */
     
+    var actionSheetView: UIView = {
+        let view = UIView()
+        view.layer.cornerRadius = 10.0
+        view.clipsToBounds = true
+        return view
+    }()
+    
+    var addButton: ActionSheetButton = {
+        let button = ActionSheetButton(frame: .zero, title: "Favorite", textColor: #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1))
+        button.bottomBorder = true
+        button.isEnabled = false
+        return button
+    }()
+
+    var cancelButton = ActionSheetButton(frame: .zero, title: "Cancel", textColor: #colorLiteral(red: 0, green: 0.4784313725, blue: 1, alpha: 1))
     
     
     // MARK: - Initialization
@@ -50,17 +68,20 @@ class AddBoardView: UIView, UITableViewDataSource {
         super.init(frame: frame)
         
         backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1).withAlphaComponent(0.7)
-        
+
         addBoardTextFieldView.addTarget(
             self,
             action: #selector(textFieldDidChange(_:)),
             for: .editingChanged
         )
-        
+        cancelButton.translatesAutoresizingMaskIntoConstraints = false
+        cancelButton.autoresizesSubviews = false
         textFieldContainerView.addSubview(addBoardTextFieldView)
-        
+        actionSheetView.addSubview(addButton)
+        actionSheetView.addSubview(cancelButton)
+
         addSubview(textFieldContainerView)
-        addSubview(actionSheetsTableView)
+        addSubview(actionSheetView)
     }
     
     required init?(coder: NSCoder) {
@@ -71,11 +92,17 @@ class AddBoardView: UIView, UITableViewDataSource {
     
     // MARK: - Actions
     @objc func textFieldDidChange(_ textField: UITextField) {
-        if let cell = actionSheetsTableView.cellForRow(at: IndexPath(row: 0, section: 0)) {
-            cell.textLabel?.textColor = textField.text == "" ? #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1) : UIColor.systemBlue
+        print(textField.text! != "")
+        if textField.text! == "" {
+            addButton.isEnabled = false
+            addButton.setTitleColor(#colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1), for: .normal)
+        } else {
+            addButton.isEnabled = true
+            addButton.setTitleColor(#colorLiteral(red: 0, green: 0.4784313725, blue: 1, alpha: 1), for: .normal)
         }
     }
-
+    
+    
     
     
     // MARK: - Instance Methods
@@ -100,16 +127,47 @@ class AddBoardView: UIView, UITableViewDataSource {
             height: 40
         )
         
+        /*
         actionSheetsTableView.frame = CGRect(
             x: 6,
             y: self.bounds.maxY - 112 - 10,
             width: self.bounds.width - 12,
             height: 112
         )
+        */
+        
+        actionSheetView.frame = CGRect(
+            x: 6,
+            y: self.bounds.maxY - 112 - 10,
+            width: self.bounds.width - 12,
+            height: 112
+        )
+        
+        addButton.frame = CGRect(
+            x: 0,
+            y: 0,
+            width: actionSheetView.bounds.width,
+            height: 56
+        )
+        
+        cancelButton.frame = CGRect(
+            x: 0,
+            y: 56,
+            width: actionSheetView.bounds.width,
+            height: 56
+        )
     }
     
     
+    // MARK: - UITextFieldDelegate
+    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
+        // Reseting text color just before textfield  is asked to resign the first responder status
+        addButton.titleLabel?.textColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
+        return true
+    }
     
+    
+    /*
     // MARK: - UITableViewDataSource
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 2
@@ -152,4 +210,10 @@ class AddBoardView: UIView, UITableViewDataSource {
         cell!.backgroundColor = #colorLiteral(red: 0.07449694723, green: 0.08236028999, blue: 0.08625844866, alpha: 1)
         return cell!
     }
+    */
 }
+
+
+
+
+
