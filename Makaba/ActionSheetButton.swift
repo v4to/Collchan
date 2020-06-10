@@ -10,6 +10,7 @@ import UIKit
 
 
 class ActionSheetButton: UIButton {
+    
     // MARK: - Instance properties
     override var isHighlighted: Bool {
         didSet {
@@ -33,8 +34,6 @@ class ActionSheetButton: UIButton {
         fatalError("init(coder:) has not been implemented")
     }
     
-    var bottomBorder = false
-    
     
     
     // MARK: - Instance methods
@@ -50,11 +49,6 @@ class ActionSheetButton: UIButton {
         )
         bottomBorder.backgroundColor = UIColor(#colorLiteral(red: 0.2274276316, green: 0.2274661064, blue: 0.2352614105, alpha: 1)).cgColor
         layer.addSublayer(bottomBorder)
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        if bottomBorder { addBottomBorder() }
     }
     
    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {

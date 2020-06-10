@@ -149,6 +149,7 @@ class AddBoardView: UIView, UITextFieldDelegate {
             width: actionSheetView.bounds.width,
             height: 56
         )
+        addButton.addBottomBorder()
         
         cancelButton.frame = CGRect(
             x: 0,
@@ -162,7 +163,7 @@ class AddBoardView: UIView, UITextFieldDelegate {
     // MARK: - UITextFieldDelegate
     func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
         // Reseting text color just before textfield  is asked to resign the first responder status
-        addButton.titleLabel?.textColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
+        addButton.setTitleColor(#colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1), for: .normal)
         return true
     }
     
