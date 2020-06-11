@@ -65,16 +65,19 @@ class AddBoardView: UIView, UITextFieldDelegate {
     // MARK: - Initialization
     override init(frame: CGRect) {
         super.init(frame: frame)
+        self.frame = UIScreen.main.bounds
         
-        backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1).withAlphaComponent(0.7)
-
+        backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1).withAlphaComponent(0.9)
+        
+        /*
         addBoardTextFieldView.addTarget(
             self,
             action: #selector(textFieldDidChange(_:)),
             for: .editingChanged
         )
-        cancelButton.translatesAutoresizingMaskIntoConstraints = false
-        cancelButton.autoresizesSubviews = false
+        */
+        
+
         textFieldContainerView.addSubview(addBoardTextFieldView)
         actionSheetView.addSubview(addButton)
         actionSheetView.addSubview(cancelButton)
@@ -90,6 +93,7 @@ class AddBoardView: UIView, UITextFieldDelegate {
     
     
     // MARK: - Actions
+    /*
     @objc func textFieldDidChange(_ textField: UITextField) {
         if textField.text! == "" {
             addButton.isEnabled = false
@@ -99,7 +103,7 @@ class AddBoardView: UIView, UITextFieldDelegate {
             addButton.setTitleColor(#colorLiteral(red: 0, green: 0.4784313725, blue: 1, alpha: 1), for: .normal)
         }
     }
-    
+    */
     
     
     
@@ -111,6 +115,7 @@ class AddBoardView: UIView, UITextFieldDelegate {
     }
     
     func updateSubviewsFrame() {
+        print("updateSubViewFrame")
         textFieldContainerView.frame = CGRect(
             x: 6,
             y: self.bounds.maxY - 188,
@@ -159,12 +164,13 @@ class AddBoardView: UIView, UITextFieldDelegate {
     
     
     // MARK: - UITextFieldDelegate
+    /*
     func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
         // Reseting text color just before textfield  is asked to resign the first responder status
         addButton.setTitleColor(#colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1), for: .normal)
         return true
     }
-    
+    */
     
     /*
     // MARK: - UITableViewDataSource

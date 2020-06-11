@@ -10,15 +10,21 @@ import UIKit
 import CoreHaptics
 import AudioToolbox
 
-class BoardsListTableViewController: UITableViewController, UIGestureRecognizerDelegate {
+class BoardsListTableViewController: UITableViewController, UIGestureRecognizerDelegate, UITextFieldDelegate {
     
     // MARK: - Properties
     var boards: [String: [Board]]!
+    
     var categories: [String]!
+    
+    var autoSuggestions = [Board]()
+    
+    var keyboardHeight: CGFloat!
+    
+    lazy var statusBarHeight = view.window?.windowScene?.statusBarManager?.statusBarFrame.height
     
     lazy var addBoardView: AddBoardView = {
        let view = AddBoardView()
-        view.frame = self.navigationController!.view.bounds
         
         let tapGestureRecognizer = UITapGestureRecognizer(
             target: self,
@@ -27,6 +33,23 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
         
         view.addGestureRecognizer(tapGestureRecognizer)
         return view
+    }()
+    
+    lazy var autoSuggestionsTableView: UITableView = {
+        let tableView = UITableView()
+        tableView.frame = CGRect(
+            x: 0,
+            y: view.bounds.maxY,
+            width: view.bounds.width - 12,
+            height: 0
+        )
+
+        tableView.estimatedRowHeight = 0
+        tableView.backgroundColor = #colorLiteral(red: 0.07449694723, green: 0.08236028999, blue: 0.08625844866, alpha: 1)
+        tableView.layer.cornerRadius = 10.0
+        tableView.delegate = self
+        tableView.dataSource = self
+        return tableView
     }()
     
     
@@ -46,7 +69,6 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
     
     
     
-    
     // MARK: - View Controller Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -60,7 +82,19 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
             action: #selector(actionAdd(_:))
         )
         navigationItem.rightBarButtonItem = addButton
-                
+        
+        
+        addBoardView.addBoardTextFieldView.delegate = self
+        addBoardView.addBoardTextFieldView.addTarget(
+            self,
+            action: #selector(actionTextFieldDidChange(_:)),
+            for: .editingChanged
+        )
+        addBoardView.addSubview(autoSuggestionsTableView)
+        addBoardView.sendSubviewToBack(autoSuggestionsTableView)
+        navigationController?.view.addSubview(addBoardView)
+        addBoardView.isHidden = true
+        
         setupKeyBoardObserver()
     }
     
@@ -81,6 +115,16 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
     
     
     
+    // MARK: - UITextFieldDelegate
+    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
+        // Reseting text color just before textfield  is asked to resign the first responder status
+        let addButton = addBoardView.addButton
+        addButton.setTitleColor(#colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1), for: .normal)
+        addButton.isEnabled = false
+        return true
+    }
+    
+    
     // MARK: - Instance Methods
  
 
@@ -93,7 +137,7 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
                 addBoardView.addBoardTextFieldView.resignFirstResponder()
                 addBoardView.frame = self.navigationController!.view.bounds
                 addBoardView.addBoardTextFieldView.text = ""
-                addBoardView.removeFromSuperview()
+                addBoardView.isHidden = true
             default:
                 break
             }
@@ -103,8 +147,57 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
     
     // MARK: - Actions
     @objc func actionAdd(_ sender: UIBarButtonItem) {
-        navigationController?.view.addSubview(addBoardView)
+        addBoardView.isHidden = false
         addBoardView.addBoardTextFieldView.becomeFirstResponder()
+    }
+    
+    @objc func actionTextFieldDidChange(_ textField: UITextField) {
+        let addButton = addBoardView.addButton
+        if textField.text! == "" {
+            addButton.isEnabled = false
+            addButton.setTitleColor(#colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1), for: .normal)
+        } else {
+            addButton.isEnabled = true
+            addButton.setTitleColor(#colorLiteral(red: 0, green: 0.4784313725, blue: 1, alpha: 1), for: .normal)
+        }
+        
+        autoSuggestions = []
+        for boards in boards.values {
+            boards.forEach {
+                if
+                    $0.id.hasPrefix(textField.text!.lowercased()) ||
+                    $0.name.lowercased().hasPrefix(textField.text!.lowercased())
+                {
+                    autoSuggestions += [$0]
+                    
+                }
+                
+            }
+        }
+
+        autoSuggestionsTableView.reloadData()
+        let contentSize = autoSuggestionsTableView.contentSize
+        print(autoSuggestionsTableView.frame)
+        print(contentSize)
+        
+        let textField = addBoardView.textFieldContainerView
+        
+        let offsetForTableAutosuggestionOrigin =
+            addBoardView.bounds.minY + keyboardHeight + statusBarHeight! + 10
+
+        let rectContentSize = CGRect(
+            origin: CGPoint(x: 6, y: addBoardView.bounds.midY),
+            size: contentSize
+        )
+        
+        // Check if contentSize of autoSuggestionTable overlaps textFieldContainerView
+        // Is yes  autoSuggestionTable
+        if textField.frame.intersects(rectContentSize) {
+            autoSuggestionsTableView.frame.size.height =
+                textField.frame.minY - offsetForTableAutosuggestionOrigin
+        } else {
+            autoSuggestionsTableView.sizeToFit()
+        }
     }
     
     
@@ -121,15 +214,27 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
     
     
     
-    
     // MARK: - Keyboard Notifications
     @objc func handleKeyboardWillShow(notification: NSNotification) {
         if
             let userInfo = notification.userInfo,
             let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect
             {
+                self.keyboardHeight = keyboardFrame.height
                 if addBoardView.frame.intersects(keyboardFrame) {
                     addBoardView.frame.origin.y = addBoardView.frame.origin.y - keyboardFrame.height
+
+                    let offsetForTableAutosuggestionOrigin =
+                        addBoardView.bounds.minY + keyboardHeight + statusBarHeight! + 10
+
+                    autoSuggestionsTableView.frame = CGRect(
+                        x: 6,
+                        y: addBoardView.bounds.minY + keyboardHeight + statusBarHeight!,
+                        width: addBoardView.bounds.width - 12,
+                        height: addBoardView.textFieldContainerView.frame.minY - offsetForTableAutosuggestionOrigin
+                    )
+
+                    autoSuggestionsTableView.reloadData()
                 }
     
             }
@@ -140,24 +245,49 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
     
     // MARK: - UITableViewDataSource
     override func numberOfSections(in tableView: UITableView) -> Int {
-        guard boards != nil else { return 0 }
-        return boards.count
+        if tableView === self.tableView {
+            guard boards != nil else { return 0 }
+            return boards.count
+        }
+        
+        if tableView === autoSuggestionsTableView {
+            return 1
+        }
+        
+        return 1
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard boards != nil else { return 0 }
-
-        return boards[categories[section]]!.count
-
+        if tableView === self.tableView {
+            guard boards != nil else { return 0 }
+            
+            return boards[categories[section]]!.count
+        }
+        
+        if tableView === autoSuggestionsTableView {
+            guard boards != nil else { return 0 }
+            
+            return autoSuggestions.count > 0 ? autoSuggestions.count : boards[categories[section]]!.count
+        }
+        
+        return 1
     }
 
     override func tableView(
         _ tableView: UITableView,
         titleForHeaderInSection section: Int
     ) -> String? {
-        guard boards != nil else { return nil }
+        if tableView === self.tableView {
+            guard boards != nil else { return nil }
 
-        return categories[section]
+            return categories[section]
+        }
+            
+        if tableView === autoSuggestionsTableView {
+            return nil
+        }
+        
+        return nil
     }
 
     override func tableView(
@@ -167,33 +297,73 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
         let identifier = "board"
         var cell = tableView.dequeueReusableCell(withIdentifier: identifier)
         if cell == nil {
-            cell = BoardsListTableViewCell(
-                style: .subtitle,
-                reuseIdentifier: identifier
-            )
+            if tableView === self.tableView {
+                cell = BoardsListTableViewCell(
+                    style: .subtitle,
+                    reuseIdentifier: identifier
+                )
+            }
+            if tableView === autoSuggestionsTableView {
+                cell = UITableViewCell(
+                    style: .default,
+                   reuseIdentifier: identifier
+                )
+            }
+            
             cell?.translatesAutoresizingMaskIntoConstraints = false
         }
-
         let section = indexPath.section
         let row = indexPath.row
         
-        if boards != nil {
-            let categoryName = categories[section]
-            let sortedBoard = boards[categoryName]!.sorted { $0.id < $1.id }
-            let boardName = sortedBoard[row].name
-            let boardID = sortedBoard[row].id
+        if tableView === self.tableView {
+            if boards != nil {
+                let categoryName = categories[section]
+                let sortedBoard = boards[categoryName]!.sorted { $0.id < $1.id }
+                let boardName = sortedBoard[row].name
+                let boardID = sortedBoard[row].id
+                
+                cell!.accessoryType = .none
+                cell!.textLabel?.textColor = .systemBlue
+                cell!.textLabel?.text = boardID
+                cell!.textLabel?.font = UIFont.systemFont(
+                    ofSize: cell!.textLabel!.font.pointSize,
+                    weight: UIFont.Weight.bold
+                )
+                cell!.textLabel?.font = UIFont.preferredFont(forTextStyle: .headline).withSize(16.0)
+                cell!.detailTextLabel?.text = boardName
+                cell!.detailTextLabel?.font = UIFont.preferredFont(forTextStyle: .body).withSize(15.0)
+            }
             
-            cell!.accessoryType = .none
-            cell!.textLabel?.textColor = .systemBlue
-            cell!.textLabel?.text = boardID
-            cell!.textLabel?.font = UIFont.systemFont(
-                ofSize: cell!.textLabel!.font.pointSize,
-                weight: UIFont.Weight.bold
-            )
-            cell!.textLabel?.font = UIFont.preferredFont(forTextStyle: .headline).withSize(16.0)
-            cell!.detailTextLabel?.text = boardName
-            cell!.detailTextLabel?.font = UIFont.preferredFont(forTextStyle: .body).withSize(15.0)
         }
+        
+        if tableView === autoSuggestionsTableView {
+            cell!.separatorInset = UIEdgeInsets.zero
+            cell!.backgroundColor = #colorLiteral(red: 0.07449694723, green: 0.08236028999, blue: 0.08625844866, alpha: 1)
+            cell!.accessoryType = .none
+            
+            if autoSuggestions.count == 0 {
+                let categoryName = categories[section]
+                let sortedBoard = boards[categoryName]!.sorted { $0.id < $1.id }
+                cell!.textLabel?.text = sortedBoard[row].name
+            } else {
+                cell!.textLabel?.text = autoSuggestions[row].name
+
+            }
+
+            cell!.textLabel?.font = UIFont.preferredFont(forTextStyle: .body).withSize(15)
+            
+            if indexPath.row == autoSuggestions.count - 1 {
+                cell!.separatorInset = UIEdgeInsets(
+                    top: 0,
+                    left: 0,
+                    bottom: 0,
+                    right: UIScreen.main.bounds.width
+
+                )
+            }
+        }
+        
+        
         return cell!
     }
     
