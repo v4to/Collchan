@@ -83,6 +83,11 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
         )
         navigationItem.rightBarButtonItem = addButton
         
+        addBoardView.cancelButton.addTarget(
+            self, action:
+            #selector(actionCancel(_:)),
+            for: .touchUpInside
+        )
         
         addBoardView.addBoardTextFieldView.delegate = self
         addBoardView.addBoardTextFieldView.addTarget(
@@ -138,6 +143,7 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
                 addBoardView.frame = self.navigationController!.view.bounds
                 addBoardView.addBoardTextFieldView.text = ""
                 addBoardView.isHidden = true
+                autoSuggestions = []
             default:
                 break
             }
@@ -146,6 +152,14 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
     
     
     // MARK: - Actions
+    @objc func actionCancel(_ sender: ActionSheetButton) {
+        addBoardView.addBoardTextFieldView.resignFirstResponder()
+        addBoardView.frame = self.navigationController!.view.bounds
+        addBoardView.addBoardTextFieldView.text = ""
+        addBoardView.isHidden = true
+        autoSuggestions = []
+    }
+    
     @objc func actionAdd(_ sender: UIBarButtonItem) {
         addBoardView.isHidden = false
         addBoardView.addBoardTextFieldView.becomeFirstResponder()
@@ -264,11 +278,15 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
         if tableView === autoSuggestionsTableView {
             guard boards != nil else { return 0 }
             
-            return addBoardView.addBoardTextFieldView.text!.count > 0 ?
-                autoSuggestions.count : boards[categories[section]]!.count
+            // if no suggestion found and textfield is empty show placeholder list
+            if autoSuggestions.count == 0 && addBoardView.addBoardTextFieldView.text!.count == 0 {
+                return boards[categories[section]]!.count
+            }
+            
+            return autoSuggestions.count
         }
         
-        return 1
+        return 0
     }
 
     override func tableView(
@@ -340,14 +358,9 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
             cell!.accessoryType = .none
             
             if autoSuggestions.count == 0 {
-                if addBoardView.addBoardTextFieldView.text?.count == 0 {
-                    let categoryName = categories[section]
-                    let sortedBoard = boards[categoryName]!.sorted { $0.id < $1.id }
-                    cell!.textLabel?.text = sortedBoard[row].name
-                } else {
-                    return cell!
-                }
-                
+                let categoryName = categories[section]
+                let sortedBoard = boards[categoryName]!.sorted { $0.id < $1.id }
+                cell!.textLabel?.text = sortedBoard[row].name
             } else {
                 cell!.textLabel?.text = autoSuggestions[row].name
 
