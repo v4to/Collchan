@@ -38,7 +38,7 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
     lazy var autoSuggestionsTableView: UITableView = {
         let tableView = UITableView()
         tableView.frame = CGRect(
-            x: 0,
+            x: 6,
             y: view.bounds.maxY,
             width: view.bounds.width - 12,
             height: 0
@@ -177,13 +177,11 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
 
         autoSuggestionsTableView.reloadData()
         let contentSize = autoSuggestionsTableView.contentSize
-        print(autoSuggestionsTableView.frame)
-        print(contentSize)
         
         let textField = addBoardView.textFieldContainerView
         
         let offsetForTableAutosuggestionOrigin =
-            addBoardView.bounds.minY + keyboardHeight + statusBarHeight! + 10
+            addBoardView.bounds.minY + keyboardHeight + statusBarHeight! + 30
 
         let rectContentSize = CGRect(
             origin: CGPoint(x: 6, y: addBoardView.bounds.midY),
@@ -194,7 +192,7 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
         // Is yes  autoSuggestionTable
         if textField.frame.intersects(rectContentSize) {
             autoSuggestionsTableView.frame.size.height =
-                textField.frame.minY - offsetForTableAutosuggestionOrigin
+                textField.frame.minY - offsetForTableAutosuggestionOrigin - 10
         } else {
             autoSuggestionsTableView.sizeToFit()
         }
@@ -225,14 +223,13 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
                     addBoardView.frame.origin.y = addBoardView.frame.origin.y - keyboardFrame.height
 
                     let offsetForTableAutosuggestionOrigin =
-                        addBoardView.bounds.minY + keyboardHeight + statusBarHeight! + 10
+                        addBoardView.bounds.minY + keyboardHeight + statusBarHeight! + 30
 
-                    autoSuggestionsTableView.frame = CGRect(
-                        x: 6,
-                        y: addBoardView.bounds.minY + keyboardHeight + statusBarHeight!,
-                        width: addBoardView.bounds.width - 12,
-                        height: addBoardView.textFieldContainerView.frame.minY - offsetForTableAutosuggestionOrigin
-                    )
+                    
+                    autoSuggestionsTableView.frame.origin.y = offsetForTableAutosuggestionOrigin
+                    autoSuggestionsTableView.frame.size.height =
+                        addBoardView.textFieldContainerView.frame.minY -
+                        offsetForTableAutosuggestionOrigin - 10
 
                     autoSuggestionsTableView.reloadData()
                 }
@@ -267,7 +264,8 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
         if tableView === autoSuggestionsTableView {
             guard boards != nil else { return 0 }
             
-            return autoSuggestions.count > 0 ? autoSuggestions.count : boards[categories[section]]!.count
+            return addBoardView.addBoardTextFieldView.text!.count > 0 ?
+                autoSuggestions.count : boards[categories[section]]!.count
         }
         
         return 1
@@ -342,9 +340,14 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
             cell!.accessoryType = .none
             
             if autoSuggestions.count == 0 {
-                let categoryName = categories[section]
-                let sortedBoard = boards[categoryName]!.sorted { $0.id < $1.id }
-                cell!.textLabel?.text = sortedBoard[row].name
+                if addBoardView.addBoardTextFieldView.text?.count == 0 {
+                    let categoryName = categories[section]
+                    let sortedBoard = boards[categoryName]!.sorted { $0.id < $1.id }
+                    cell!.textLabel?.text = sortedBoard[row].name
+                } else {
+                    return cell!
+                }
+                
             } else {
                 cell!.textLabel?.text = autoSuggestions[row].name
 
