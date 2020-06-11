@@ -139,7 +139,7 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
     @objc func handleTap(_ sender: UITapGestureRecognizer) {
         switch sender.state {
             case .ended:
-                addBoardView.addBoardTextFieldView.resignFirstResponder()
+                addBoardView.endEditing(true)
                 addBoardView.frame = self.navigationController!.view.bounds
                 addBoardView.addBoardTextFieldView.text = ""
                 addBoardView.isHidden = true
@@ -153,7 +153,7 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
     
     // MARK: - Actions
     @objc func actionCancel(_ sender: ActionSheetButton) {
-        addBoardView.addBoardTextFieldView.resignFirstResponder()
+        addBoardView.endEditing(true)
         addBoardView.frame = self.navigationController!.view.bounds
         addBoardView.addBoardTextFieldView.text = ""
         addBoardView.isHidden = true
