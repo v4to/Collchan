@@ -10,13 +10,13 @@ import UIKit
 import AudioToolbox
 
 class BoardsListTableViewCell: UITableViewCell {
-    // MARK: - Properties
+    // MARK: - Instance Properties
     
     private var originSaved = CGPoint()
     private var canPlayHapticFeedback = true
     private let actionView: UIView = {
         let view = UIView()
-        view.backgroundColor = #colorLiteral(red: 0.1960784346, green: 0.8431372643, blue: 0.2941176593, alpha: 1)
+        view.backgroundColor = nil
         return view
     }()
     
@@ -55,7 +55,6 @@ class BoardsListTableViewCell: UITableViewCell {
    
     override func layoutSubviews() {
         super.layoutSubviews()
-        contentView.backgroundColor = self.backgroundColor
         actionView.frame = self.bounds
     }
     
@@ -85,23 +84,38 @@ class BoardsListTableViewCell: UITableViewCell {
         switch panGesture.state {
         case .began:
             originSaved = panGesture.view!.frame.origin
+            actionView.backgroundColor = #colorLiteral(red: 0.4666666687, green: 0.7647058964, blue: 0.2666666806, alpha: 1)
+            self.contentView.backgroundColor = self.backgroundColor
         case .changed:
             if let gestureView = panGesture.view {
-                gestureView.frame.origin.x = panGesture.translation(in: self).x
-                if (gestureView.frame.origin.x < CGFloat(-50.0)) &&
-                   canPlayHapticFeedback {
-                    let systemSoundID = SystemSoundID(1519)
-                    AudioServicesPlaySystemSound(systemSoundID)
-                    canPlayHapticFeedback = false
+                if panGesture.translation(in: self).x < 0 {
+                    gestureView.frame.origin.x = panGesture.translation(in: self).x
+                    if
+                        (gestureView.frame.origin.x < CGFloat(-50.0)) &&
+                        canPlayHapticFeedback
+                    {
+                        let systemSoundID = SystemSoundID(1519)
+                        AudioServicesPlaySystemSound(systemSoundID)
+                        canPlayHapticFeedback = false
+                    }
+                    if gestureView.frame.origin.x > CGFloat(-50.0) {
+                        canPlayHapticFeedback = true
+                    }
                 }
-                if gestureView.frame.origin.x > CGFloat(-50.0) {
-                    canPlayHapticFeedback = true
-                }
+                
             }
         case .ended:
-            UIView.animate(withDuration: 0.2) {
-                panGesture.view?.frame.origin = self.originSaved
-            }
+            UIView.animate(
+                withDuration: 0.2,
+                animations: {
+                    panGesture.view?.frame.origin = self.originSaved
+                },
+                completion: { finished in
+                    self.contentView.backgroundColor = nil
+                    self.actionView.backgroundColor = nil
+                }
+            )
+
             canPlayHapticFeedback = true
         default:
             break
