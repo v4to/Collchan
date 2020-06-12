@@ -68,9 +68,9 @@ class BoardsListTableViewCell: UITableViewCell {
             // if horizontalComponent of velocity is greater than vertical that
             // means pan gesture is moving in horizontal direction(swipe alike)
             // and so pan gesture of contentView should begin
-            let horizontaComponent = abs(panGesture.velocity(in: self).x)
+            let horizontalComponent = abs(panGesture.velocity(in: self).x)
             let verticalComponent = abs(panGesture.velocity(in: self).y)
-            return horizontaComponent > verticalComponent
+            return horizontalComponent > verticalComponent
         }
         
         // otherwise ignore pan gesture of contentView in favor of parent
