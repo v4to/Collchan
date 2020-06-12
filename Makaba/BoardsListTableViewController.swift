@@ -251,6 +251,11 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
             }
     }
     
+    // MARK: - UITableViewDelegate
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+
     
     
     
