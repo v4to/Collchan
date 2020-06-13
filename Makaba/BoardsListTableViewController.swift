@@ -54,6 +54,8 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
     
     
     
+    
+    
     // MARK: - Intialization
     override init(style: UITableView.Style) {
         super.init(style: style)
@@ -66,6 +68,8 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    
     
     
     
@@ -82,12 +86,6 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
             action: #selector(actionAdd(_:))
         )
         navigationItem.rightBarButtonItem = addButton
-        
-        addBoardView.cancelButton.addTarget(
-            self, action:
-            #selector(actionCancel(_:)),
-            for: .touchUpInside
-        )
         
         addBoardView.addBoardTextFieldView.delegate = self
         addBoardView.addBoardTextFieldView.addTarget(
@@ -120,18 +118,8 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
     
     
     
-    // MARK: - UITextFieldDelegate
-    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
-        // Reseting text color just before textfield  is asked to resign the first responder status
-        let addButton = addBoardView.addButton
-        addButton.setTitleColor(#colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1), for: .normal)
-        addButton.isEnabled = false
-        return true
-    }
     
     
-    // MARK: - Instance Methods
- 
     // MARK: - UIGestureRecognizerDelegate
     func gestureRecognizer(
         _ gestureRecognizer: UIGestureRecognizer,
@@ -141,6 +129,8 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
         return touch.view! === addBoardView
     }
 
+    
+    
     
     
     // MARK: - Gestures
@@ -159,6 +149,8 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
 
     
     
+    
+    
     // MARK: - Actions
     @objc func actionCancel(_ sender: ActionSheetButton) {
         addBoardView.endEditing(true)
@@ -174,15 +166,6 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
     }
     
     @objc func actionTextFieldDidChange(_ textField: UITextField) {
-        let addButton = addBoardView.addButton
-        if textField.text! == "" {
-            addButton.isEnabled = false
-            addButton.setTitleColor(#colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1), for: .normal)
-        } else {
-            addButton.isEnabled = true
-            addButton.setTitleColor(#colorLiteral(red: 0, green: 0.4784313725, blue: 1, alpha: 1), for: .normal)
-        }
-        
         autoSuggestions = []
         for boards in boards.values {
             boards.forEach {
@@ -222,6 +205,8 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
     
     
     
+    
+    
     // MARK: - Keyboard Observers
     func setupKeyBoardObserver() {
         NotificationCenter.default.addObserver(
@@ -231,6 +216,8 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
             object: nil
         )
     }
+    
+    
     
     
     
@@ -259,11 +246,16 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
             }
     }
     
+    
+    
+    
+    
     // MARK: - UITableViewDelegate
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
     }
-
+    
+    
     
     
     
