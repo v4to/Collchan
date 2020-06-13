@@ -30,7 +30,7 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
             target: self,
             action: #selector(handleTap(_:))
         )
-        
+        tapGestureRecognizer.delegate = self
         view.addGestureRecognizer(tapGestureRecognizer)
         return view
     }()
@@ -132,6 +132,14 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
     
     // MARK: - Instance Methods
  
+    // MARK: - UIGestureRecognizerDelegate
+    func gestureRecognizer(
+        _ gestureRecognizer: UIGestureRecognizer,
+        shouldReceive touch: UITouch
+    ) -> Bool {
+        // only activate tap gesture if touch was on addBoardView
+        return touch.view! === addBoardView
+    }
 
     
     
