@@ -16,7 +16,7 @@ class BoardsListTableViewCell: UITableViewCell {
     private var canPlayHapticFeedback = true
     private let actionView: UIView = {
         let view = UIView()
-        view.backgroundColor = nil
+        view.isHidden = true
         return view
     }()
     
@@ -75,6 +75,7 @@ class BoardsListTableViewCell: UITableViewCell {
         starImage.frame = self.bounds
         starImage.frame.size.width += starImage.image!.size.width + 15
         starImage.contentMode = .right
+        starImageFrameSaved = starImage.frame.origin
     }
     
     // MARK: - UIGestureRecognizerDelegate
@@ -103,12 +104,12 @@ class BoardsListTableViewCell: UITableViewCell {
         switch panGesture.state {
         case .began:
             originSaved = panGesture.view!.frame.origin
-            starImageFrameSaved = starImage.frame.origin
+           
             
             self.contentView.backgroundColor = self.backgroundColor
         case .changed:
             if let gestureView = panGesture.view {
-                
+                self.actionView.isHidden = false
                 if panGesture.translation(in: self).x > 0 {
                     actionView.backgroundColor = nil
                 } else {
@@ -138,16 +139,21 @@ class BoardsListTableViewCell: UITableViewCell {
             }
         case .ended:
             UIView.animate(
-                withDuration: 0.2,
+                withDuration: 0.3,
                 animations: {
                     panGesture.view?.frame.origin = self.originSaved
-                    self.starImage.frame.origin = self.starImageFrameSaved
-
+                    
+                    let star = self.starImage
+                    if abs(panGesture.translation(in: self).x) > star.image!.size.width + 30.0 {
+                        star.frame.origin = self.starImageFrameSaved
+                        star.frame.origin.x = self.starImageFrameSaved.x - (star.image!.size.width + 30)
+                    } else {
+                        star.frame.origin = self.starImageFrameSaved
+                    }
                 },
                 completion: { finished in
                     self.contentView.backgroundColor = nil
-                    self.actionView.backgroundColor = nil
-
+                    self.actionView.isHidden = true
                 }
             )
             canPlayHapticFeedback = true
