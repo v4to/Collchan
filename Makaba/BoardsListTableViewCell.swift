@@ -36,6 +36,7 @@ class BoardsListTableViewCell: UITableViewCell {
         let configuration = UIImage.SymbolConfiguration(scale: .large)
         var image = UIImage(systemName: "star.fill", withConfiguration: configuration)!
         image = image.withTintColor(#colorLiteral(red: 1, green: 1, blue: 1, alpha: 1), renderingMode: .alwaysOriginal)
+        
         var imageView = UIImageView(image: image)
         imageView.contentMode = .center
         return imageView
@@ -72,7 +73,7 @@ class BoardsListTableViewCell: UITableViewCell {
         actionView.frame = self.bounds
         
         starImage.frame = self.bounds
-        starImage.frame.size.width += 50.0
+        starImage.frame.size.width += starImage.image!.size.width + 15
         starImage.contentMode = .right
     }
     
@@ -115,7 +116,13 @@ class BoardsListTableViewCell: UITableViewCell {
                 }
                 
                 gestureView.frame.origin.x = panGesture.translation(in: self).x
-                starImage.frame.origin.x = panGesture.translation(in: self).x
+            
+                if abs(panGesture.translation(in: self).x) < starImage.image!.size.width + 30.0 {
+                    starImage.frame.origin.x = panGesture.translation(in: self).x
+                } else {
+                    starImage.frame.origin.x = starImageFrameSaved.x - (starImage.image!.size.width + 30)
+                }
+                
                 if
                     (gestureView.frame.origin.x < CGFloat(-50.0)) &&
                     canPlayHapticFeedback
@@ -135,10 +142,12 @@ class BoardsListTableViewCell: UITableViewCell {
                 animations: {
                     panGesture.view?.frame.origin = self.originSaved
                     self.starImage.frame.origin = self.starImageFrameSaved
+
                 },
                 completion: { finished in
                     self.contentView.backgroundColor = nil
                     self.actionView.backgroundColor = nil
+
                 }
             )
             canPlayHapticFeedback = true
