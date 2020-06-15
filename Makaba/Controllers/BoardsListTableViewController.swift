@@ -147,19 +147,14 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
     
     // MARK: - UITableViewDataSource
     override func numberOfSections(in tableView: UITableView) -> Int {
-//        guard let sectionsArray = sectionsArray else { return 0 }
         return sectionsArray.count
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        guard boardsCategories != nil else { return 0 }
-        
         return sectionsArray[section].boards.count
     }
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-//        guard boardsCategories != nil else { return nil }
-
         return sectionsArray[section].name
     }
 
@@ -173,8 +168,6 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
                     reuseIdentifier: identifier
                 )
             }
-           
-//            cell?.translatesAutoresizingMaskIntoConstraints = false
         }
         
         let section = indexPath.section
@@ -193,8 +186,6 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
         cell!.textLabel?.font = UIFont.preferredFont(forTextStyle: .headline).withSize(16.0)
         cell!.detailTextLabel?.text = boardName
         cell!.detailTextLabel?.font = UIFont.preferredFont(forTextStyle: .body).withSize(15.0)
-        
-        
         
         return cell!
     }
