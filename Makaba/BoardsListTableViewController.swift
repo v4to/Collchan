@@ -85,14 +85,7 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
         
         tableView.isHidden = true
         
-        let addButton = UIBarButtonItem(
-            barButtonSystemItem: UIBarButtonItem.SystemItem.add,
-            target: self,
-            action: #selector(actionAdd(_:))
-        )
-        
         navigationItem.title = "Boards"
-        navigationItem.rightBarButtonItem = addButton
         navigationItem.searchController = search
         
         navigationController?.navigationBar.prefersLargeTitles = true
