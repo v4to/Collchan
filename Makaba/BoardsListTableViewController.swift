@@ -28,7 +28,11 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
         return search
     }()
 
-    
+    lazy var spinner: UIActivityIndicatorView = {
+        let ativityIndicator = UIActivityIndicatorView()
+        ativityIndicator.center = navigationController!.view.center
+        return ativityIndicator
+    }()
     
     
     
@@ -79,6 +83,8 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        tableView.isHidden = true
+        
         let addButton = UIBarButtonItem(
             barButtonSystemItem: UIBarButtonItem.SystemItem.add,
             target: self,
@@ -90,6 +96,9 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
         navigationItem.searchController = search
         
         navigationController?.navigationBar.prefersLargeTitles = true
+        navigationController?.view.addSubview(spinner)
+        
+        spinner.startAnimating()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -97,13 +106,15 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
 
         BoardsService().getBoards(
             onSuccess: { (boardsCategories) in
+                self.spinner.stopAnimating()
                 self.boardsCategories = boardsCategories.array
 
                 self.sectionsArray = self.generateSectionsFromArray(
                     self.boardsCategories,
                     withFilter: self.navigationItem.searchController!.searchBar.text!
                 )
-
+                
+                self.tableView.isHidden = false
                 self.tableView.reloadData()
             },
             onFailure: { (error) in
@@ -247,3 +258,5 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
     */
 
 }
+
+ 
