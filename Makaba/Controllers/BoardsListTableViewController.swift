@@ -7,10 +7,15 @@
 //
 
 import UIKit
-import CoreHaptics
-import AudioToolbox
+import CoreData
 
 class BoardsListTableViewController: UITableViewController, UIGestureRecognizerDelegate, UISearchResultsUpdating {
+    // MARK: - Core Data
+    var container: NSPersistentContainer!
+    
+    
+    
+    
     
     // MARK: - Instance Properties
     var favorites = [Board]()
@@ -82,6 +87,8 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
     // MARK: - View Controller Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+//        print(container.)
         
         tableView.isHidden = true
         

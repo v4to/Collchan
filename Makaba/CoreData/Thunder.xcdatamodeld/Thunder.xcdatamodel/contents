@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="16119" systemVersion="19F101" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="FavoriteBoard" representedClassName="FavoriteBoard" syncable="YES" codeGenerationType="class">
+    <entity name="FaBoard" representedClassName="FaBoard" syncable="YES" codeGenerationType="class">
         <attribute name="id" optional="YES" attributeType="String"/>
         <attribute name="name" optional="YES" attributeType="String"/>
     </entity>
     <elements>
-        <element name="FavoriteBoard" positionX="-54" positionY="-9" width="128" height="73"/>
+        <element name="FaBoard" positionX="-54" positionY="-9" width="128" height="73"/>
     </elements>
 </model>
