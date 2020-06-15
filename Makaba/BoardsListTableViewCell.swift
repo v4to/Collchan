@@ -11,7 +11,7 @@ import AudioToolbox
 
 class BoardsListTableViewCell: UITableViewCell {
     // MARK: - Instance Properties
-    
+    private var starImageFrameSaved = CGPoint()
     private var originSaved = CGPoint()
     private var canPlayHapticFeedback = true
     private let actionView: UIView = {
@@ -32,10 +32,23 @@ class BoardsListTableViewCell: UITableViewCell {
         return gestureRecognizer
     }()
     
+    var starImage: UIImageView = {
+        let configuration = UIImage.SymbolConfiguration(scale: .large)
+        var image = UIImage(systemName: "star.fill", withConfiguration: configuration)!
+        image = image.withTintColor(#colorLiteral(red: 1, green: 1, blue: 1, alpha: 1), renderingMode: .alwaysOriginal)
+        var imageView = UIImageView(image: image)
+        imageView.contentMode = .center
+        return imageView
+    }()
+    
+    
     // MARK: - Initialization
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        actionView.addSubview(starImage)
+        
         addSubview(actionView)
         sendSubviewToBack(actionView)
         contentView.addGestureRecognizer(panGestureRecognizer)
@@ -55,7 +68,12 @@ class BoardsListTableViewCell: UITableViewCell {
    
     override func layoutSubviews() {
         super.layoutSubviews()
+        print("layoutSubview")
         actionView.frame = self.bounds
+        
+        starImage.frame = self.bounds
+        starImage.frame.size.width += 50.0
+        starImage.contentMode = .right
     }
     
     // MARK: - UIGestureRecognizerDelegate
@@ -77,30 +95,37 @@ class BoardsListTableViewCell: UITableViewCell {
         // contentView pan gesture
         return false
     }
-    
     // MARK: - Gestures
     
     @objc func handlePan(_ panGesture: UIPanGestureRecognizer) {
+        
         switch panGesture.state {
         case .began:
             originSaved = panGesture.view!.frame.origin
-            actionView.backgroundColor = #colorLiteral(red: 0.4666666687, green: 0.7647058964, blue: 0.2666666806, alpha: 1)
+            starImageFrameSaved = starImage.frame.origin
+            
             self.contentView.backgroundColor = self.backgroundColor
         case .changed:
             if let gestureView = panGesture.view {
-                if panGesture.translation(in: self).x < 0 {
-                    gestureView.frame.origin.x = panGesture.translation(in: self).x
-                    if
-                        (gestureView.frame.origin.x < CGFloat(-50.0)) &&
-                        canPlayHapticFeedback
-                    {
-                        let systemSoundID = SystemSoundID(1519)
-                        AudioServicesPlaySystemSound(systemSoundID)
-                        canPlayHapticFeedback = false
-                    }
-                    if gestureView.frame.origin.x > CGFloat(-50.0) {
-                        canPlayHapticFeedback = true
-                    }
+                
+                if panGesture.translation(in: self).x > 0 {
+                    actionView.backgroundColor = nil
+                } else {
+                    actionView.backgroundColor = #colorLiteral(red: 0, green: 0.6745420694, blue: 0.2156436443, alpha: 1)
+                }
+                
+                gestureView.frame.origin.x = panGesture.translation(in: self).x
+                starImage.frame.origin.x = panGesture.translation(in: self).x
+                if
+                    (gestureView.frame.origin.x < CGFloat(-50.0)) &&
+                    canPlayHapticFeedback
+                {
+                    let systemSoundID = SystemSoundID(1519)
+                    AudioServicesPlaySystemSound(systemSoundID)
+                    canPlayHapticFeedback = false
+                }
+                if gestureView.frame.origin.x > CGFloat(-50.0) {
+                    canPlayHapticFeedback = true
                 }
                 
             }
@@ -109,13 +134,13 @@ class BoardsListTableViewCell: UITableViewCell {
                 withDuration: 0.2,
                 animations: {
                     panGesture.view?.frame.origin = self.originSaved
+                    self.starImage.frame.origin = self.starImageFrameSaved
                 },
                 completion: { finished in
                     self.contentView.backgroundColor = nil
                     self.actionView.backgroundColor = nil
                 }
             )
-
             canPlayHapticFeedback = true
         default:
             break
