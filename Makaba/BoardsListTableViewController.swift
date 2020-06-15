@@ -15,7 +15,7 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
     // MARK: - Instance Properties
     var favorites = [Board]()
     
-    var boardsCategories: [BoardCategory]!
+    var boardsCategories = [BoardCategory]()
     
     var sectionsArray = [BoardCategory]()
     
