@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct Boards: Decodable {
+struct BoardsCategories: Decodable {
     let adult: [Board]
     let games: [Board]
     let politics: [Board]
@@ -30,7 +30,9 @@ struct Boards: Decodable {
         case technology = "Техника и софт"
         case japanCulture = "Японская культура"
     }
-    
+}
+
+extension BoardsCategories {
     var dictionary: [String: [Board]] {
         return [
             CodingKeys.adult.rawValue: adult,
@@ -44,6 +46,32 @@ struct Boards: Decodable {
             CodingKeys.japanCulture.rawValue: japanCulture,
         ]
     }
+    
+    var array: [BoardCategory] {
+        let arr = [
+            BoardCategory(name: CodingKeys.adult.rawValue, boards: adult),
+            BoardCategory(name: CodingKeys.games.rawValue, boards: games),
+            BoardCategory(name: CodingKeys.politics.rawValue, boards: politics),
+            BoardCategory(name: CodingKeys.custom.rawValue, boards: custom),
+            BoardCategory(name: CodingKeys.random.rawValue, boards: random),
+            BoardCategory(name: CodingKeys.creation.rawValue, boards: creation),
+            BoardCategory(name: CodingKeys.subjects.rawValue, boards: subjects),
+            BoardCategory(name: CodingKeys.technology.rawValue, boards: technology),
+            BoardCategory(name: CodingKeys.japanCulture.rawValue, boards: japanCulture)
+            ].sorted { $0.name < $1.name}
+        
+        return arr.map { boardCategory in
+            var boardCategory = boardCategory
+            boardCategory.boards = boardCategory.boards.sorted { $0.id < $1.id}
+            return boardCategory
+        }
+    }
+}
+
+
+struct BoardCategory {
+    let name: String
+    var boards: [Board]
 }
 
 struct Board: Decodable {

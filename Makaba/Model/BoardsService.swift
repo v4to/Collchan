@@ -13,11 +13,11 @@ struct BoardsService {
     let networkService = NetworkService.shared
     
     // MARK: - Instance methods
-    func getBoards(onSuccess: @escaping (Boards) -> Void, onFailure: @escaping (Error) -> Void) {
+    func getBoards(onSuccess: @escaping (BoardsCategories) -> Void, onFailure: @escaping (Error) -> Void) {
         networkService.GET(
             endPoint: EndPoints.boards,
             parameters: ["task": "get_boards"],
-            decodeModelType: Boards.self,
+            decodeModelType: BoardsCategories.self,
             onSuccess: onSuccess,
             onFailure: onFailure
         )
