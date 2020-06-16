@@ -11,6 +11,8 @@ import AudioToolbox
 
 class BoardsListTableViewCell: UITableViewCell {
     // MARK: - Instance Properties
+    var delegate: SwipeableCellDelegate?
+    
     private var impactFeedbackGenerator: UIImpactFeedbackGenerator? = nil
     
     private var starImageFrameSaved = CGPoint()
@@ -169,6 +171,8 @@ class BoardsListTableViewCell: UITableViewCell {
                         }
                     )
                     canPlayHapticFeedback = false
+                    
+                    
                 }
                 
                 if gestureView.frame.origin.x > CGFloat(-(starImage.image!.size.width + 30)) {
@@ -177,6 +181,7 @@ class BoardsListTableViewCell: UITableViewCell {
                 
             }
         case .ended:
+            
             UIView.animate(
                 withDuration: 0.3,
                 animations: {
@@ -186,18 +191,34 @@ class BoardsListTableViewCell: UITableViewCell {
                     if abs(panGesture.translation(in: self).x) < self.starImage.image!.size.width + 30 {
                         self.actionView.frame.origin = self.originSaved
                     }
+                    
+                    
                 },
                 completion: { finished in
                     self.actionView.frame.origin = self.originSaved
                     self.contentView.backgroundColor = nil
                     self.actionView.isHidden = true
+                    
+                    if
+                        let delegate = self.delegate,
+                        !self.canPlayHapticFeedback {
+                        delegate.cellDidSwipe(cell: self)
+                    }
+                    
+                    self.canPlayHapticFeedback = true
                 }
             )
-            canPlayHapticFeedback = true
+           
             
             impactFeedbackGenerator = nil
+            
         default:
             break
         }
     }
+}
+
+
+protocol SwipeableCellDelegate {
+    func cellDidSwipe(cell: BoardsListTableViewCell)
 }
