@@ -141,13 +141,12 @@ class BoardsListTableViewCell: UITableViewCell {
                 }
                 
                 if abs(panGesture.translation(in: self).x) < (starImage.image!.size.width + 30) {
-                    print("FDSDFDSSDF")
                     actionView.frame.origin.x = gestureView.frame.origin.x
                 }
                 
                 
                 if
-                    (gestureView.frame.origin.x <= CGFloat(-(starImage.image!.size.width + 30))) &&
+                    (gestureView.frame.origin.x < CGFloat(-(starImage.image!.size.width + 30))) &&
                     canPlayHapticFeedback
                 {
                     let systemSoundID = SystemSoundID(1519)
@@ -155,9 +154,10 @@ class BoardsListTableViewCell: UITableViewCell {
                     UIView.animate(
                         withDuration: 0.1,
                         animations: {
-                            self.starImage.transform = CGAffineTransform(scaleX: 1.4, y: 1.4)
+                            self.starImage.transform = CGAffineTransform(scaleX: 1.3, y: 1.3)
                         },
                         completion: { isCompleted  in
+                            print(isCompleted)
                             UIView.animate(withDuration: 0.1) {
                                 self.starImage.transform = CGAffineTransform.identity
                             }
@@ -166,7 +166,7 @@ class BoardsListTableViewCell: UITableViewCell {
                     canPlayHapticFeedback = false
                 }
                 
-                if gestureView.frame.origin.x >= CGFloat(-(starImage.image!.size.width + 30)) {
+                if gestureView.frame.origin.x > CGFloat(-(starImage.image!.size.width + 30)) {
                     canPlayHapticFeedback = true
                 }
                 
