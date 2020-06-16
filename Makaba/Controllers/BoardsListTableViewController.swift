@@ -9,7 +9,32 @@
 import UIKit
 import CoreData
 
-class BoardsListTableViewController: UITableViewController, UIGestureRecognizerDelegate, UISearchResultsUpdating {
+class BoardsListTableViewController: UITableViewController, UISearchResultsUpdating, SwipeableCellDelegate, UISearchControllerDelegate {
+    // MARK: - SwipeableCellDelegate
+
+    func cellDidSwipe(cell: BoardsListTableViewCell) {
+        let indexPath = self.tableView.indexPath(for: cell)!
+        let chosenBoard = sectionsArray[indexPath.section].boards[indexPath.row]
+        if favoriteCategory.boards.count == 0 {
+            favoriteCategory.boards.append(chosenBoard)
+            
+            sectionsArray = generateSectionsFromArray(boardsCategories)
+            
+            if !isSearchFieldPresented { tableView.insertSections(IndexSet(integer: 0), with: .none) }
+        } else {
+            if !favoriteCategory.boards.contains(chosenBoard) {
+                favoriteCategory.boards.append(chosenBoard)
+                
+                sectionsArray = generateSectionsFromArray(self.boardsCategories)
+                
+                if !isSearchFieldPresented {
+                    let newIndexPath = IndexPath(row: sectionsArray[0].boards.count - 1, section: 0)
+                    tableView.insertRows(at: [newIndexPath], with: .none)
+                }
+            }
+        }
+    }
+    
     // MARK: - Core Data
     var container: NSPersistentContainer!
     
@@ -18,8 +43,10 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
     
     
     // MARK: - Instance Properties
-    var favorites = [Board]()
+    var isSearchFieldPresented = false
     
+    var favoriteCategory = BoardCategory(name: "Favorites", boards: [])
+        
     var boardsCategories = [BoardCategory]()
     
     var sectionsArray = [BoardCategory]()
@@ -30,6 +57,7 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
         // dont block tableview from scrolling while searching
         search.obscuresBackgroundDuringPresentation = false
         search.searchBar.placeholder = "Board"
+        search.delegate = self
         return search
     }()
 
@@ -38,6 +66,8 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
         ativityIndicator.center = navigationController!.view.center
         return ativityIndicator
     }()
+    
+    
     
     
     
@@ -61,11 +91,15 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
     // MARK: - Instance Methods
     func generateSectionsFromArray(
         _ array: [BoardCategory],
-        withFilter filterString: String
+        withFilter filterString: String = ""
     ) -> [BoardCategory] {
         var sectionsArray = array
         
-        guard filterString.count > 0 else { return sectionsArray }
+        // dont filter if no string or string is empty
+        guard filterString.count > 0 else {
+            if favoriteCategory.boards.count > 0 { sectionsArray.insert(favoriteCategory, at: 0) }
+            return sectionsArray
+        }
 
         
         for i in sectionsArray.indices {
@@ -74,10 +108,11 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
                     $0.id.range(of: filterString, options: .caseInsensitive) != nil ||
                     $0.name.range(of: filterString, options: .caseInsensitive) != nil
             }
-
         }
-    
-        return sectionsArray.filter { $0.boards.count > 0 }
+        
+        sectionsArray = sectionsArray.filter { $0.boards.count > 0 }
+        
+        return sectionsArray
     }
     
     
@@ -87,9 +122,7 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
     // MARK: - View Controller Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-//        print(container.)
-        
+                
         tableView.isHidden = true
         
         navigationItem.title = "Boards"
@@ -108,7 +141,8 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
             onSuccess: { (boardsCategories) in
                 self.spinner.stopAnimating()
                 self.boardsCategories = boardsCategories.array
-
+                
+                print( self.navigationItem.searchController!.searchBar.text!.count)
                 self.sectionsArray = self.generateSectionsFromArray(
                     self.boardsCategories,
                     withFilter: self.navigationItem.searchController!.searchBar.text!
@@ -187,6 +221,10 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
         cell!.detailTextLabel?.text = boardName
         cell!.detailTextLabel?.font = UIFont.preferredFont(forTextStyle: .body).withSize(15.0)
         
+        if let cell = cell as? BoardsListTableViewCell {
+            cell.delegate = self
+        }
+        
         return cell!
     }
     
@@ -202,7 +240,14 @@ class BoardsListTableViewController: UITableViewController, UIGestureRecognizerD
 
         tableView.reloadData()
     }
+    
+    func didPresentSearchController(_ searchController: UISearchController) {
+        isSearchFieldPresented = true
+    }
 
+    func didDismissSearchController(_ searchController: UISearchController) {
+        isSearchFieldPresented = false
+    }
     /*
     // Override to support conditional editing of the table view.
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
