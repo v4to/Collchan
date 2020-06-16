@@ -12,8 +12,11 @@ import AudioToolbox
 class BoardsListTableViewCell: UITableViewCell {
     // MARK: - Instance Properties
     private var starImageFrameSaved = CGPoint()
+    
     private var originSaved = CGPoint()
+    
     private var canPlayHapticFeedback = true
+    
     private let actionView: UIView = {
         let view = UIView()
         view.isHidden = true
@@ -43,6 +46,9 @@ class BoardsListTableViewCell: UITableViewCell {
     }()
     
     
+    
+    
+    
     // MARK: - Initialization
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -59,8 +65,11 @@ class BoardsListTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - Methods
-
+    
+    
+    
+    
+    // MARK: - Instance Methods
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
@@ -72,14 +81,19 @@ class BoardsListTableViewCell: UITableViewCell {
         print("layoutSubview")
         actionView.frame = self.bounds
         
-        starImage.frame = self.bounds
-        starImage.frame.size.width += starImage.image!.size.width + 15
-        starImage.contentMode = .right
-        starImageFrameSaved = starImage.frame.origin
+        // additional 50 offset to avoid glitch in animation
+        actionView.frame.size.width += starImage.image!.size.width + 30 + 50
+        
+        starImage.frame.size.width = starImage.image!.size.width
+        starImage.frame.size.height = self.bounds.height
+        starImage.frame.origin.x = actionView.bounds.maxX - starImage.image!.size.width - 15 - 50
     }
     
+    
+    
+    
+    
     // MARK: - UIGestureRecognizerDelegate
-
     override func gestureRecognizerShouldBegin(
         _ gestureRecognizer: UIGestureRecognizer
     ) -> Bool {
@@ -97,8 +111,12 @@ class BoardsListTableViewCell: UITableViewCell {
         // contentView pan gesture
         return false
     }
-    // MARK: - Gestures
     
+    
+    
+    
+    
+    // MARK: - Gestures
     @objc func handlePan(_ panGesture: UIPanGestureRecognizer) {
         
         switch panGesture.state {
@@ -117,22 +135,38 @@ class BoardsListTableViewCell: UITableViewCell {
                 }
                 
                 gestureView.frame.origin.x = panGesture.translation(in: self).x
-            
-                if abs(panGesture.translation(in: self).x) < starImage.image!.size.width + 30.0 {
-                    starImage.frame.origin.x = panGesture.translation(in: self).x
-                } else {
-                    starImage.frame.origin.x = starImageFrameSaved.x - (starImage.image!.size.width + 30)
+
+                if abs(panGesture.translation(in: self).x) >= (starImage.image!.size.width + 30) {
+                    actionView.frame.origin.x = originSaved.x - (starImage.image!.size.width + 30)
                 }
                 
+                if abs(panGesture.translation(in: self).x) < (starImage.image!.size.width + 30) {
+                    print("FDSDFDSSDF")
+                    actionView.frame.origin.x = gestureView.frame.origin.x
+                }
+                
+                
                 if
-                    (gestureView.frame.origin.x < CGFloat(-50.0)) &&
+                    (gestureView.frame.origin.x <= CGFloat(-(starImage.image!.size.width + 30))) &&
                     canPlayHapticFeedback
                 {
                     let systemSoundID = SystemSoundID(1519)
                     AudioServicesPlaySystemSound(systemSoundID)
+                    UIView.animate(
+                        withDuration: 0.1,
+                        animations: {
+                            self.starImage.transform = CGAffineTransform(scaleX: 1.4, y: 1.4)
+                        },
+                        completion: { isCompleted  in
+                            UIView.animate(withDuration: 0.1) {
+                                self.starImage.transform = CGAffineTransform.identity
+                            }
+                        }
+                    )
                     canPlayHapticFeedback = false
                 }
-                if gestureView.frame.origin.x > CGFloat(-50.0) {
+                
+                if gestureView.frame.origin.x >= CGFloat(-(starImage.image!.size.width + 30)) {
                     canPlayHapticFeedback = true
                 }
                 
@@ -143,15 +177,13 @@ class BoardsListTableViewCell: UITableViewCell {
                 animations: {
                     panGesture.view?.frame.origin = self.originSaved
                     
-                    let star = self.starImage
-                    if abs(panGesture.translation(in: self).x) > star.image!.size.width + 30.0 {
-                        star.frame.origin = self.starImageFrameSaved
-                        star.frame.origin.x = self.starImageFrameSaved.x - (star.image!.size.width + 30)
-                    } else {
-                        star.frame.origin = self.starImageFrameSaved
+                    // animate back if full icon is not showed
+                    if abs(panGesture.translation(in: self).x) < self.starImage.image!.size.width + 30 {
+                        self.actionView.frame.origin = self.originSaved
                     }
                 },
                 completion: { finished in
+                    self.actionView.frame.origin = self.originSaved
                     self.contentView.backgroundColor = nil
                     self.actionView.isHidden = true
                 }
