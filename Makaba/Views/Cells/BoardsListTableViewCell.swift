@@ -11,6 +11,8 @@ import AudioToolbox
 
 class BoardsListTableViewCell: UITableViewCell {
     // MARK: - Instance Properties
+    private var impactFeedbackGenerator: UIImpactFeedbackGenerator? = nil
+    
     private var starImageFrameSaved = CGPoint()
     
     private var originSaved = CGPoint()
@@ -78,7 +80,7 @@ class BoardsListTableViewCell: UITableViewCell {
    
     override func layoutSubviews() {
         super.layoutSubviews()
-        print("layoutSubview")
+        
         actionView.frame = self.bounds
         
         // additional 50 offset to avoid glitch in animation
@@ -121,9 +123,8 @@ class BoardsListTableViewCell: UITableViewCell {
         
         switch panGesture.state {
         case .began:
+            impactFeedbackGenerator = UIImpactFeedbackGenerator(style: .medium)
             originSaved = panGesture.view!.frame.origin
-           
-            
             self.contentView.backgroundColor = self.backgroundColor
         case .changed:
             if let gestureView = panGesture.view {
@@ -149,15 +150,19 @@ class BoardsListTableViewCell: UITableViewCell {
                     (gestureView.frame.origin.x < CGFloat(-(starImage.image!.size.width + 30))) &&
                     canPlayHapticFeedback
                 {
+                    
                     let systemSoundID = SystemSoundID(1519)
                     AudioServicesPlaySystemSound(systemSoundID)
+                    
+                    impactFeedbackGenerator?.prepare()
+                    impactFeedbackGenerator?.impactOccurred()
+                    
                     UIView.animate(
                         withDuration: 0.1,
                         animations: {
                             self.starImage.transform = CGAffineTransform(scaleX: 1.3, y: 1.3)
                         },
                         completion: { isCompleted  in
-                            print(isCompleted)
                             UIView.animate(withDuration: 0.1) {
                                 self.starImage.transform = CGAffineTransform.identity
                             }
@@ -189,6 +194,8 @@ class BoardsListTableViewCell: UITableViewCell {
                 }
             )
             canPlayHapticFeedback = true
+            
+            impactFeedbackGenerator = nil
         default:
             break
         }
