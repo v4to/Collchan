@@ -69,12 +69,12 @@ extension BoardsCategories {
 }
 
 
-struct BoardCategory {
+struct BoardCategory: Hashable {
     let name: String
     var boards: [Board]
 }
 
-struct Board: Decodable {
+struct Board: Decodable, Hashable {
     let id: String
     let name: String
     let pages: Int
