@@ -82,9 +82,10 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
         return view
     }()
     
-    let addToFavoritesButton: ActionSheetButton = {
+    let addToFavoriteButton: ActionSheetButton = {
         let button = ActionSheetButton(frame: CGRect.zero, title: "Favorite", textColor: #colorLiteral(red: 0.1960576475, green: 0.1960917115, blue: 0.1960501969, alpha: 1))
         button.addBorder(side: .bottom, color: #colorLiteral(red: 0.172529161, green: 0.1764830351, blue: 0.184286654, alpha: 1), width: 1.0)
+        button.isEnabled = false
         return button
     }()
     
@@ -192,7 +193,7 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
     }
     
     func setupViews() {
-        actionSheetButtonsContainer.addSubview(addToFavoritesButton)
+        actionSheetButtonsContainer.addSubview(addToFavoriteButton)
         actionSheetButtonsContainer.addSubview(cancelButton)
         
         textFieldContainer.addSubview(textFieldBoardId)
@@ -212,11 +213,11 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
         actionButtonsContainerBottomAnchorConstraint = actionSheetButtonsContainer.bottomAnchor.constraint(equalTo: overlay.bottomAnchor, constant: -10.0)
         actionButtonsContainerBottomAnchorConstraint!.isActive = true
         
-        addToFavoritesButton.leadingAnchor.constraint(equalTo: actionSheetButtonsContainer.leadingAnchor).isActive = true
-        addToFavoritesButton.trailingAnchor.constraint(equalTo: actionSheetButtonsContainer.trailingAnchor).isActive = true
-        addToFavoritesButton.topAnchor.constraint(equalTo: actionSheetButtonsContainer.topAnchor).isActive = true
-        addToFavoritesButton.bottomAnchor.constraint(equalTo: cancelButton.topAnchor).isActive = true
-        addToFavoritesButton.heightAnchor.constraint(equalToConstant: 56.0).isActive = true
+        addToFavoriteButton.leadingAnchor.constraint(equalTo: actionSheetButtonsContainer.leadingAnchor).isActive = true
+        addToFavoriteButton.trailingAnchor.constraint(equalTo: actionSheetButtonsContainer.trailingAnchor).isActive = true
+        addToFavoriteButton.topAnchor.constraint(equalTo: actionSheetButtonsContainer.topAnchor).isActive = true
+        addToFavoriteButton.bottomAnchor.constraint(equalTo: cancelButton.topAnchor).isActive = true
+        addToFavoriteButton.heightAnchor.constraint(equalToConstant: 56.0).isActive = true
 
         cancelButton.leadingAnchor.constraint(equalTo: actionSheetButtonsContainer.leadingAnchor).isActive = true
         cancelButton.trailingAnchor.constraint(equalTo: actionSheetButtonsContainer.trailingAnchor).isActive = true
@@ -333,6 +334,15 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
     
     // MARK: - Actions
     @objc func actionTextFieldIdDidChange(_ sender: UITextField) {
+        print(sender.text!.count)
+        if sender.text!.count > 0 {
+            addToFavoriteButton.setTitleColor(#colorLiteral(red: 0.0384538658, green: 0.5176959634, blue: 0.9998756051, alpha: 1), for: .normal)
+            addToFavoriteButton.isEnabled = true
+        } else {
+            addToFavoriteButton.setTitleColor(#colorLiteral(red: 0.1960576475, green: 0.1960917115, blue: 0.1960501969, alpha: 1), for: .normal)
+            addToFavoriteButton.isEnabled = false
+        }
+        
         if let name = findFirstBoardWithMatchedId(sender.text!) {
             setTextFieldName(name)
         }
