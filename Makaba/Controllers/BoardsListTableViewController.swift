@@ -46,7 +46,7 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
         view.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1).withAlphaComponent(0.9)
         view.alpha = 0.0
         
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideOverlayGesture(_:)))
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideOverlayGesture))
         tapGesture.delegate = self
         
         view.addGestureRecognizer(tapGesture)
@@ -89,7 +89,11 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
         return button
     }()
     
-    let cancelButton = ActionSheetButton(frame: CGRect.zero, title: "Cancel", textColor: #colorLiteral(red: 0.1960576475, green: 0.1960917115, blue: 0.1960501969, alpha: 1))
+    lazy var cancelButton: ActionSheetButton = {
+        let button = ActionSheetButton(frame: CGRect.zero, title: "Cancel", textColor: #colorLiteral(red: 0.0384538658, green: 0.5176959634, blue: 0.9998756051, alpha: 1))
+        button.addTarget(self, action: #selector(actionCancelButton(_:)), for: .touchUpInside)
+        return button
+    }()
 
     var isSearchFieldPresented = false
     
@@ -310,7 +314,7 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
     }
     
     // MARK: - Gestures
-    @objc func hideOverlayGesture(_ sender: UITapGestureRecognizer) {
+    @objc func hideOverlayGesture() {
         textFieldBoardId.resignFirstResponder()
         textFieldBoardId.text = nil
         textFieldName.text = nil
@@ -333,8 +337,14 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
     
     
     // MARK: - Actions
+    @objc func actionCancelButton(_ sender: UIButton) {
+        addToFavoriteButton.setTitleColor(#colorLiteral(red: 0.1960576475, green: 0.1960917115, blue: 0.1960501969, alpha: 1), for: .normal)
+        addToFavoriteButton.isEnabled = false
+        hideOverlayGesture()
+        
+    }
+    
     @objc func actionTextFieldIdDidChange(_ sender: UITextField) {
-        print(sender.text!.count)
         if sender.text!.count > 0 {
             addToFavoriteButton.setTitleColor(#colorLiteral(red: 0.0384538658, green: 0.5176959634, blue: 0.9998756051, alpha: 1), for: .normal)
             addToFavoriteButton.isEnabled = true
