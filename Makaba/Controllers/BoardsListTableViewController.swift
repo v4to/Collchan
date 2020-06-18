@@ -16,16 +16,16 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
 //        let chosenBoard = sectionsArray[indexPath.section].boards[indexPath.row]
 //        if favoriteCategory.boards.count == 0 {
 //            favoriteCategory.boards.append(chosenBoard)
-//            
+//
 //            sectionsArray = generateSectionsFromArray(boardsCategories)
-//            
+//
 //            if !isSearchFieldPresented { tableView.insertSections(IndexSet(integer: 0), with: .none) }
 //        } else {
 //            if !favoriteCategory.boards.contains(chosenBoard) {
 //                favoriteCategory.boards.append(chosenBoard)
-//                
+//
 //                sectionsArray = generateSectionsFromArray(self.boardsCategories)
-//                
+//
 //                if !isSearchFieldPresented {
 //                    let newIndexPath = IndexPath(row: sectionsArray[0].boards.count - 1, section: 0)
 //                    tableView.insertRows(at: [newIndexPath], with: .none)
@@ -65,7 +65,11 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
     
     
     
-    lazy var textFieldBoardId: UITextField = { return createTextField(placeHolder: "Board Id") }()
+    lazy var textFieldBoardId: UITextField = {
+        let textField = createTextField(placeHolder: "Board Id")
+        textField.addTarget(self, action: #selector(actionTextFieldIdDidChange(_:)), for: .editingChanged)
+        return textField
+    }()
     
     lazy var textFieldName: UITextField = { return createTextField(placeHolder: "Name") }()
     
@@ -124,6 +128,10 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
     }
     
     // MARK: - Instance Methods
+    func setTextFieldName(_ name: String) {
+        textFieldName.text = name
+    }
+    
     func subscribeToKeyboardNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -143,6 +151,18 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
         textField.leftView?.translatesAutoresizingMaskIntoConstraints = false
         textField.leftViewMode = .always
         return textField
+    }
+    
+    func findFirstBoardWithMatchedId(_ id: String) -> String? {
+        for category in boardsCategories {
+            for board in category.boards {
+                if board.id.hasPrefix(id) {
+                    return board.name
+                }
+            }
+        }
+        
+        return nil
     }
     
     func generateSectionsFromArray(
@@ -291,6 +311,8 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
     // MARK: - Gestures
     @objc func hideOverlayGesture(_ sender: UITapGestureRecognizer) {
         textFieldBoardId.resignFirstResponder()
+        textFieldBoardId.text = nil
+        textFieldName.text = nil
         if textFieldBoardId.isFirstResponder { textFieldBoardId.resignFirstResponder() }
         if textFieldName.isFirstResponder { textFieldName.resignFirstResponder() }
         
@@ -310,6 +332,12 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
     
     
     // MARK: - Actions
+    @objc func actionTextFieldIdDidChange(_ sender: UITextField) {
+        if let name = findFirstBoardWithMatchedId(sender.text!) {
+            setTextFieldName(name)
+        }
+    }
+    
     @objc func actionBoardAdd(_ sender: UIBarButtonItem) {
         textFieldBoardId.becomeFirstResponder()
     }
