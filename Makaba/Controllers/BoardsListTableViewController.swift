@@ -12,6 +12,22 @@ import CoreData
 class BoardsListTableViewController: UITableViewController, UISearchResultsUpdating, SwipeableCellDelegate, UISearchControllerDelegate, UIGestureRecognizerDelegate {
     // MARK: - SwipeableCellDelegate
     func cellDidSwipe(cell: BoardsListTableViewCell) {
+        let indexPath = self.tableView.indexPath(for: cell)!
+        if indexPath.section == 0 && favoriteBoards.count > 0 {
+            let id = favoriteBoards[indexPath.row].id!
+            FavoriteBoard.removeFavoriteBoardWithId(id, in: container!.viewContext)
+            try? container!.viewContext.save()
+
+            favoriteBoards.remove(at: indexPath.row)
+            
+            tableView.performBatchUpdates({
+                tableView.deleteRows(at: [indexPath], with: .automatic)
+            })
+//            tableView.beginUpdates()
+//            tableView.deleteRows(at: [indexPath], with: .automatic)
+//            tableView.endUpdates()
+//            tableView.reloadData()
+        }
 //        let indexPath = self.tableView.indexPath(for: cell)!
 //        let chosenBoard = sectionsArray[indexPath.section].boards[indexPath.row]
 //        if favoriteCategory.boards.count == 0 {
@@ -34,12 +50,17 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
 //        }
     }
     
+    
+    
+    
     // MARK: - Core Data
     var container: NSPersistentContainer? = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer
     
     
 
     // MARK: - Instance Properties
+    let cellReuseIdentifier = "board"
+    
     var actionButtonsContainerBottomAnchorConstraint: NSLayoutConstraint?
     
     lazy var overlay: UIView = {
@@ -264,7 +285,8 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
     // MARK: - View Controller Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-                
+        
+        tableView.register(BoardsListTableViewCell.self, forCellReuseIdentifier: cellReuseIdentifier)
         tableView.isHidden = true
         
         navigationItem.title = "Boards"
@@ -443,16 +465,17 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
     
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let identifier = "board"
-        var cell = tableView.dequeueReusableCell(withIdentifier: identifier)
-        if cell == nil {
-            if tableView === self.tableView {
-                cell = BoardsListTableViewCell(
-                    style: .subtitle,
-                    reuseIdentifier: identifier
-                )
-            }
-        }
+//        let identifier = "board"
+//        var cell = tableView.dequeueReusableCell(withIdentifier: identifier)
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier, for: indexPath) as! BoardsListTableViewCell
+//        if cell == nil {
+//            if tableView === self.tableView {
+//                cell = BoardsListTableViewCell(
+//                    style: .subtitle,
+//                    reuseIdentifier: identifier
+//                )
+//            }
+//        }
         
         let section = indexPath.section
         let row = indexPath.row
@@ -464,6 +487,7 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
         if section == 0 && favoriteBoards.count > 0 {
             boardName = favoriteBoards[row].name!
             boardId = favoriteBoards[row].id!
+            cell.isChosen = true
         } else {
             boardName = sectionsArray[section - 1].boards[row].name
             boardId =  sectionsArray[section - 1].boards[row].id
@@ -471,22 +495,22 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
         
         
   
-        cell!.accessoryType = .none
-        cell!.textLabel?.textColor = .systemBlue
-        cell!.textLabel?.text = boardId
-        cell!.textLabel?.font = UIFont.systemFont(
-            ofSize: cell!.textLabel!.font.pointSize,
+        cell.accessoryType = .none
+        cell.textLabel?.textColor = .systemBlue
+        cell.textLabel?.text = boardId
+        cell.textLabel?.font = UIFont.systemFont(
+            ofSize: cell.textLabel!.font.pointSize,
             weight: UIFont.Weight.bold
         )
-        cell!.textLabel?.font = UIFont.preferredFont(forTextStyle: .headline).withSize(16.0)
-        cell!.detailTextLabel?.text = boardName
-        cell!.detailTextLabel?.font = UIFont.preferredFont(forTextStyle: .body).withSize(15.0)
+        cell.textLabel?.font = UIFont.preferredFont(forTextStyle: .headline).withSize(16.0)
+        cell.detailTextLabel?.text = boardName
+        cell.detailTextLabel?.font = UIFont.preferredFont(forTextStyle: .body).withSize(15.0)
         
-        if let cell = cell as? BoardsListTableViewCell {
+//        if let cell = cell as? BoardsListTableViewCell {
             cell.delegate = self
-        }
+//        }
         
-        return cell!
+        return cell
     }
     
     

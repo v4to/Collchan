@@ -37,7 +37,23 @@ public class FavoriteBoard: NSManagedObject {
             let matches = try context.fetch(request)
             return matches.count > 0
         } catch {
-            fatalError("checkIfFavoriteBoardsExists: INTERNAL DATA BASE ERROR")
+            fatalError("checkIfFavoriteBoardsExists: INTERNAL DATABASE ERROR")
+        }
+    }
+    
+    static func removeFavoriteBoardWithId(_ id: String, in context: NSManagedObjectContext) {
+        let request: NSFetchRequest<FavoriteBoard> = FavoriteBoard.fetchRequest()
+        request.predicate = NSPredicate(format: "id = %@", id)
+        
+        do {
+            let matches = try context.fetch(request)
+            
+            if let target = matches.first {
+                context.delete(target)
+            }
+        } catch {
+            fatalError("removeFavoritesBoardWithId: INTERNAL DATABASE ERROR")
+
         }
     }
 }
