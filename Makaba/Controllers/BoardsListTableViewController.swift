@@ -73,7 +73,11 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
         return textField
     }()
     
-    lazy var textFieldName: UITextField = { return createTextField(placeHolder: "Name") }()
+    lazy var textFieldName: UITextField = {
+        let textField = createTextField(placeHolder: "Name")
+        textField.addTarget(self, action: #selector(actionTextFieldNameDidChange(_:)), for: .editingChanged)
+        return textField
+    }()
     
     let actionSheetButtonsContainer: UIView = {
         let view = UIView()
@@ -332,9 +336,14 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
     @objc func hideOverlayGesture() {
         textFieldBoardId.resignFirstResponder()
         textFieldBoardId.text = nil
+        
         textFieldName.text = nil
+        
         if textFieldBoardId.isFirstResponder { textFieldBoardId.resignFirstResponder() }
         if textFieldName.isFirstResponder { textFieldName.resignFirstResponder() }
+        
+        addToFavoriteButton.setTitleColor(#colorLiteral(red: 0.1960576475, green: 0.1960917115, blue: 0.1960501969, alpha: 1), for: .normal)
+        addToFavoriteButton.isEnabled = false
         
         actionButtonsContainerBottomAnchorConstraint?.constant = 0.0
         
@@ -375,18 +384,27 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
         
     }
     
-    @objc func actionTextFieldIdDidChange(_ sender: UITextField) {
-        if sender.text!.count > 0 {
+    func setUpFavoriteButtonStateAccordingToText(_ text: String) {
+        if text.count > 0 {
             addToFavoriteButton.setTitleColor(#colorLiteral(red: 0.0384538658, green: 0.5176959634, blue: 0.9998756051, alpha: 1), for: .normal)
             addToFavoriteButton.isEnabled = true
         } else {
             addToFavoriteButton.setTitleColor(#colorLiteral(red: 0.1960576475, green: 0.1960917115, blue: 0.1960501969, alpha: 1), for: .normal)
             addToFavoriteButton.isEnabled = false
-        }
+       }
+    }
+    
+    @objc func actionTextFieldIdDidChange(_ sender: UITextField) {
+        setUpFavoriteButtonStateAccordingToText(sender.text!)
         
         if let name = findFirstBoardWithMatchedId(sender.text!) {
             setTextFieldName(name)
         }
+    }
+    
+    @objc func actionTextFieldNameDidChange(_ sender: UITextField) {
+        print("fdsafsd")
+        setUpFavoriteButtonStateAccordingToText(sender.text!)
     }
     
     @objc func actionOpenAddFavoriteModal(_ sender: UIBarButtonItem) {
