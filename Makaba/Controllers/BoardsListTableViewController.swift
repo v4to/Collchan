@@ -10,45 +10,7 @@ import UIKit
 import CoreData
 
 class BoardsListTableViewController: UITableViewController, UISearchResultsUpdating, SwipeableCellDelegate, UISearchControllerDelegate, UIGestureRecognizerDelegate {
-    // MARK: - SwipeableCellDelegate
-    func cellDidSwipe(cell: BoardsListTableViewCell) {
-        let indexPath = self.tableView.indexPath(for: cell)!
-        if indexPath.section == 0 && favoriteBoards.count > 0 {
-            let id = favoriteBoards[indexPath.row].id!
-            FavoriteBoard.removeFavoriteBoardWithId(id, in: container!.viewContext)
-            try? container!.viewContext.save()
-
-            favoriteBoards.remove(at: indexPath.row)
-            
-            tableView.performBatchUpdates({
-                tableView.deleteRows(at: [indexPath], with: .automatic)
-            })
-//            tableView.beginUpdates()
-//            tableView.deleteRows(at: [indexPath], with: .automatic)
-//            tableView.endUpdates()
-//            tableView.reloadData()
-        }
-//        let indexPath = self.tableView.indexPath(for: cell)!
-//        let chosenBoard = sectionsArray[indexPath.section].boards[indexPath.row]
-//        if favoriteCategory.boards.count == 0 {
-//            favoriteCategory.boards.append(chosenBoard)
-//
-//            sectionsArray = generateSectionsFromArray(boardsCategories)
-//
-//            if !isSearchFieldPresented { tableView.insertSections(IndexSet(integer: 0), with: .none) }
-//        } else {
-//            if !favoriteCategory.boards.contains(chosenBoard) {
-//                favoriteCategory.boards.append(chosenBoard)
-//
-//                sectionsArray = generateSectionsFromArray(self.boardsCategories)
-//
-//                if !isSearchFieldPresented {
-//                    let newIndexPath = IndexPath(row: sectionsArray[0].boards.count - 1, section: 0)
-//                    tableView.insertRows(at: [newIndexPath], with: .none)
-//                }
-//            }
-//        }
-    }
+   
     
     
     
@@ -163,6 +125,23 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
     }
     
     // MARK: - Instance Methods
+    func addBoardToFavoritesWithId(_ id: String, and name: String) {
+        if !FavoriteBoard.checkIfFavoriteBoardExists(withId: id, in: container!.viewContext) {
+            let newFavoriteBoard = FavoriteBoard.createFavoriteBoard(withId: id, andName: name, in: container!.viewContext)
+            try? container!.viewContext.save()
+            favoriteBoards.append(newFavoriteBoard)
+        }
+    }
+    
+    func deleteFavoriteBoardWithId(_ id: String, at row: Int) {
+        FavoriteBoard.removeFavoriteBoardWithId(id, in: container!.viewContext)
+        
+        try? container!.viewContext.save()
+        
+        favoriteBoards.remove(at: row)
+    }
+    
+    
     func setTextFieldName(_ name: String) {
         textFieldName.text = name
     }
@@ -211,23 +190,6 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
         withFilter filterString: String = ""
     ) -> [BoardCategory] {
         var sectionsArray = array
-        
-        // dont filter if no string or string is empty
-        guard filterString.count > 0 else {
-//            if favoriteCategory.boards.count > 0 { sectionsArray.insert(favoriteCategory, at: 0) }
-            return sectionsArray
-        }
-
-        
-        for i in sectionsArray.indices {
-            sectionsArray[i].boards = sectionsArray[i].boards.filter {
-                return
-                    $0.id.range(of: filterString, options: .caseInsensitive) != nil ||
-                    $0.name.range(of: filterString, options: .caseInsensitive) != nil
-            }
-        }
-        
-        sectionsArray = sectionsArray.filter { $0.boards.count > 0 }
         
         return sectionsArray
     }
@@ -290,7 +252,6 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
         tableView.isHidden = true
         
         navigationItem.title = "Boards"
-        navigationItem.searchController = search
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             barButtonSystemItem: .add,
             target: self,
@@ -317,10 +278,8 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
                 let favoriteBoards = try! FavoriteBoard.findFavoriteBoards(in: self.container!.viewContext)
                 self.favoriteBoards = favoriteBoards
                 
-                print( self.navigationItem.searchController!.searchBar.text!.count)
                 self.sectionsArray = self.generateSectionsFromArray(
-                    self.boardsCategories,
-                    withFilter: self.navigationItem.searchController!.searchBar.text!
+                    self.boardsCategories
                 )
                 
                 self.tableView.isHidden = false
@@ -386,16 +345,12 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
     
     // MARK: - Actions
     @objc func actionAddFavoriteBoard(_ sender: UIButton) {
-        if !FavoriteBoard.checkIfFavoriteBoardExists(withId: textFieldBoardId.text!, in: container!.viewContext) {
-            let newFavoriteBoard = FavoriteBoard.createFavoriteBoard(withId: textFieldBoardId.text!, andName: textFieldName.text!, in: container!.viewContext)
-            try? container!.viewContext.save()
-
-            favoriteBoards.append(newFavoriteBoard)
-
-            sectionsArray = generateSectionsFromArray(boardsCategories)
-
-            tableView.reloadData()
-        }
+        addBoardToFavoritesWithId(textFieldBoardId.text!, and:textFieldName.text!)
+        
+        sectionsArray = generateSectionsFromArray(boardsCategories)
+        
+        tableView.reloadData()
+        
         hideOverlayGesture()
     }
     
@@ -465,17 +420,9 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
     
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        let identifier = "board"
-//        var cell = tableView.dequeueReusableCell(withIdentifier: identifier)
         let cell = tableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier, for: indexPath) as! BoardsListTableViewCell
-//        if cell == nil {
-//            if tableView === self.tableView {
-//                cell = BoardsListTableViewCell(
-//                    style: .subtitle,
-//                    reuseIdentifier: identifier
-//                )
-//            }
-//        }
+        cell.isChosen = false
+
         
         let section = indexPath.section
         let row = indexPath.row
@@ -491,6 +438,16 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
         } else {
             boardName = sectionsArray[section - 1].boards[row].name
             boardId =  sectionsArray[section - 1].boards[row].id
+            
+            let isInFavoriteBoards = favoriteBoards.contains { (fv) -> Bool in
+                return fv.id == boardId
+            }
+            
+
+            if isInFavoriteBoards {
+                cell.isChosen = true
+            }
+            
         }
         
         
@@ -506,16 +463,77 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
         cell.detailTextLabel?.text = boardName
         cell.detailTextLabel?.font = UIFont.preferredFont(forTextStyle: .body).withSize(15.0)
         
-//        if let cell = cell as? BoardsListTableViewCell {
-            cell.delegate = self
-//        }
-        
+        cell.delegate = self
+
         return cell
     }
     
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        print("edditinestyle")
+        print(indexPath)
+    }
     
-    
-    
+    // MARK: - SwipeableCellDelegate
+       func cellDidSwipe(cell: BoardsListTableViewCell) {
+           let indexPath = self.tableView.indexPath(for: cell)!
+           
+           // if swiped cell in favorites section delete
+           if indexPath.section == 0 && favoriteBoards.count > 0 {
+               let id = favoriteBoards[indexPath.row].id!
+               deleteFavoriteBoardWithId(id, at: indexPath.row)
+               
+               tableView.reloadData()
+               
+               return
+           } else {
+                let board = boardsCategories[indexPath.section - 1].boards[indexPath.row]
+                
+                let isInFavoriteBoards = favoriteBoards.contains { (fv) -> Bool in
+                    return fv.id == board.id
+                }
+                
+                if !isInFavoriteBoards {
+                    addBoardToFavoritesWithId(board.id, and: board.name)
+                    
+                    tableView.reloadData()
+
+                } else {
+                    let index = favoriteBoards.firstIndex { (favoriteBoard) in
+                        return favoriteBoard.id == board.id
+                    }!
+                    
+                    deleteFavoriteBoardWithId(board.id, at: index)
+                
+                    tableView.reloadData()
+
+                }
+            }
+           
+//           // if swiped cell not in favorites section
+//           if indexPath.section > 0 || favoriteBoards.count == 0 {
+//               let board = boardsCategories[indexPath.section - 1].boards[indexPath.row]
+//               
+//               let isInFavoriteBoards = favoriteBoards.contains { (fv) -> Bool in
+//                   return fv.id == board.id
+//               }
+//               
+//               if !isInFavoriteBoards {
+//                   addBoardToFavoritesWithId(board.id, and: board.name)
+//                   
+//                   tableView.reloadData()
+//
+//               } else {
+//                   let index = favoriteBoards.firstIndex { (favoriteBoard) in
+//                       return favoriteBoard.id == board.id
+//                   }!
+//                   
+//                   deleteFavoriteBoardWithId(board.id, at: index)
+//               
+//                   tableView.reloadData()
+//
+//               }
+//           }
+       }
     
     // MARK: - UISearchResultsUpdating
     func updateSearchResults(for searchController: UISearchController) {
