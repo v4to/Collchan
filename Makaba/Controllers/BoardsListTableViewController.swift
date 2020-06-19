@@ -35,7 +35,9 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
     }
     
     // MARK: - Core Data
-    var container: NSPersistentContainer!
+    var container: NSPersistentContainer? = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer
+    
+    
 
     // MARK: - Instance Properties
     var actionButtonsContainerBottomAnchorConstraint: NSLayoutConstraint?
@@ -82,10 +84,11 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
         return view
     }()
     
-    let addToFavoriteButton: ActionSheetButton = {
+    lazy var addToFavoriteButton: ActionSheetButton = {
         let button = ActionSheetButton(frame: CGRect.zero, title: "Favorite", textColor: #colorLiteral(red: 0.1960576475, green: 0.1960917115, blue: 0.1960501969, alpha: 1))
         button.addBorder(side: .bottom, color: #colorLiteral(red: 0.172529161, green: 0.1764830351, blue: 0.184286654, alpha: 1), width: 1.0)
         button.isEnabled = false
+        button.addTarget(self, action: #selector(actionAddFavoriteBoard(_:)), for: .touchUpInside)
         return button
     }()
     
@@ -102,6 +105,8 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
     var boardsCategories = [BoardCategory]()
     
     var sectionsArray = [BoardCategory]()
+    
+    var favoriteBoards = [FavoriteBoard]()
     
     lazy var search: UISearchController = {
         let search = UISearchController(searchResultsController: nil)
@@ -159,12 +164,18 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
     }
     
     func findFirstBoardWithMatchedId(_ id: String) -> String? {
-        for category in boardsCategories {
-            for board in category.boards {
-                if board.id.hasPrefix(id) {
-                    return board.name
-                }
+        var matched = [Board]()
+        
+        // filtering to find all boards with mached id
+        for category in boardsCategories { matched += category.boards.filter { $0.id.hasPrefix(id) } }
+        
+        
+        // finding id with shortest characters
+        if matched.count > 0 {
+            let result = matched.reduce(matched[0]) { (boardWithShortestId, next) in
+                return boardWithShortestId.id > next.id ? next : boardWithShortestId
             }
+            return result.name
         }
         
         return nil
@@ -178,7 +189,7 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
         
         // dont filter if no string or string is empty
         guard filterString.count > 0 else {
-            if favoriteCategory.boards.count > 0 { sectionsArray.insert(favoriteCategory, at: 0) }
+//            if favoriteCategory.boards.count > 0 { sectionsArray.insert(favoriteCategory, at: 0) }
             return sectionsArray
         }
 
@@ -257,7 +268,7 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             barButtonSystemItem: .add,
             target: self,
-            action: #selector(actionBoardAdd(_:))
+            action: #selector(actionOpenAddFavoriteModal(_:))
         )
         
         navigationController?.navigationBar.prefersLargeTitles = true
@@ -277,6 +288,9 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
                 self.spinner.stopAnimating()
                 self.boardsCategories = boardsCategories.array
                 
+                let favoriteBoards = try! FavoriteBoard.findFavoriteBoards(in: self.container!.viewContext)
+                self.favoriteBoards = favoriteBoards
+                
                 print( self.navigationItem.searchController!.searchBar.text!.count)
                 self.sectionsArray = self.generateSectionsFromArray(
                     self.boardsCategories,
@@ -287,6 +301,7 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
                 self.tableView.reloadData()
             },
             onFailure: { (error) in
+                self.spinner.stopAnimating()
                 print(error.localizedDescription)
             }
         )
@@ -336,7 +351,23 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
     }
     
     
+    
+    
     // MARK: - Actions
+    @objc func actionAddFavoriteBoard(_ sender: UIButton) {
+        if !FavoriteBoard.checkIfFavoriteBoardExists(withId: textFieldBoardId.text!, in: container!.viewContext) {
+            let newFavoriteBoard = FavoriteBoard.createFavoriteBoard(withId: textFieldBoardId.text!, andName: textFieldName.text!, in: container!.viewContext)
+            try? container!.viewContext.save()
+
+            favoriteBoards.append(newFavoriteBoard)
+
+            sectionsArray = generateSectionsFromArray(boardsCategories)
+
+            tableView.reloadData()
+        }
+        hideOverlayGesture()
+    }
+    
     @objc func actionCancelButton(_ sender: UIButton) {
         addToFavoriteButton.setTitleColor(#colorLiteral(red: 0.1960576475, green: 0.1960917115, blue: 0.1960501969, alpha: 1), for: .normal)
         addToFavoriteButton.isEnabled = false
@@ -358,7 +389,7 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
         }
     }
     
-    @objc func actionBoardAdd(_ sender: UIBarButtonItem) {
+    @objc func actionOpenAddFavoriteModal(_ sender: UIBarButtonItem) {
         textFieldBoardId.becomeFirstResponder()
     }
 
@@ -374,16 +405,24 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
     
     // MARK: - UITableViewDataSource
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return sectionsArray.count
-    }
+        return sectionsArray.count + 1
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return sectionsArray[section].boards.count
     }
-
+    
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return sectionsArray[section].name
+        if section == 0 { return favoriteBoards.count > 0 ? "Favorites" : nil }
+        
+        return sectionsArray[section - 1].name
     }
+    
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if section == 0 { return favoriteBoards.count }
+        
+        return sectionsArray[section - 1].boards.count
+    }
+
+    
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let identifier = "board"
@@ -399,9 +438,20 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
         
         let section = indexPath.section
         let row = indexPath.row
-      
-        let boardName = sectionsArray[section].boards[row].name
-        let boardId =  sectionsArray[section].boards[row].id
+        
+
+        var boardName: String
+        var boardId: String
+        
+        if section == 0 && favoriteBoards.count > 0 {
+            boardName = favoriteBoards[row].name!
+            boardId = favoriteBoards[row].id!
+        } else {
+            boardName = sectionsArray[section - 1].boards[row].name
+            boardId =  sectionsArray[section - 1].boards[row].id
+        }
+        
+        
   
         cell!.accessoryType = .none
         cell!.textLabel?.textColor = .systemBlue
