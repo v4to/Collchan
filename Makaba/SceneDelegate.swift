@@ -22,7 +22,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let tabBarController = UITabBarController()
         let savedViewController = SavedViewController()
         let boardsNavigationViewController = UINavigationController(
-            rootViewController: BoardsListTableViewController(
+            rootViewController: BoardsTableViewController(
                 style: UITableView.Style.plain
             )
         )
