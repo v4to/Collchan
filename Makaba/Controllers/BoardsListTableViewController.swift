@@ -11,17 +11,15 @@ import CoreData
 
 class BoardsListTableViewController: UITableViewController, UISearchResultsUpdating, SwipeableCellDelegate, UISearchControllerDelegate, UIGestureRecognizerDelegate {
    
-    
-    
-    
-    
     // MARK: - Core Data
     var container: NSPersistentContainer? = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer
     
-    
 
     // MARK: - Instance Properties
+    let boardsRequest = APIRequest(resource: BoardsResource())
+
     let cellReuseIdentifier = "board"
+    
     
     var actionButtonsContainerBottomAnchorConstraint: NSLayoutConstraint?
     
@@ -122,6 +120,36 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - View Controller Lifecycle
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        tableView.register(BoardsListTableViewCell.self, forCellReuseIdentifier: cellReuseIdentifier)
+        tableView.isHidden = true
+        
+        navigationItem.title = "Boards"
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            barButtonSystemItem: .add,
+            target: self,
+            action: #selector(actionOpenAddFavoriteModal(_:))
+        )
+        
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationController?.view.addSubview(spinner)
+                
+        setupViews()
+        
+        subscribeToKeyboardNotifications()
+        
+        spinner.startAnimating()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        featchBoards()
     }
     
     // MARK: - Instance Methods
@@ -244,52 +272,26 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
         textFieldName.leftView?.widthAnchor.constraint(equalToConstant: 15.0).isActive = true
     }
     
-    // MARK: - View Controller Lifecycle
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        tableView.register(BoardsListTableViewCell.self, forCellReuseIdentifier: cellReuseIdentifier)
-        tableView.isHidden = true
-        
-        navigationItem.title = "Boards"
-        navigationItem.rightBarButtonItem = UIBarButtonItem(
-            barButtonSystemItem: .add,
-            target: self,
-            action: #selector(actionOpenAddFavoriteModal(_:))
-        )
-        
-        navigationController?.navigationBar.prefersLargeTitles = true
-        navigationController?.view.addSubview(spinner)
-        
-        spinner.startAnimating()
-        
-        setupViews()
-        subscribeToKeyboardNotifications()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-
-        BoardsService().getBoards(
-            onSuccess: { (boardsCategories) in
-                self.spinner.stopAnimating()
-                self.boardsCategories = boardsCategories.array
-                
-                let favoriteBoards = try! FavoriteBoard.findFavoriteBoards(in: self.container!.viewContext)
-                self.favoriteBoards = favoriteBoards
-                
-                self.sectionsArray = self.generateSectionsFromArray(
-                    self.boardsCategories
-                )
-                
-                self.tableView.isHidden = false
-                self.tableView.reloadData()
-            },
-            onFailure: { (error) in
-                self.spinner.stopAnimating()
-                print(error.localizedDescription)
+    func featchBoards() {
+        boardsRequest.load { (boardsCategories: BoardsCategories?) in
+            guard let boardsCategories = boardsCategories else {
+                fatalError("Error: No Boards")
             }
-        )
+            
+            self.spinner.stopAnimating()
+            
+            self.boardsCategories = boardsCategories.array
+
+            let favoriteBoards = try! FavoriteBoard.findFavoriteBoards(in: self.container!.viewContext)
+            self.favoriteBoards = favoriteBoards
+
+            self.sectionsArray = self.generateSectionsFromArray(
+                self.boardsCategories
+            )
+
+            self.tableView.isHidden = false
+            self.tableView.reloadData()
+        }
     }
     
     // MARK: - Keyboard Notifications
@@ -393,8 +395,13 @@ class BoardsListTableViewController: UITableViewController, UISearchResultsUpdat
         tableView.deselectRow(at: indexPath, animated: true)
         
         let threadsCVC = ThreadsCollectionViewController(collectionViewLayout: UICollectionViewFlowLayout())
-        threadsCVC.threadId = sectionsArray[indexPath.section].boards[indexPath.row].id
-
+        
+        if indexPath.section == 0 && favoriteBoards.count > 0 {
+            threadsCVC.threadId = favoriteBoards[indexPath.row].id!
+        } else {
+            threadsCVC.threadId = sectionsArray[indexPath.section - 1].boards[indexPath.row].id
+        }
+        
         navigationController!.pushViewController(threadsCVC, animated: true)
     }
     
