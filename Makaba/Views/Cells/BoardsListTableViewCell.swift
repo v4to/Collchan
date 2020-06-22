@@ -11,6 +11,21 @@ import AudioToolbox
 
 class BoardsListTableViewCell: UITableViewCell {
     // MARK: - Instance Properties
+    var isChosen = false {
+        didSet {
+            if isChosen {
+                starImage.image = generateImage(withName:"star.slash.fill")
+            } else {
+                starImage.image = generateImage(withName:"star.fill")
+            }
+            
+        }
+    }
+    
+    var actionViewBackgroundColor: UIColor {
+        return isChosen ? #colorLiteral(red: 0.9451245666, green: 0, blue: 0.008069912903, alpha: 1) : #colorLiteral(red: 0, green: 0.6745420694, blue: 0.2156436443, alpha: 1)
+    }
+    
     var delegate: SwipeableCellDelegate?
     
     private var impactFeedbackGenerator: UIImpactFeedbackGenerator? = nil
@@ -56,7 +71,7 @@ class BoardsListTableViewCell: UITableViewCell {
     // MARK: - Initialization
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
         
         actionView.addSubview(starImage)
         
@@ -74,6 +89,13 @@ class BoardsListTableViewCell: UITableViewCell {
     
     
     // MARK: - Instance Methods
+    func generateImage(withName name: String) -> UIImage {
+        let configuration = UIImage.SymbolConfiguration(scale: .large)
+        var image = UIImage(systemName: name, withConfiguration: configuration)!
+        image = image.withTintColor(#colorLiteral(red: 1, green: 1, blue: 1, alpha: 1), renderingMode: .alwaysOriginal)
+        return image
+    }
+    
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
@@ -102,7 +124,7 @@ class BoardsListTableViewCell: UITableViewCell {
         _ gestureRecognizer: UIGestureRecognizer
     ) -> Bool {
         if let panGesture = gestureRecognizer as? UIPanGestureRecognizer {
-            
+            if (panGesture.velocity(in: self).x > 0) { return false}
             // if horizontalComponent of velocity is greater than vertical that
             // means pan gesture is moving in horizontal direction(swipe alike)
             // and so pan gesture of contentView should begin
@@ -134,7 +156,8 @@ class BoardsListTableViewCell: UITableViewCell {
                 if panGesture.translation(in: self).x > 0 {
                     actionView.backgroundColor = nil
                 } else {
-                    actionView.backgroundColor = #colorLiteral(red: 0, green: 0.6745420694, blue: 0.2156436443, alpha: 1)
+//                    actionView.backgroundColor = #colorLiteral(red: 0, green: 0.6745420694, blue: 0.2156436443, alpha: 1)
+                    actionView.backgroundColor = actionViewBackgroundColor
                 }
                 
                 gestureView.frame.origin.x = panGesture.translation(in: self).x
