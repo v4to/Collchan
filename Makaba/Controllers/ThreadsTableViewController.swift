@@ -22,7 +22,7 @@ class ThreadCell: BoardsListTableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
 //        label.backgroundColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
-        label.text = "Heading with awesome text fdsfds fsdfdskfjas fa dfdsjf safsdf"
+        label.text = "Heading with awesome text fdsfds"
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
         label.font = UIFont.preferredFont(forTextStyle: .headline).withSize(20.0)
@@ -247,31 +247,44 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
         navigationItem.largeTitleDisplayMode = .never
         navigationItem.title = "/" + threadId
         
-        navigationController?.interactivePopGestureRecognizer?.delegate = self;
-        
-        
-        
-        tableView.register(ThreadCell.self, forCellReuseIdentifier: cellId)
-        
         navigationController?.view.addSubview(spinner)
         
-        tableView.estimatedRowHeight = 100.0
-        tableView.rowHeight = UITableView.automaticDimension
-        
+        setupTableView()
+        setUpPopGesture()
         
         spinner.startAnimating()
+        loadThreads()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-//        print(threadId)
+    }
+    
+    // MARK: - Instance Methods
+    func setupTableView() {
+        tableView.register(ThreadCell.self, forCellReuseIdentifier: cellId)
+        tableView.estimatedRowHeight = 250.0
+    }
+    
+    func setUpPopGesture() {
+        let popGestureRecognizer = navigationController!.interactivePopGestureRecognizer!
+        if let targets = popGestureRecognizer.value(forKey: "targets") as? NSMutableArray {
+            let gestureRecognizer = UIPanGestureRecognizer()
+            gestureRecognizer.setValue(targets, forKey: "targets")
+
+            self.view.addGestureRecognizer(gestureRecognizer)
+            gestureRecognizer.delegate = self
+        }
+    }
+    
+    func loadThreads() {
         threadsService.getThreads(
             from: threadId,
             completion: { result in
                 
                 self.sectionsArray = result!.threads
+                print(result!.pages)
                 
-                print(self.sectionsArray)
                 for section in self.sectionsArray {
                     let path = section.posts[0].files[0].thumbnail
                     let url = URL(string: BaseUrls.dvach + path)!
@@ -279,19 +292,21 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
                     self.imageRequests.append(imageRequest)
                 }
                 
+                self.spinner.stopAnimating()
+                self.tableView.reloadData()
                 var counter = self.sectionsArray.count
                 for imageRequest in self.imageRequests {
-                    
+
                     imageRequest.load { (image) in
                         counter -= 1
-                        
+
                         self.images.append(image)
-                        
+
                         if counter == 0 {
                             self.spinner.stopAnimating()
 
                             self.tableView.backgroundColor = #colorLiteral(red: 0.04705037922, green: 0.0470642224, blue: 0.04704734683, alpha: 1)
-                            
+
                             self.tableView.reloadData()
                         }
                     }
@@ -299,25 +314,33 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
             }
         )
     }
-    
+   
+
     // MARK: - UIGestureRecognizerDelegate
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-        return true
+        if let panGesture = gestureRecognizer as? UIPanGestureRecognizer {
+            // if horizontalComponent of velocity is greater than vertical that
+            // means pan gesture is moving in horizontal direction(swipe alike)
+            // and so pan gesture of contentView should begin
+            let horizontalComponent = abs(panGesture.velocity(in: self.view).x)
+            let verticalComponent = abs(panGesture.velocity(in: self.view).y)
+            return horizontalComponent > verticalComponent
+        }
+        
+        // otherwise ignore pan gesture of contentView in favor of parent
+        // contentView pan gesture
+        return false
     }
     
-    // MARK: - Table view data source
 
+    // MARK: - Table view data source
     override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-//        return sectionsArray.isEmpty ?
-//        return sectionsArray.count
         return 1
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
         return sectionsArray.count
-//        return 0
     }
 
     
