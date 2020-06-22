@@ -394,15 +394,18 @@ class BoardsTableViewController: UITableViewController, UISearchResultsUpdating,
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        let threadsCVC = ThreadsCollectionViewController(collectionViewLayout: UICollectionViewFlowLayout())
+//        let threadsCVC = ThreadsCollectionViewController(collectionViewLayout: UICollectionViewFlowLayout())
+        let threadsTVC = ThreadsTableViewController(style: .plain)
+
+        
         
         if indexPath.section == 0 && favoriteBoards.count > 0 {
-            threadsCVC.threadId = favoriteBoards[indexPath.row].id!
+            threadsTVC.threadId = favoriteBoards[indexPath.row].id!
         } else {
-            threadsCVC.threadId = sectionsArray[indexPath.section - 1].boards[indexPath.row].id
+            threadsTVC.threadId = sectionsArray[indexPath.section - 1].boards[indexPath.row].id
         }
         
-        navigationController!.pushViewController(threadsCVC, animated: true)
+        navigationController!.pushViewController(threadsTVC, animated: true)
     }
     
     // MARK: - UITableViewDataSource
