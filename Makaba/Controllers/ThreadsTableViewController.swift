@@ -21,11 +21,9 @@ class ThreadCell: BoardsListTableViewCell {
     let heading: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-//        label.backgroundColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
-        label.text = "Heading with awesome text fdsfds"
-        label.numberOfLines = 0
-        label.lineBreakMode = .byWordWrapping
-        label.font = UIFont.preferredFont(forTextStyle: .headline).withSize(20.0)
+        label.numberOfLines = 2
+        label.lineBreakMode = .byTruncatingTail
+        label.font = UIFont.preferredFont(forTextStyle: .headline).withSize(17.0)
         label.textColor = #colorLiteral(red: 0.831299305, green: 0.8314197063, blue: 0.8391151428, alpha: 1)
         return label
     }()
@@ -42,21 +40,18 @@ class ThreadCell: BoardsListTableViewCell {
     let detailText: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "A table view tracks the height of rows separately from the cells that represent them. UITableView provides default sizes for rows, but you can override the default height by assigning"
-//         label.text = "A table view tracks the height"
         label.textColor = #colorLiteral(red: 0.831299305, green: 0.8314197063, blue: 0.8391151428, alpha: 1)
         label.numberOfLines = 5
         label.lineBreakMode = .byTruncatingTail
-        label.font = UIFont.preferredFont(forTextStyle: .body).withSize(15.0)
+        label.font = UIFont.preferredFont(forTextStyle: .body).withSize(14.0)
         return label
     }()
     
     let postnumber: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "#1647485"
-        label.font = UIFont.preferredFont(forTextStyle: .body).withSize(13.0)
-        label.textColor = #colorLiteral(red: 0.5960256457, green: 0.5921916366, blue: 0.6116896868, alpha: 1)
+        label.font = UIFont.preferredFont(forTextStyle: .headline).withSize(13.0)
+        label.textColor = #colorLiteral(red: 0, green: 0.4784313725, blue: 1, alpha: 1)
         return label
     }()
     
@@ -75,7 +70,7 @@ class ThreadCell: BoardsListTableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "46"
-        label.font = UIFont.preferredFont(forTextStyle: .body).withSize(13.0)
+        label.font = UIFont.preferredFont(forTextStyle: .footnote).withSize(12.0)
         label.textColor = #colorLiteral(red: 0.5960256457, green: 0.5921916366, blue: 0.6116896868, alpha: 1)
         return label
     }()
@@ -97,7 +92,7 @@ class ThreadCell: BoardsListTableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "146"
-        label.font = UIFont.preferredFont(forTextStyle: .body).withSize(13.0)
+        label.font = UIFont.preferredFont(forTextStyle: .footnote).withSize(12.0)
         label.textColor = #colorLiteral(red: 0.5960256457, green: 0.5921916366, blue: 0.6116896868, alpha: 1)
 
         return label
@@ -118,12 +113,14 @@ class ThreadCell: BoardsListTableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "16.06.2020, 15:36"
-        label.font = UIFont.preferredFont(forTextStyle: .body).withSize(13.0)
+        label.font = UIFont.preferredFont(forTextStyle: .footnote).withSize(12.0)
         label.textColor = #colorLiteral(red: 0.5960256457, green: 0.5921916366, blue: 0.6116896868, alpha: 1)
 
         return label
     }()
-
+    
+    
+    
     
     // MARK: - Intialization
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -144,7 +141,7 @@ class ThreadCell: BoardsListTableViewCell {
     // MARK: - Instance Methods
     func setupSwipeIcon() {
         let configuration = UIImage.SymbolConfiguration(scale: .large)
-        var image = UIImage(systemName: "heart.fill", withConfiguration: configuration)!
+        var image = UIImage(systemName: "bookmark.fill", withConfiguration: configuration)!
         image = image.withTintColor(#colorLiteral(red: 1, green: 1, blue: 1, alpha: 1), renderingMode: .alwaysOriginal)
         starImage.image = image
     }
@@ -154,58 +151,64 @@ class ThreadCell: BoardsListTableViewCell {
         backgroundColor = #colorLiteral(red: 0.07841930538, green: 0.0823603943, blue: 0.09017961472, alpha: 1)
         
         
+//        contentView.addSubview(postnumber)
         contentView.addSubview(heading)
-        heading.widthAnchor.constraint(equalTo: contentView.widthAnchor).isActive = true
-        heading.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 15.0).isActive = true
-        heading.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 20.0).isActive = true
-        
-        
-        contentView.addSubview(threadThumbnail)
-        threadThumbnail.widthAnchor.constraint(equalToConstant: 83.0).isActive = true
-        threadThumbnail.heightAnchor.constraint(equalToConstant: 83.0).isActive = true
-        threadThumbnail.topAnchor.constraint(equalTo: heading.bottomAnchor, constant: 10.0).isActive = true
-        threadThumbnail.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 20.0).isActive = true
-        threadThumbnail.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -15.0).isActive = true
-        
         contentView.addSubview(detail)
-        detail.topAnchor.constraint(equalTo: threadThumbnail.topAnchor).isActive = true
-        detail.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -15.0).isActive = true
-        detail.leftAnchor.constraint(equalTo: threadThumbnail.rightAnchor, constant: 20.0).isActive = true
+        detail.addSubview(postnumber)
+        detail.addSubview(detailText)
+        detail.addSubview(fileImage)
+        detail.addSubview(filesCount)
+        detail.addSubview(commentImage)
+        detail.addSubview(postsCount)
+        detail.addSubview(clockImage)
+        detail.addSubview(date)
+        contentView.addSubview(threadThumbnail)
+
+
+        heading.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 15.0).isActive = true
+        heading.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 15.0).isActive = true
+        heading.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -15.0).isActive = true
+        heading.setContentHuggingPriority(UILayoutPriority.defaultHigh, for: .vertical)
+        
+        detail.topAnchor.constraint(equalTo: heading.bottomAnchor, constant: 10.0).isActive = true
+        detail.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -15.0).isActive = true
+        detail.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 118.0).isActive = true
         detail.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -20.0).isActive = true
         
-        detail.addSubview(detailText)
-        detailText.topAnchor.constraint(equalTo: detail.topAnchor).isActive = true
+        postnumber.topAnchor.constraint(equalTo: detail.topAnchor, constant: 0.0).isActive = true
+        postnumber.leftAnchor.constraint(equalTo: detail.leftAnchor, constant: 0.0).isActive = true
+
+        
+        detailText.topAnchor.constraint(equalTo: postnumber.bottomAnchor, constant: 5.0).isActive = true
         detailText.leftAnchor.constraint(equalTo: detail.leftAnchor).isActive = true
         detailText.rightAnchor.constraint(equalTo: detail.rightAnchor).isActive = true
+        detailText.setContentHuggingPriority(UILayoutPriority.defaultHigh, for: .vertical)
 
-        detail.addSubview(postnumber)
-        postnumber.topAnchor.constraint(equalTo: detailText.bottomAnchor, constant: 10.0).isActive = true
-        postnumber.leftAnchor.constraint(equalTo: detailText.leftAnchor).isActive = true
 
-        detail.addSubview(fileImage)
-        fileImage.centerYAnchor.constraint(equalTo: postnumber.centerYAnchor).isActive = true
-        fileImage.leftAnchor.constraint(equalTo: postnumber.rightAnchor, constant: 10.0).isActive = true
-
-        detail.addSubview(filesCount)
-        filesCount.centerYAnchor.constraint(equalTo: postnumber.centerYAnchor).isActive = true
+        fileImage.topAnchor.constraint(equalTo: detailText.bottomAnchor, constant: 5.0).isActive = true
+        fileImage.leftAnchor.constraint(equalTo: detailText.leftAnchor).isActive = true
+        fileImage.bottomAnchor.constraint(equalTo: detail.bottomAnchor).isActive = true
+        
+        filesCount.centerYAnchor.constraint(equalTo: fileImage.centerYAnchor).isActive = true
         filesCount.leftAnchor.constraint(equalTo: fileImage.rightAnchor, constant: 3.0).isActive = true
-
-        detail.addSubview(commentImage)
-        commentImage.centerYAnchor.constraint(equalTo: postnumber.centerYAnchor).isActive = true
-        commentImage.leftAnchor.constraint(equalTo: filesCount.rightAnchor, constant: 10.0).isActive = true
-
-        detail.addSubview(postsCount)
-        postsCount.centerYAnchor.constraint(equalTo: postnumber.centerYAnchor).isActive = true
+        
+        commentImage.centerYAnchor.constraint(equalTo: fileImage.centerYAnchor).isActive = true
+        commentImage.leftAnchor.constraint(equalTo: filesCount.rightAnchor, constant: 5.0).isActive = true
+        
+        postsCount.centerYAnchor.constraint(equalTo: fileImage.centerYAnchor).isActive = true
         postsCount.leftAnchor.constraint(equalTo: commentImage.rightAnchor, constant: 3.0).isActive = true
-
-        detail.addSubview(clockImage)
-        clockImage.topAnchor.constraint(equalTo: postnumber.bottomAnchor, constant: 10.0).isActive = true
-        clockImage.leftAnchor.constraint(equalTo: detail.leftAnchor).isActive = true
-
-        detail.addSubview(date)
-        date.centerYAnchor.constraint(equalTo: clockImage.centerYAnchor).isActive = true
+        
+        clockImage.centerYAnchor.constraint(equalTo: fileImage.centerYAnchor).isActive = true
+        clockImage.leftAnchor.constraint(equalTo: postsCount.rightAnchor, constant: 5.0).isActive = true
+        
+        date.centerYAnchor.constraint(equalTo: fileImage.centerYAnchor).isActive = true
         date.leftAnchor.constraint(equalTo: clockImage.rightAnchor, constant: 3.0).isActive = true
-        date.bottomAnchor.constraint(equalTo: detail.bottomAnchor).isActive = true
+
+        threadThumbnail.widthAnchor.constraint(equalToConstant: 88.0).isActive = true
+        threadThumbnail.heightAnchor.constraint(equalToConstant: 88.0).isActive = true
+        threadThumbnail.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 15.0).isActive = true
+        threadThumbnail.topAnchor.constraint(equalTo: heading.bottomAnchor, constant: 10.0).isActive = true
+        threadThumbnail.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -15.0).isActive = true
     }
 
 }
@@ -213,6 +216,8 @@ class ThreadCell: BoardsListTableViewCell {
 
 
 class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDelegate {
+    
+    
     // MARK: - Instance Properties
     private var threadsService = ThreadsService()
     
@@ -254,6 +259,8 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
         
         spinner.startAnimating()
         loadThreads()
+        
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -263,7 +270,8 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
     // MARK: - Instance Methods
     func setupTableView() {
         tableView.register(ThreadCell.self, forCellReuseIdentifier: cellId)
-        tableView.estimatedRowHeight = 250.0
+        tableView.prefetchDataSource = self
+        tableView.estimatedRowHeight = 200.0
     }
     
     func setUpPopGesture() {
@@ -277,13 +285,24 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
         }
     }
     
+    var page = 0
+    
     func loadThreads() {
+//        print(threadId)
+        
+        
         threadsService.getThreads(
             from: threadId,
             completion: { result in
                 
-                self.sectionsArray = result!.threads
-                print(result!.pages)
+                
+                print("Last Page Index - ", result?.lastPageIndex)
+                print("Current Page Index - ", result?.currentPage)
+                
+                
+                self.sectionsArray += result!.threads
+                self.tableView.reloadData()
+//                print("Sections Array count = ", self.sectionsArray.count)
                 
                 for section in self.sectionsArray {
                     let path = section.posts[0].files[0].thumbnail
@@ -293,21 +312,36 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
                 }
                 
                 self.spinner.stopAnimating()
-                self.tableView.reloadData()
+//                self.tableView.reloadData()
+                
+//                for i in self.sectionsArray.indices {
+//                    self.tableView.insertRows(at: [IndexPath(row: i, section: 0)], with: .automatic)
+//                }
+//                self.tableView.reloadSections([0], with: .automatic)
+//                self.tableView.reloadRows(at: [IndexPath(row: i, section: 0)], with: .automatic)
                 var counter = self.sectionsArray.count
-                for imageRequest in self.imageRequests {
+                for i in self.imageRequests.indices {
 
-                    imageRequest.load { (image) in
+                    self.imageRequests[i].load { (image) in
                         counter -= 1
 
                         self.images.append(image)
-
+//                        self.tableView.reloadRows(at: [IndexPath(row: i, section: 0)], with: .automatic)
                         if counter == 0 {
                             self.spinner.stopAnimating()
 
                             self.tableView.backgroundColor = #colorLiteral(red: 0.04705037922, green: 0.0470642224, blue: 0.04704734683, alpha: 1)
-
-                            self.tableView.reloadData()
+                            
+                            print("reload")
+                            print("Sections Array count = ", self.sectionsArray.count)
+                            
+                            DispatchQueue.main.async {
+                                self.tableView.reloadData()
+                            }
+                            
+//                            self.isLoadingNew = false
+//                            self.tableView.insertRows(at: [IndexPath(row: i, section: 0)], with: .automatic)
+//                            self.tableView.reloadRows(at: [IndexPath(row: i, section: 0)], with: .automatic)
                         }
                     }
                 }
@@ -342,18 +376,23 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
         // #warning Incomplete implementation, return the number of rows
         return sectionsArray.count
     }
-
+    
+    var newLoadIndexPath = 10
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! ThreadCell
-        
+//        print(indexPath.item)
         // Configure the cell...
         if images.count > 0 {
             cell.threadThumbnail.image = images[indexPath.row]
         }
         
+        cell.heading.text = sectionsArray[indexPath.row].posts[0].subject
+        cell.postnumber.text = "#" + sectionsArray[indexPath.row].threadNum
+        cell.detailText.text = sectionsArray[indexPath.row].posts[0].comment
         cell.filesCount.text = String(sectionsArray[indexPath.row].filesCount)
         cell.postsCount.text = String(sectionsArray[indexPath.row].postsCount)
+        cell.date.text =  sectionsArray[indexPath.row].posts[0].dateString
         
         return cell
     }
