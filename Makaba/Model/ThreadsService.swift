@@ -7,25 +7,25 @@
 //
 
 import Foundation
+import UIKit
 
 struct ThreadsService {
-    // MARK: - Instance properties
-    let networkService = NetworkService.shared
+    // MARK: - Instance Properties
+    var threadsRequest: APIRequest<ThreadsResource>?
+    
+    var imageRequest: ImageRequest?
     
     // MARK: - Instance methods
-    func getThreads(
-        from boardId: String,
-        onSuccess: @escaping (Threads) -> Void,
-        onFailure: @escaping (Error) -> Void
-    ) {
-        let endPoint = "/\(boardId)\(EndPoints.threads)"
+    mutating func getThreads(fromBoard boardId: String, onPage page: Int, completion: @escaping (Threads?) -> Void) {
+        let page = page == 0 ? "index" : String(page)
         
-        networkService.GET(
-            endPoint: endPoint,
-            parameters: [:],
-            decodeModelType: Threads.self,
-            onSuccess: onSuccess,
-            onFailure: onFailure
-        )
+        threadsRequest = APIRequest(resource: ThreadsResource(threadId: boardId, page: page))
+        threadsRequest!.load(withCompletion: completion)
+    }
+
+    mutating func getImageAtPath(_ path: String, completion: @escaping (UIImage?) -> Void) {
+        let url = URL(string: BaseUrls.dvach + path)!
+        imageRequest = ImageRequest(url: url)
+        imageRequest?.load(withCompletion: completion)
     }
 }

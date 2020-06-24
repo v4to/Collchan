@@ -23,7 +23,7 @@ extension NetworkRequest {
                 completion(nil)
                 return
             }
-            
+            print(self)
             let res = self?.decode(data)
             DispatchQueue.main.async {
                 completion(res)
@@ -61,7 +61,9 @@ class APIRequest<Resource: APIResource> {
 
 extension APIRequest: NetworkRequest {
     func decode(_ data: Data) -> Resource.ModelType? {
-        let wrapper = try? JSONDecoder().decode(Resource.ModelType.self, from: data)
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .secondsSince1970
+        let wrapper = try? decoder.decode(Resource.ModelType.self, from: data)
         return wrapper!
     }
     

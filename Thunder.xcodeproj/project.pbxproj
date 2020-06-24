@@ -10,14 +10,15 @@
 		4918E38C249BC5A30081DF7C /* UIViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4918E38B249BC5A30081DF7C /* UIViewExtension.swift */; };
 		49210FEC2479D2650020ECBC /* BoardsListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49210FEB2479D2640020ECBC /* BoardsListTableViewCell.swift */; };
 		492758292480848600A60E51 /* BoardsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 492758282480848600A60E51 /* BoardsModel.swift */; };
-		4949BB51248EC8B7005AA6FE /* AddBoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4949BB50248EC8B7005AA6FE /* AddBoardView.swift */; };
+		494711E7249F9D810028F57D /* NetworkRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 494711E6249F9D810028F57D /* NetworkRequests.swift */; };
+		494711E9249FB2480028F57D /* BoardsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 494711E8249FB2480028F57D /* BoardsTableViewController.swift */; };
+		494711EB249FEB660028F57D /* ThreadsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 494711EA249FEB660028F57D /* ThreadsTableViewController.swift */; };
 		4949BB5324908922005AA6FE /* ActionSheetButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4949BB5224908922005AA6FE /* ActionSheetButton.swift */; };
 		494F6E5F248B32BE00D878A0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 494F6E5E248B32BE00D878A0 /* Constants.swift */; };
+		4952E90C24A3871A00B42E35 /* ThreadCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4952E90B24A3871A00B42E35 /* ThreadCell.swift */; };
 		495ABBB224832A6700233583 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495ABBB124832A6700233583 /* NetworkService.swift */; };
 		495ABBB424832ACA00233583 /* BoardsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495ABBB324832ACA00233583 /* BoardsService.swift */; };
-		495EF6AC24993E6700AC47C1 /* ThreadsCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495EF6AB24993E6700AC47C1 /* ThreadsCollectionViewController.swift */; };
 		495EF6B02499432100AC47C1 /* ThreadsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495EF6AF2499432100AC47C1 /* ThreadsService.swift */; };
-		4972058724785B840018D0B7 /* BoardsListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4972058624785B840018D0B7 /* BoardsListTableViewController.swift */; };
 		499F7C3B248C5A9F0010B97A /* ThreadsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 499F7C3A248C5A9F0010B97A /* ThreadsModel.swift */; };
 		499FAEAE24979358001B4A1C /* Thunder.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 499FAEAC24979358001B4A1C /* Thunder.xcdatamodeld */; };
 		499FC06A2498D1C400EBE0FB /* FavoriteBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 499FC0682498D1C400EBE0FB /* FavoriteBoard.swift */; };
@@ -53,14 +54,15 @@
 		4918E38B249BC5A30081DF7C /* UIViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtension.swift; sourceTree = "<group>"; };
 		49210FEB2479D2640020ECBC /* BoardsListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardsListTableViewCell.swift; sourceTree = "<group>"; };
 		492758282480848600A60E51 /* BoardsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardsModel.swift; sourceTree = "<group>"; };
-		4949BB50248EC8B7005AA6FE /* AddBoardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddBoardView.swift; sourceTree = "<group>"; };
+		494711E6249F9D810028F57D /* NetworkRequests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkRequests.swift; sourceTree = "<group>"; };
+		494711E8249FB2480028F57D /* BoardsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoardsTableViewController.swift; sourceTree = "<group>"; };
+		494711EA249FEB660028F57D /* ThreadsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadsTableViewController.swift; sourceTree = "<group>"; };
 		4949BB5224908922005AA6FE /* ActionSheetButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionSheetButton.swift; sourceTree = "<group>"; };
 		494F6E5E248B32BE00D878A0 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		4952E90B24A3871A00B42E35 /* ThreadCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadCell.swift; sourceTree = "<group>"; };
 		495ABBB124832A6700233583 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		495ABBB324832ACA00233583 /* BoardsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardsService.swift; sourceTree = "<group>"; };
-		495EF6AB24993E6700AC47C1 /* ThreadsCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadsCollectionViewController.swift; sourceTree = "<group>"; };
 		495EF6AF2499432100AC47C1 /* ThreadsService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ThreadsService.swift; path = Makaba/Model/ThreadsService.swift; sourceTree = SOURCE_ROOT; };
-		4972058624785B840018D0B7 /* BoardsListTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardsListTableViewController.swift; sourceTree = "<group>"; };
 		499F7C3A248C5A9F0010B97A /* ThreadsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadsModel.swift; sourceTree = "<group>"; };
 		499FAEAD24979358001B4A1C /* Thunder.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Thunder.xcdatamodel; sourceTree = "<group>"; };
 		499FC0682498D1C400EBE0FB /* FavoriteBoard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteBoard.swift; sourceTree = "<group>"; };
@@ -127,11 +129,11 @@
 		499FAEB724982160001B4A1C /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				4972058624785B840018D0B7 /* BoardsListTableViewController.swift */,
+				494711E8249FB2480028F57D /* BoardsTableViewController.swift */,
 				49AB29992478460B00084A6C /* SettingsViewController.swift */,
 				49EA7BE42476DC8500BFEC13 /* ViewController.swift */,
 				49EBD100247819450051A348 /* SavedViewController.swift */,
-				495EF6AB24993E6700AC47C1 /* ThreadsCollectionViewController.swift */,
+				494711EA249FEB660028F57D /* ThreadsTableViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -151,7 +153,6 @@
 				4918E38A249BC56D0081DF7C /* Extensions */,
 				499FAEBA24982269001B4A1C /* Cells */,
 				4949BB5224908922005AA6FE /* ActionSheetButton.swift */,
-				4949BB50248EC8B7005AA6FE /* AddBoardView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -160,6 +161,7 @@
 			isa = PBXGroup;
 			children = (
 				49210FEB2479D2640020ECBC /* BoardsListTableViewCell.swift */,
+				4952E90B24A3871A00B42E35 /* ThreadCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -170,6 +172,7 @@
 				495EF6AF2499432100AC47C1 /* ThreadsService.swift */,
 				495ABBB124832A6700233583 /* NetworkService.swift */,
 				495ABBB324832ACA00233583 /* BoardsService.swift */,
+				494711E6249F9D810028F57D /* NetworkRequests.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -365,18 +368,19 @@
 				49210FEC2479D2650020ECBC /* BoardsListTableViewCell.swift in Sources */,
 				499FC06A2498D1C400EBE0FB /* FavoriteBoard.swift in Sources */,
 				49EA7BE52476DC8500BFEC13 /* ViewController.swift in Sources */,
+				494711E7249F9D810028F57D /* NetworkRequests.swift in Sources */,
 				4949BB5324908922005AA6FE /* ActionSheetButton.swift in Sources */,
 				49EA7BE12476DC8500BFEC13 /* AppDelegate.swift in Sources */,
 				499F7C3B248C5A9F0010B97A /* ThreadsModel.swift in Sources */,
 				495ABBB424832ACA00233583 /* BoardsService.swift in Sources */,
 				495EF6B02499432100AC47C1 /* ThreadsService.swift in Sources */,
-				4949BB51248EC8B7005AA6FE /* AddBoardView.swift in Sources */,
 				494F6E5F248B32BE00D878A0 /* Constants.swift in Sources */,
 				4918E38C249BC5A30081DF7C /* UIViewExtension.swift in Sources */,
-				4972058724785B840018D0B7 /* BoardsListTableViewController.swift in Sources */,
-				495EF6AC24993E6700AC47C1 /* ThreadsCollectionViewController.swift in Sources */,
 				49EA7BE32476DC8500BFEC13 /* SceneDelegate.swift in Sources */,
+				494711EB249FEB660028F57D /* ThreadsTableViewController.swift in Sources */,
 				492758292480848600A60E51 /* BoardsModel.swift in Sources */,
+				4952E90C24A3871A00B42E35 /* ThreadCell.swift in Sources */,
+				494711E9249FB2480028F57D /* BoardsTableViewController.swift in Sources */,
 				49AB299A2478460B00084A6C /* SettingsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
