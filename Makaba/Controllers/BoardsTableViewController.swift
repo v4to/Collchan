@@ -12,10 +12,12 @@ import CoreData
 class BoardsTableViewController: UITableViewController, SwipeableCellDelegate, UISearchControllerDelegate, UIGestureRecognizerDelegate {
    
     // MARK: - Core Data
+    
     var container: NSPersistentContainer? = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer
     
 
     // MARK: - Instance Properties
+    
     let boardsRequest = APIRequest(resource: BoardsResource())
     let cellReuseIdentifier = "board"
     var actionButtonsContainerBottomAnchorConstraint: NSLayoutConstraint?
@@ -177,12 +179,6 @@ class BoardsTableViewController: UITableViewController, SwipeableCellDelegate, U
         return nil
     }
     
-//    func generateSectionsFromArray(_ array: [BoardCategory], withFilter filterString: String = "") -> [BoardCategory] {
-//        let sectionsArray = array
-//
-//        return sectionsArray
-//    }
-    
     func setupViews() {
         actionSheetButtonsContainer.addSubview(addToFavoriteButton)
         actionSheetButtonsContainer.addSubview(cancelButton)
@@ -267,6 +263,7 @@ class BoardsTableViewController: UITableViewController, SwipeableCellDelegate, U
     }
     
     // MARK: - Gestures
+    
     @objc func hideOverlayGesture() {
         textFieldBoardId.resignFirstResponder()
         textFieldBoardId.text = nil
@@ -341,6 +338,7 @@ class BoardsTableViewController: UITableViewController, SwipeableCellDelegate, U
     }
 
     // MARK: - UITableViewDelegate
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let threadsTVC = ThreadsTableViewController(style: .plain)
@@ -355,6 +353,7 @@ class BoardsTableViewController: UITableViewController, SwipeableCellDelegate, U
     }
     
     // MARK: - UITableViewDataSource
+    
     override func numberOfSections(in tableView: UITableView) -> Int {
         return boardsCategories.count + 1
     }
