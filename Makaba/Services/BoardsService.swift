@@ -9,17 +9,9 @@
 import Foundation
 
 struct BoardsService {
-    // MARK: - Instance properties
-    let networkService = NetworkService.shared
+    let boardsRequest = APIRequest(resource: BoardsResource())
     
-    // MARK: - Instance methods
-    func getBoards(onSuccess: @escaping (BoardsCategories) -> Void, onFailure: @escaping (Error) -> Void) {
-        networkService.GET(
-            endPoint: EndPoints.boards,
-            parameters: ["task": "get_boards"],
-            decodeModelType: BoardsCategories.self,
-            onSuccess: onSuccess,
-            onFailure: onFailure
-        )
+    func getBoardsList(completion: @escaping (BoardsResource.ModelType?) -> Void) {
+        boardsRequest.load(withCompletion: completion)
     }
 }

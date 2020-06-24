@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 
-class BoardsTableViewController: UITableViewController, UISearchResultsUpdating, SwipeableCellDelegate, UISearchControllerDelegate, UIGestureRecognizerDelegate {
+class BoardsTableViewController: UITableViewController, SwipeableCellDelegate, UISearchControllerDelegate, UIGestureRecognizerDelegate {
    
     // MARK: - Core Data
     var container: NSPersistentContainer? = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer
@@ -17,27 +17,21 @@ class BoardsTableViewController: UITableViewController, UISearchResultsUpdating,
 
     // MARK: - Instance Properties
     let boardsRequest = APIRequest(resource: BoardsResource())
-
     let cellReuseIdentifier = "board"
-    
-    
     var actionButtonsContainerBottomAnchorConstraint: NSLayoutConstraint?
-    
+    var isSearchFieldPresented = false
+    var boardsCategories = [BoardCategory]()
+    var favoriteBoards = [FavoriteBoard]()
     lazy var overlay: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1).withAlphaComponent(0.9)
         view.alpha = 0.0
-        
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideOverlayGesture))
         tapGesture.delegate = self
-        
         view.addGestureRecognizer(tapGesture)
-    
         return view
     }()
-    
-    
     lazy var textFieldContainer: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -45,21 +39,16 @@ class BoardsTableViewController: UITableViewController, UISearchResultsUpdating,
         view.layer.cornerRadius = 10.0
         return view
     }()
-    
-    
-    
     lazy var textFieldBoardId: UITextField = {
         let textField = createTextField(placeHolder: "Board Id")
         textField.addTarget(self, action: #selector(actionTextFieldIdDidChange(_:)), for: .editingChanged)
         return textField
     }()
-    
     lazy var textFieldName: UITextField = {
         let textField = createTextField(placeHolder: "Name")
         textField.addTarget(self, action: #selector(actionTextFieldNameDidChange(_:)), for: .editingChanged)
         return textField
     }()
-    
     let actionSheetButtonsContainer: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -68,7 +57,6 @@ class BoardsTableViewController: UITableViewController, UISearchResultsUpdating,
         view.clipsToBounds = true
         return view
     }()
-    
     lazy var addToFavoriteButton: ActionSheetButton = {
         let button = ActionSheetButton(frame: CGRect.zero, title: "Favorite", textColor: #colorLiteral(red: 0.1960576475, green: 0.1960917115, blue: 0.1960501969, alpha: 1))
         button.addBorder(side: .bottom, color: #colorLiteral(red: 0.172529161, green: 0.1764830351, blue: 0.184286654, alpha: 1), width: 1.0)
@@ -76,33 +64,21 @@ class BoardsTableViewController: UITableViewController, UISearchResultsUpdating,
         button.addTarget(self, action: #selector(actionAddFavoriteBoard(_:)), for: .touchUpInside)
         return button
     }()
-    
     lazy var cancelButton: ActionSheetButton = {
         let button = ActionSheetButton(frame: CGRect.zero, title: "Cancel", textColor: #colorLiteral(red: 0.0384538658, green: 0.5176959634, blue: 0.9998756051, alpha: 1))
         button.addTarget(self, action: #selector(actionCancelButton(_:)), for: .touchUpInside)
         return button
     }()
 
-    var isSearchFieldPresented = false
-    
-    var favoriteCategory = BoardCategory(name: "Favorites", boards: [])
-        
-    var boardsCategories = [BoardCategory]()
-    
-    var sectionsArray = [BoardCategory]()
-    
-    var favoriteBoards = [FavoriteBoard]()
-    
     lazy var search: UISearchController = {
         let search = UISearchController(searchResultsController: nil)
-        search.searchResultsUpdater = self
+        
         // dont block tableview from scrolling while searching
         search.obscuresBackgroundDuringPresentation = false
         search.searchBar.placeholder = "Board"
         search.delegate = self
         return search
     }()
-
     lazy var spinner: UIActivityIndicatorView = {
         let ativityIndicator = UIActivityIndicatorView()
         ativityIndicator.center = navigationController!.view.center
@@ -110,12 +86,11 @@ class BoardsTableViewController: UITableViewController, UISearchResultsUpdating,
     }()
     
     // MARK: - Intialization
+    
     override init(style: UITableView.Style) {
         super.init(style: style)
-        
         tabBarItem.title = "Boards"
         tabBarItem.image = UIImage(named: "boards-tab-image")
-       
     }
     
     required init?(coder: NSCoder) {
@@ -123,36 +98,30 @@ class BoardsTableViewController: UITableViewController, UISearchResultsUpdating,
     }
     
     // MARK: - View Controller Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         tableView.register(BoardsListTableViewCell.self, forCellReuseIdentifier: cellReuseIdentifier)
-        tableView.isHidden = true
-        
         navigationItem.title = "Boards"
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             barButtonSystemItem: .add,
             target: self,
             action: #selector(actionOpenAddFavoriteModal(_:))
         )
-        
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.view.addSubview(spinner)
-                
         setupViews()
-        
         subscribeToKeyboardNotifications()
-        
         spinner.startAnimating()
+        featchBoards()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-
-        featchBoards()
     }
     
     // MARK: - Instance Methods
+    
     func addBoardToFavoritesWithId(_ id: String, and name: String) {
         if !FavoriteBoard.checkIfFavoriteBoardExists(withId: id, in: container!.viewContext) {
             let newFavoriteBoard = FavoriteBoard.createFavoriteBoard(withId: id, andName: name, in: container!.viewContext)
@@ -163,9 +132,7 @@ class BoardsTableViewController: UITableViewController, UISearchResultsUpdating,
     
     func deleteFavoriteBoardWithId(_ id: String, at row: Int) {
         FavoriteBoard.removeFavoriteBoardWithId(id, in: container!.viewContext)
-        
         try? container!.viewContext.save()
-        
         favoriteBoards.remove(at: row)
     }
     
@@ -176,7 +143,6 @@ class BoardsTableViewController: UITableViewController, UISearchResultsUpdating,
     
     func subscribeToKeyboardNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
     func createTextField(placeHolder: String) -> UITextField {
@@ -188,9 +154,7 @@ class BoardsTableViewController: UITableViewController, UISearchResultsUpdating,
         textField.layer.cornerRadius = 10.0
         textField.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
         textField.clearButtonMode = .always
-        
-        textField.leftView = UIView()
-        textField.leftView?.translatesAutoresizingMaskIntoConstraints = false
+        textField.leftView = UIView(frame: CGRect(x: 0.0, y: 0.0, width: 15.0, height: textField.bounds.height))
         textField.leftViewMode = .always
         return textField
     }
@@ -213,14 +177,11 @@ class BoardsTableViewController: UITableViewController, UISearchResultsUpdating,
         return nil
     }
     
-    func generateSectionsFromArray(
-        _ array: [BoardCategory],
-        withFilter filterString: String = ""
-    ) -> [BoardCategory] {
-        var sectionsArray = array
-        
-        return sectionsArray
-    }
+//    func generateSectionsFromArray(_ array: [BoardCategory], withFilter filterString: String = "") -> [BoardCategory] {
+//        let sectionsArray = array
+//
+//        return sectionsArray
+//    }
     
     func setupViews() {
         actionSheetButtonsContainer.addSubview(addToFavoriteButton)
@@ -228,15 +189,17 @@ class BoardsTableViewController: UITableViewController, UISearchResultsUpdating,
         
         textFieldContainer.addSubview(textFieldBoardId)
         textFieldContainer.addSubview(textFieldName)
-                
+
         overlay.addSubview(textFieldContainer)
         overlay.addSubview(actionSheetButtonsContainer)
         overlay.alpha = 0.0
         
         navigationController?.view.addSubview(overlay)
         
-        overlay.widthAnchor.constraint(equalTo: navigationController!.view.widthAnchor).isActive = true
-        overlay.heightAnchor.constraint(equalTo: navigationController!.view.heightAnchor).isActive = true
+        overlay.topAnchor.constraint(equalTo: navigationController!.view.topAnchor).isActive = true
+        overlay.leftAnchor.constraint(equalTo: navigationController!.view.leftAnchor).isActive = true
+        overlay.rightAnchor.constraint(equalTo: navigationController!.view.rightAnchor).isActive = true
+        overlay.bottomAnchor.constraint(equalTo: navigationController!.view.bottomAnchor ).isActive = true
                 
         actionSheetButtonsContainer.leadingAnchor.constraint(equalTo: overlay.safeAreaLayoutGuide.leadingAnchor, constant: 10.0).isActive = true
         actionSheetButtonsContainer.trailingAnchor.constraint(equalTo: overlay.safeAreaLayoutGuide.trailingAnchor, constant: -10.0).isActive = true
@@ -279,31 +242,19 @@ class BoardsTableViewController: UITableViewController, UISearchResultsUpdating,
             }
             
             self.spinner.stopAnimating()
-            
             self.boardsCategories = boardsCategories.array
-
             let favoriteBoards = try! FavoriteBoard.findFavoriteBoards(in: self.container!.viewContext)
             self.favoriteBoards = favoriteBoards
-
-            self.sectionsArray = self.generateSectionsFromArray(
-                self.boardsCategories
-            )
-
-            self.tableView.isHidden = false
             self.tableView.reloadData()
         }
     }
     
     // MARK: - Keyboard Notifications
-    @objc func handleKeyboardWillHide(notification: NSNotification) {
-        let duration = notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey]! as! Double
-    }
-    
+
     @objc func handleKeyboardWillShow(notification: NSNotification) {
         if textFieldBoardId.isFirstResponder {
             let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey]! as! CGRect
             let duration = notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey]! as! Double
-        
             actionButtonsContainerBottomAnchorConstraint?.constant = -keyboardFrame.height - 10.0
 
             // to override inherited animation arguments from keybard specify .overrideInheritedDuration, .overrideInheritedCurve in animatin options
@@ -319,15 +270,20 @@ class BoardsTableViewController: UITableViewController, UISearchResultsUpdating,
     @objc func hideOverlayGesture() {
         textFieldBoardId.resignFirstResponder()
         textFieldBoardId.text = nil
-        
         textFieldName.text = nil
+
+        if textFieldBoardId.isFirstResponder {
+            textFieldBoardId.resignFirstResponder()
+            
+        }
         
-        if textFieldBoardId.isFirstResponder { textFieldBoardId.resignFirstResponder() }
-        if textFieldName.isFirstResponder { textFieldName.resignFirstResponder() }
+        if textFieldName.isFirstResponder {
+            textFieldName.resignFirstResponder()
+            
+        }
         
         addToFavoriteButton.setTitleColor(#colorLiteral(red: 0.1960576475, green: 0.1960917115, blue: 0.1960501969, alpha: 1), for: .normal)
         addToFavoriteButton.isEnabled = false
-        
         actionButtonsContainerBottomAnchorConstraint?.constant = 0.0
         
         // to override inherited animation arguments from keybard specify .overrideInheritedDuration, .overrideInheritedCurve in animatin options
@@ -338,21 +294,16 @@ class BoardsTableViewController: UITableViewController, UISearchResultsUpdating,
     }
     
     // MARK: - UIGestureRecognizerDelegate
+    
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
         return touch.view == overlay
     }
     
-    
-    
-    
     // MARK: - Actions
+    
     @objc func actionAddFavoriteBoard(_ sender: UIButton) {
         addBoardToFavoritesWithId(textFieldBoardId.text!, and:textFieldName.text!)
-        
-        sectionsArray = generateSectionsFromArray(boardsCategories)
-        
         tableView.reloadData()
-        
         hideOverlayGesture()
     }
     
@@ -382,7 +333,6 @@ class BoardsTableViewController: UITableViewController, UISearchResultsUpdating,
     }
     
     @objc func actionTextFieldNameDidChange(_ sender: UITextField) {
-        print("fdsafsd")
         setUpFavoriteButtonStateAccordingToText(sender.text!)
     }
     
@@ -393,38 +343,37 @@ class BoardsTableViewController: UITableViewController, UISearchResultsUpdating,
     // MARK: - UITableViewDelegate
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        
-//        let threadsCVC = ThreadsCollectionViewController(collectionViewLayout: UICollectionViewFlowLayout())
         let threadsTVC = ThreadsTableViewController(style: .plain)
 
-        
-        
         if indexPath.section == 0 && favoriteBoards.count > 0 {
-            threadsTVC.threadId = favoriteBoards[indexPath.row].id!
+            threadsTVC.boardId = favoriteBoards[indexPath.row].id!
         } else {
-            threadsTVC.threadId = sectionsArray[indexPath.section - 1].boards[indexPath.row].id
+            threadsTVC.boardId = boardsCategories[indexPath.section - 1].boards[indexPath.row].id
         }
-        
+
         navigationController!.pushViewController(threadsTVC, animated: true)
     }
     
     // MARK: - UITableViewDataSource
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return sectionsArray.count + 1
-
+        return boardsCategories.count + 1
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if section == 0 { return favoriteBoards.count > 0 ? "Favorites" : nil }
+        if section == 0 {
+            return favoriteBoards.count > 0 ? "Favorites" : nil
+        }
         
-        return sectionsArray[section - 1].name
+        return boardsCategories[section - 1].name
     }
     
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 0 { return favoriteBoards.count }
+        if section == 0 {
+            return favoriteBoards.count
+        }
         
-        return sectionsArray[section - 1].boards.count
+        return boardsCategories[section - 1].boards.count
     }
 
     
@@ -432,12 +381,8 @@ class BoardsTableViewController: UITableViewController, UISearchResultsUpdating,
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier, for: indexPath) as! BoardsListTableViewCell
         cell.isChosen = false
-
-        
         let section = indexPath.section
         let row = indexPath.row
-        
-
         var boardName: String
         var boardId: String
         
@@ -446,22 +391,18 @@ class BoardsTableViewController: UITableViewController, UISearchResultsUpdating,
             boardId = favoriteBoards[row].id!
             cell.isChosen = true
         } else {
-            boardName = sectionsArray[section - 1].boards[row].name
-            boardId =  sectionsArray[section - 1].boards[row].id
+            boardName = boardsCategories[section - 1].boards[row].name
+            boardId =  boardsCategories[section - 1].boards[row].id
             
             let isInFavoriteBoards = favoriteBoards.contains { (fv) -> Bool in
                 return fv.id == boardId
             }
-            
-
+        
             if isInFavoriteBoards {
                 cell.isChosen = true
             }
-            
         }
         
-        
-  
         cell.accessoryType = .none
         cell.textLabel?.textColor = .systemBlue
         cell.textLabel?.text = boardId
@@ -472,18 +413,13 @@ class BoardsTableViewController: UITableViewController, UISearchResultsUpdating,
         cell.textLabel?.font = UIFont.preferredFont(forTextStyle: .headline).withSize(16.0)
         cell.detailTextLabel?.text = boardName
         cell.detailTextLabel?.font = UIFont.preferredFont(forTextStyle: .body).withSize(15.0)
-        
         cell.delegate = self
-
+        
         return cell
     }
     
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        print("edditinestyle")
-        print(indexPath)
-    }
-    
     // MARK: - SwipeableCellDelegate
+    
        func cellDidSwipe(cell: BoardsListTableViewCell) {
            let indexPath = self.tableView.indexPath(for: cell)!
            
@@ -491,10 +427,7 @@ class BoardsTableViewController: UITableViewController, UISearchResultsUpdating,
            if indexPath.section == 0 && favoriteBoards.count > 0 {
                let id = favoriteBoards[indexPath.row].id!
                deleteFavoriteBoardWithId(id, at: indexPath.row)
-               
                tableView.reloadData()
-               
-               return
            } else {
                 let board = boardsCategories[indexPath.section - 1].boards[indexPath.row]
                 
@@ -504,105 +437,16 @@ class BoardsTableViewController: UITableViewController, UISearchResultsUpdating,
                 
                 if !isInFavoriteBoards {
                     addBoardToFavoritesWithId(board.id, and: board.name)
-                    
                     tableView.reloadData()
-
                 } else {
                     let index = favoriteBoards.firstIndex { (favoriteBoard) in
                         return favoriteBoard.id == board.id
                     }!
-                    
                     deleteFavoriteBoardWithId(board.id, at: index)
-                
                     tableView.reloadData()
-
                 }
             }
-           
-//           // if swiped cell not in favorites section
-//           if indexPath.section > 0 || favoriteBoards.count == 0 {
-//               let board = boardsCategories[indexPath.section - 1].boards[indexPath.row]
-//               
-//               let isInFavoriteBoards = favoriteBoards.contains { (fv) -> Bool in
-//                   return fv.id == board.id
-//               }
-//               
-//               if !isInFavoriteBoards {
-//                   addBoardToFavoritesWithId(board.id, and: board.name)
-//                   
-//                   tableView.reloadData()
-//
-//               } else {
-//                   let index = favoriteBoards.firstIndex { (favoriteBoard) in
-//                       return favoriteBoard.id == board.id
-//                   }!
-//                   
-//                   deleteFavoriteBoardWithId(board.id, at: index)
-//               
-//                   tableView.reloadData()
-//
-//               }
-//           }
        }
-    
-    // MARK: - UISearchResultsUpdating
-    func updateSearchResults(for searchController: UISearchController) {
-        guard let text = searchController.searchBar.text else { return }
-        
-        self.sectionsArray = self.generateSectionsFromArray(self.boardsCategories, withFilter: text)
-
-        tableView.reloadData()
-    }
-    
-    func didPresentSearchController(_ searchController: UISearchController) {
-        isSearchFieldPresented = true
-    }
-    
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
 
  
