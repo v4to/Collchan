@@ -8,10 +8,12 @@
 
 import UIKit
 
-class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDelegate {
+class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDelegate, UITableViewDataSourcePrefetching {
+   
     // MARK: - Instance Properties
     
     var page = 0
+    var tasks = [IndexPath: URLSessionDataTask]()
     var cellHeights = [IndexPath: CGFloat]()
     var isAllowedToLoadMore = true
     private var threadsService = ThreadsService()
@@ -39,9 +41,12 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
         
+        
         navigationItem.largeTitleDisplayMode = .never
         navigationItem.title = "/" + boardId
         navigationController?.view.addSubview(spinner)
+        navigationController?.navigationBar.isTranslucent = false
+        
         setupTableView()
         setUpPopGesture()
         spinner.startAnimating()
@@ -56,9 +61,9 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
     
     func setupTableView() {
         tableView.register(ThreadCell.self, forCellReuseIdentifier: cellId)
-        tableView.estimatedRowHeight = 180.0
+        tableView.estimatedRowHeight = 172.0
 //        tableView.rowHeight = 180.0
-        
+        tableView.prefetchDataSource = self
         // remove bottom separator when tableView is empty
         tableView.tableFooterView = UIView(frame: CGRect.zero)
 
@@ -131,7 +136,6 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
             
             self.sectionsArray += result.threads
 
-//            self.tableView.reloadData()
             if self.page == 0 {
                 self.tableView.reloadData()
             } else {
@@ -172,7 +176,8 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! ThreadCell
-        if indexPath.row == self.sectionsArray.count - 4 {
+//        print(indexPath)
+        if indexPath.row == self.sectionsArray.count - 1 {
             loadThreads()
         }
         /*
@@ -184,8 +189,13 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
         cell.postsCount.text = String(sectionsArray[indexPath.row].postsCount)
         cell.date.text =  sectionsArray[indexPath.row].dateString
         */
+//        print(sectionsArray[indexPath.row].image)
         
-        cell.threadThumbnail.image = sectionsArray[indexPath.row].image ?? UIImage(named: "placeholder")
+//        if tableView.indexPathsForVisibleRows?.contains(indexPath) ?? false {
+//            cell.threadThumbnail.image = sectionsArray[indexPath.row].image ?? UIImage(named: "placeholder")
+//        }
+//        cell.threadThumbnail.image = UIImage(named: "placeholder")
+
         cell.heading.text = sectionsArray[indexPath.row].posts[0].subject
         cell.detailText.text = sectionsArray[indexPath.row].posts[0].comment
         cell.filesCount.text = String(sectionsArray[indexPath.row].filesCount)
@@ -196,27 +206,89 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
     
 
    
-    // caching height to prevent scroll jump
+//     caching height to prevent scroll jump
     override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return cellHeights[indexPath] ?? UITableView.automaticDimension
+        return cellHeights[indexPath] ?? 172.0
+    }
+    
+    
+    func collectionView(_ tableView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
+      print(indexPaths)
+    }
+    
+    
+    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+        for indexPath in indexPaths {
+            if let _ = tasks[indexPath] {
+                continue
+            }
+            
+            var thread = sectionsArray[indexPath.row]
+            if let path = thread.thumbnailURL {
+            
+                let url = URL(string: BaseUrls.dvach + path)!
+                let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+                   if let error = error {
+                       print(error)
+                   }
+                   if let data = data {
+                       let image = UIImage(data: data)
+                       thread.image = image
+                       self.sectionsArray[indexPath.row] = thread
+                   }
+                   
+               }
+               task.resume()
+               tasks[indexPath] = task
+            }
+        }
+    }
+       
+    
+    
+    override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if let dataTask = tasks[indexPath] {
+            dataTask.cancel()
+            print("removed")
+            tasks.removeValue(forKey: indexPath)
+        }
     }
     
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         cellHeights[indexPath] = cell.frame.size.height
+        guard let cell = cell as? ThreadCell else {
+            return
+        }
         var thread = sectionsArray[indexPath.row]
-        if let path = thread.thumbnailURL, thread.image == nil {
-            let url = URL(string: BaseUrls.dvach + path)!
-            let imageRequest = ImageRequest(url: url)
-            self.imageRequests.append(imageRequest)
-            imageRequest.load { (image) in
-                guard let image = image else {
-                    return
+        if let image = thread.image {
+            cell.threadThumbnail.image = image
+            return
+        }
+        if let path = thread.thumbnailURL {
+            if tasks[indexPath] != nil {
+                if let image = thread.image {
+                    cell.threadThumbnail.image = image
+                    tasks.removeValue(forKey: indexPath)
                 }
-                thread.image = image
-                self.sectionsArray[indexPath.row] = thread
-                if let cell = cell as? ThreadCell {
-                    cell.threadThumbnail.image = thread.image
+            } else {
+                let url = URL(string: BaseUrls.dvach + path)!
+                let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+                    if let error = error {
+                        print(error)
+                    }
+                    if let data = data {
+                        let image = UIImage(data: data)
+                        thread.image = image
+                        self.sectionsArray[indexPath.row] = thread
+                        DispatchQueue.main.async {
+                            
+                            cell.threadThumbnail.image = image
+                        }
+                    }
+                    
                 }
+                task.resume()
+                tasks[indexPath] = task
             }
         }
     }
