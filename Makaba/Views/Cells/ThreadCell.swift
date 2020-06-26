@@ -36,26 +36,16 @@ class ThreadCell: BoardsListTableViewCell {
         return view
     }()
     
-    
-    
     let detailText: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = #colorLiteral(red: 0.831299305, green: 0.8314197063, blue: 0.8391151428, alpha: 1)
+        label.textColor = #colorLiteral(red: 0.5960256457, green: 0.5921916366, blue: 0.6116896868, alpha: 1)
         label.numberOfLines = 5
         label.lineBreakMode = .byTruncatingTail
         label.font = UIFont.preferredFont(forTextStyle: .body).withSize(14.0)
         return label
     }()
-    
-    let postnumber: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.preferredFont(forTextStyle: .headline).withSize(13.0)
-        label.textColor = #colorLiteral(red: 0, green: 0.4784313725, blue: 1, alpha: 1)
-        return label
-    }()
-    
+
     let fileImage: UIImageView = {
         let configuration = UIImage.SymbolConfiguration(scale: .small)
         var image = UIImage(systemName: "photo", withConfiguration: configuration)!
@@ -124,6 +114,7 @@ class ThreadCell: BoardsListTableViewCell {
     
     
     // MARK: - Intialization
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
@@ -151,11 +142,9 @@ class ThreadCell: BoardsListTableViewCell {
     func setupViews() {
 //        backgroundColor = #colorLiteral(red: 0.07841930538, green: 0.0823603943, blue: 0.09017961472, alpha: 1)
         
-        
-//        contentView.addSubview(postnumber)
-        contentView.addSubview(heading)
+
         contentView.addSubview(detail)
-        detail.addSubview(postnumber)
+        detail.addSubview(heading)
         detail.addSubview(detailText)
         detail.addSubview(fileImage)
         detail.addSubview(filesCount)
@@ -165,26 +154,21 @@ class ThreadCell: BoardsListTableViewCell {
         detail.addSubview(date)
         contentView.addSubview(threadThumbnail)
 
-
-        heading.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 15.0).isActive = true
-        heading.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 15.0).isActive = true
-        heading.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -15.0).isActive = true
-        heading.setContentHuggingPriority(UILayoutPriority.defaultHigh, for: .vertical)
-        
-        detail.topAnchor.constraint(equalTo: heading.bottomAnchor, constant: 10.0).isActive = true
+        detail.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 15.0).isActive = true
         detail.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -15.0).isActive = true
         detail.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 118.0).isActive = true
         detail.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -20.0).isActive = true
         
-        postnumber.topAnchor.constraint(equalTo: detail.topAnchor, constant: 0.0).isActive = true
-        postnumber.leftAnchor.constraint(equalTo: detail.leftAnchor, constant: 0.0).isActive = true
-
+        heading.topAnchor.constraint(equalTo: detail.topAnchor).isActive = true
+        heading.leftAnchor.constraint(equalTo: detail.leftAnchor).isActive = true
+        heading.rightAnchor.constraint(equalTo: detail.rightAnchor).isActive = true
+        heading.setContentHuggingPriority(UILayoutPriority.defaultHigh, for: .vertical)
         
-        detailText.topAnchor.constraint(equalTo: postnumber.bottomAnchor, constant: 5.0).isActive = true
+        
+        detailText.topAnchor.constraint(equalTo: heading.bottomAnchor, constant: 5.0).isActive = true
         detailText.leftAnchor.constraint(equalTo: detail.leftAnchor).isActive = true
         detailText.rightAnchor.constraint(equalTo: detail.rightAnchor).isActive = true
         detailText.setContentHuggingPriority(UILayoutPriority.defaultHigh, for: .vertical)
-
 
         fileImage.topAnchor.constraint(equalTo: detailText.bottomAnchor, constant: 5.0).isActive = true
         fileImage.leftAnchor.constraint(equalTo: detailText.leftAnchor).isActive = true
@@ -208,7 +192,7 @@ class ThreadCell: BoardsListTableViewCell {
         threadThumbnail.widthAnchor.constraint(equalToConstant: 88.0).isActive = true
         threadThumbnail.heightAnchor.constraint(equalToConstant: 88.0).isActive = true
         threadThumbnail.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 15.0).isActive = true
-        threadThumbnail.topAnchor.constraint(equalTo: heading.bottomAnchor, constant: 10.0).isActive = true
+        threadThumbnail.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 15.0).isActive = true
         threadThumbnail.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -15.0).isActive = true
     }
 
