@@ -104,6 +104,9 @@ class BoardsTableViewController: UITableViewController, SwipeableCellDelegate, U
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.register(BoardsListTableViewCell.self, forCellReuseIdentifier: cellReuseIdentifier)
+        tableView.tableFooterView = UIView(frame: CGRect.zero)
+
+        
         navigationItem.title = "Boards"
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             barButtonSystemItem: .add,
@@ -165,8 +168,13 @@ class BoardsTableViewController: UITableViewController, SwipeableCellDelegate, U
         var matched = [Board]()
         
         // filtering to find all boards with mached id
-        for category in boardsCategories { matched += category.boards.filter { $0.id.hasPrefix(id) } }
-        
+        for category in boardsCategories {
+            matched += category.boards.filter {
+                return $0.id.hasPrefix(id)
+            }
+            
+        }
+        print(matched.count)
         
         // finding id with shortest characters
         if matched.count > 0 {
@@ -174,6 +182,8 @@ class BoardsTableViewController: UITableViewController, SwipeableCellDelegate, U
                 return boardWithShortestId.id > next.id ? next : boardWithShortestId
             }
             return result.name
+        } else {
+            textFieldName.text = ""
         }
         
         return nil
