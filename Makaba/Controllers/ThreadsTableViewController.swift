@@ -12,6 +12,7 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
     // MARK: - Instance Properties
     
     var page = 0
+    var cellHeights = [IndexPath: CGFloat]()
     var isAllowedToLoadMore = true
     private var threadsService = ThreadsService()
     private var imageRequests = [ImageRequest]()
@@ -55,7 +56,8 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
     
     func setupTableView() {
         tableView.register(ThreadCell.self, forCellReuseIdentifier: cellId)
-        tableView.estimatedRowHeight = 200.0
+        tableView.estimatedRowHeight = 180.0
+//        tableView.rowHeight = 180.0
         
         // remove bottom separator when tableView is empty
         tableView.tableFooterView = UIView(frame: CGRect.zero)
@@ -71,41 +73,53 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
             gestureRecognizer.delegate = self
         }
     }
-        
+    
+    // TODO: - Refocator?
+    /*
     func loadThumbnails() {
-        var counter = self.sectionsArray.count
-        for i in self.sectionsArray.indices {
-            let path = self.sectionsArray[i].thumbnailURL
-            let url = URL(string: BaseUrls.dvach + path)!
-            let imageRequest = ImageRequest(url: url)
-            
-            self.imageRequests.append(imageRequest)
-            
-            imageRequest.load { (image: UIImage?) in
-                counter -= 1
-                self.sectionsArray[i].image = image
+       
+        for i in sectionsArray.indices {
+            if let path = self.sectionsArray[i].thumbnailURL {
+                let url = URL(string: BaseUrls.dvach + path)!
+                let imageRequest = ImageRequest(url: url)
                 
-                if counter == 0 {
-                    self.spinner.stopAnimating()
+                self.imageRequests.append(imageRequest)
+                
+                imageRequest.load { (image: UIImage?) in
+                    self.sectionsArray[i].image = image
                     self.tableView.reloadData()
 
-               }
+                   }
+            } else {
+                self.sectionsArray[i].image = UIImage(named: "placeholder")
             }
         }
-    }
+    }*/
     
+    func generateIndexPathsToInsert(newItemsCount: Int) -> [IndexPath] {
+        var result = [IndexPath]()
+        let startIndex = sectionsArray.count - newItemsCount
+        
+        for i in startIndex..<sectionsArray.count {
+            result.append(IndexPath(row: i, section: 0))
+        }
+        
+        return result
+    }
     
     func loadThreads() {
         guard isAllowedToLoadMore else {
             return
         }
         
-        threadsService.getThreads(fromBoard: boardId, onPage: page) { result in
-            self.spinner.stopAnimating()
+        threadsService.getThreads(fromBoard: boardId, page: page) { result in
+
+//        threadsService.getThreads(fromBoard: boardId) { result in
             
             guard let result = result else {
                 return
             }
+            
             
             if self.page == 0 {
                 self.spinner.stopAnimating()
@@ -115,9 +129,15 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
                 self.isAllowedToLoadMore = false
             }
             
-            self.page += 1
             self.sectionsArray += result.threads
-            self.loadThumbnails()
+
+//            self.tableView.reloadData()
+            if self.page == 0 {
+                self.tableView.reloadData()
+            } else {
+                self.tableView.insertRows(at: self.generateIndexPathsToInsert(newItemsCount: result.threads.count) , with: .fade)
+            }
+            self.page += 1
         }
     }
    
@@ -151,20 +171,53 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.row == self.sectionsArray.count - 1 {
-            let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! ThreadCell
-            loadThreads()
-            return cell
-        }
-        
         let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! ThreadCell
-        cell.threadThumbnail.image = sectionsArray[indexPath.row].image
-        cell.heading.text = sectionsArray[indexPath.row].posts[0].subject
+        if indexPath.row == self.sectionsArray.count - 4 {
+            loadThreads()
+        }
+        /*
+        cell.threadThumbnail.image = sectionsArray[indexPath.row].image ?? UIImage(named: "placeholder")
+        cell.heading.text = sectionsArray[indexPath.row].heading
         cell.postnumber.text = "#" + sectionsArray[indexPath.row].threadId
+        cell.detailText.text = sectionsArray[indexPath.row].comment
+        cell.filesCount.text = String(sectionsArray[indexPath.row].filesCount)
+        cell.postsCount.text = String(sectionsArray[indexPath.row].postsCount)
+        cell.date.text =  sectionsArray[indexPath.row].dateString
+        */
+        
+        cell.threadThumbnail.image = sectionsArray[indexPath.row].image ?? UIImage(named: "placeholder")
+        cell.heading.text = sectionsArray[indexPath.row].posts[0].subject
         cell.detailText.text = sectionsArray[indexPath.row].posts[0].comment
         cell.filesCount.text = String(sectionsArray[indexPath.row].filesCount)
         cell.postsCount.text = String(sectionsArray[indexPath.row].postsCount)
         cell.date.text =  sectionsArray[indexPath.row].posts[0].dateString
         return cell
+    }
+    
+
+   
+    // caching height to prevent scroll jump
+    override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return cellHeights[indexPath] ?? UITableView.automaticDimension
+    }
+    
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        cellHeights[indexPath] = cell.frame.size.height
+        var thread = sectionsArray[indexPath.row]
+        if let path = thread.thumbnailURL, thread.image == nil {
+            let url = URL(string: BaseUrls.dvach + path)!
+            let imageRequest = ImageRequest(url: url)
+            self.imageRequests.append(imageRequest)
+            imageRequest.load { (image) in
+                guard let image = image else {
+                    return
+                }
+                thread.image = image
+                self.sectionsArray[indexPath.row] = thread
+                if let cell = cell as? ThreadCell {
+                    cell.threadThumbnail.image = thread.image
+                }
+            }
+        }
     }
 }
