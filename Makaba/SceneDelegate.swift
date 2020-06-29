@@ -20,6 +20,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
         let tabBarController = UITabBarController()
+        tabBarController.tabBar.isTranslucent = false
         let savedViewController = SavedViewController()
         let boardsNavigationViewController = UINavigationController(
             rootViewController: BoardsTableViewController(

@@ -175,8 +175,6 @@ class ThreadCell: BoardsListTableViewCell {
     
     
     func configure(_ thread: Thread) {
-        // TODO: - Add animation or not
-        /*
         UIView.transition(
             with: threadThumbnail,
             duration: 0.2,
@@ -184,8 +182,6 @@ class ThreadCell: BoardsListTableViewCell {
             animations: {  self.threadThumbnail.image = thread.image ?? UIImage(named: "placeholder") },
             completion: nil
         )
-        */
-        threadThumbnail.image = thread.image ?? UIImage(named: "placeholder")
         detailText.text = thread.posts[0].comment
         heading.text = thread.posts[0].subject
         createStatsString(
@@ -223,4 +219,3 @@ class ThreadCell: BoardsListTableViewCell {
         threadThumbnail.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -15.0).isActive = true
      }
 }
-

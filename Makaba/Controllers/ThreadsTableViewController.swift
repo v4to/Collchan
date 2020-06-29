@@ -61,7 +61,7 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
     
     func setupTableView() {
         tableView.register(ThreadCell.self, forCellReuseIdentifier: cellId)
-        tableView.estimatedRowHeight = 160.0
+//        tableView.estimatedRowHeight = 160.0
 //        tableView.rowHeight = 180.0
         tableView.prefetchDataSource = self
         // remove bottom separator when tableView is empty
@@ -137,7 +137,7 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
             self.sectionsArray += result.threads
             
             for i in self.sectionsArray.indices {
-                self.sectionsArray[i].posts[0].comment = String(self.sectionsArray[i].posts[0].comment.prefix(170))
+                self.sectionsArray[i].posts[0].comment = String(self.sectionsArray[i].posts[0].comment.prefix(160))
             }
             
             
@@ -186,14 +186,10 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
         let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! ThreadCell
         print(indexPath)
         
-        cell.threadThumbnail.image = sectionsArray[indexPath.row].image ?? UIImage(named: "placeholder")
-        cell.detailText.text = sectionsArray[indexPath.row].posts[0].comment
-        cell.heading.text = sectionsArray[indexPath.row].posts[0].subject
-        cell.createStatsString(
-           filesCount: sectionsArray[indexPath.row].postsCount,
-           postsCount: sectionsArray[indexPath.row].filesCount,
-           date: sectionsArray[indexPath.row].posts[0].dateString
-        )
+        let thread = sectionsArray[indexPath.row]
+        
+        cell.configure(thread)
+        
         
 //        cell.statLabel.sizeToFit()
         /*
@@ -223,7 +219,7 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
    
 //     caching height to prevent scroll jump
     override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return cellHeights[indexPath] ?? 172.0
+        return cellHeights[indexPath] ?? 166.0
     }
 //
 //
@@ -287,10 +283,12 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
             return
         }
         var thread = sectionsArray[indexPath.row]
-        if let image = thread.image {
-            cell.threadThumbnail.image = image
+        if let _ = thread.image {
             return
         }
+        
+        // TODO: - Create separate image request
+        
         if let path = thread.thumbnailURL {
             if tasks[indexPath] != nil {
                 if let image = thread.image {
@@ -308,7 +306,7 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
                         thread.image = image
                         self.sectionsArray[indexPath.row] = thread
                         DispatchQueue.main.async {
-                            cell.threadThumbnail.image = image
+                            cell.configure(thread)
                         }
                     }
                 }

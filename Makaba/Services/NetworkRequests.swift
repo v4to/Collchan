@@ -9,7 +9,6 @@
 import Foundation
 import UIKit
 
-
 protocol NetworkRequest: AnyObject {
     associatedtype ModelType
     func decode(_ data: Data) -> ModelType?
@@ -23,8 +22,9 @@ extension NetworkRequest {
                 completion(nil)
                 return
             }
-            print(self)
+//            print(self)
             let res = self?.decode(data)
+
             DispatchQueue.main.async {
                 completion(res)
             }
@@ -41,9 +41,23 @@ class ImageRequest {
     }
 }
 
+extension UIImage {
+  func resized(to newSize: CGSize) -> UIImage? {
+    UIGraphicsBeginImageContextWithOptions(newSize, false, 0)
+    defer { UIGraphicsEndImageContext() }
+
+    draw(in: CGRect(origin: .zero, size: newSize))
+    return UIGraphicsGetImageFromCurrentImageContext()
+  }
+}
+
 extension ImageRequest: NetworkRequest {
     func decode(_ data: Data) -> UIImage? {
-        return UIImage(data: data)
+        var image = UIImage(data: data)
+        image = image?.resized(to: CGSize(width: 90.0, height: 90.0))
+//        image.
+        return image
+//        return UIImage(data: data)
     }
     
     func load(withCompletion completion: @escaping (UIImage?) -> Void) {
@@ -84,5 +98,20 @@ extension APIResource {
         components.path = methodPath
         components.queryItems = queryItems
         return components.url!
+    }
+}
+
+class ThreadResource: APIResource {
+    typealias ModelType = Thread
+    var methodPath: String
+    var queryItems: [URLQueryItem]
+    init(boardId: String, threadId: String, postId: String) {
+        methodPath = BaseUrls.dvach + "/" + boardId + "/" + threadId + "/" + postId
+        queryItems = [
+            URLQueryItem(name: "task", value: "get_thread"),
+            URLQueryItem(name: "board", value: boardId),
+            URLQueryItem(name: "thread", value: threadId),
+            URLQueryItem(name: "num", value: postId)
+        ]
     }
 }

@@ -7,58 +7,80 @@
 //
 
 import Foundation
+import UIKit
 
 struct NetworkService {
-    // MARK: - Properties
-    let baseURL = BaseUrls.dvach
-
-    // MARK: - Static properties
     static let shared = NetworkService()
     
-    // MARK: - Initializtaion
+    let boardsRequest = APIRequest(resource: BoardsResource())
+    
+    var threadsRequest: APIRequest<ThreadsResource>?
+    
+    var imageRequest: ImageRequest?
+    
     private init() {}
     
-    // MARK: - HTTPMethods
-    private enum HTTPMethods: String {
-        case GET
-        case POST
+    func getBoards(completion: @escaping (BoardsResource.ModelType?) -> Void) {
+        boardsRequest.load(withCompletion: completion)
     }
-        
-    // MARK: - Instance Methods
-    func GET<Model: Decodable>(
-        endPoint: String,
-        parameters: [String: String],
-        decodeModelType: Model.Type,
-        onSuccess: @escaping (Model) -> Void,
-        onFailure: @escaping (Error) -> Void
-    ) {
-        let urlString = "\(baseURL)\(endPoint)"
-        var urlComponents = URLComponents(string: urlString)!
-        
-        var queryItems = [URLQueryItem]()
-        for (key, value) in parameters {
-            queryItems.append(URLQueryItem(name: key, value: value))
-        }
-        urlComponents.queryItems = queryItems
-        
-        var request = URLRequest(url: urlComponents.url!)
-        request.httpMethod = HTTPMethods.GET.rawValue
-        
-        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
-            if let error = error { onFailure(error)  }
-            
-            if let data = data {
-                do {
-                    let parsedData = try JSONDecoder().decode(decodeModelType, from: data)
-                    DispatchQueue.main.async {
-                        onSuccess(parsedData)
-                    }
-                } catch {
-                    onFailure(error)
-                }
-            }
-        }
-        task.resume()
+    
+//    mutating func getThreads(from boardId: String, completion: @escaping (Threads?) -> Void) {
+//       threadsRequest = APIRequest(resource: ThreadsResource(threadId: boardId, page: ))
+//       threadsRequest!.load(withCompletion: completion)
+//    }
+    
+    mutating func getImageAtPath(_ path: String, completion: @escaping (UIImage?) -> Void) {
+        let url = URL(string: BaseUrls.dvach + path)!
+        imageRequest = ImageRequest(url: url)
+        imageRequest?.load(withCompletion: completion)
     }
+    
+    var threadRequest: APIRequest<ThreadResource>?
+    
+    mutating func getPostsFrom(boardId: String, threadId: String, completion: @escaping (Thread?) -> Void) {
+        threadRequest = APIRequest(resource: ThreadResource(boardId: boardId, threadId: threadId, postId: threadId))
+        threadRequest?.load(withCompletion: completion)
+    }
+}
+
+/*
+struct ThreadsResource: APIResource {
+    typealias ModelType = Threads
+        
+    let methodPath: String
+    
+    let queryItems: [URLQueryItem] = []
+    
+    init(threadId: String, page: String) {
+        self.methodPath = "/" + threadId + "/" + page + ".json"
+    }
+}*/
+
+
+struct ThreadsResource: APIResource {
+    typealias ModelType = Threads
+        
+    let methodPath: String
+    
+    let queryItems: [URLQueryItem] = []
+    
+    init(threadId: String, page: String) {
+//        init(threadId: String) {
+
+        self.methodPath = "/" + threadId + "/" + page + ".json"
+
+//        self.methodPath = "/" + threadId + EndPoints.threads
+    }
+}
+
+
+struct BoardsResource: APIResource {
+    typealias ModelType = BoardsCategories
+    
+    let methodPath = EndPoints.boards
+    
+    let queryItems = [
+           URLQueryItem(name: "task", value: "get_boards"),
+    ]
 }
 
