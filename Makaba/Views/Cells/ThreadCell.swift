@@ -9,9 +9,91 @@
 import UIKit
 
 class ThreadCell: BoardsListTableViewCell {
+    
+    /*
+    static func preferredHeightForThread(_ thread: Thread, andWidth width: CGFloat) -> CGFloat {
+        let padding: CGFloat = 15.0
+        let thumbnailWidth: CGFloat = 80.0
+        var totalHeight: CGFloat = padding
+        let textWidthAvailable = width - padding * 3 - thumbnailWidth
+        var totalTextHeightAddition: CGFloat = 0.0
+        var headingStringHeight: CGFloat = 0.0
+        if thread.posts[0].subject.count > 0 {
+            let headingString = thread.posts[0].subject
+            headingStringHeight += heightForHeading(headingString, width: textWidthAvailable)
+            
+        }
+        totalTextHeightAddition += headingStringHeight
+        totalTextHeightAddition += padding
+        var commentStringHeight: CGFloat = 0.0
+        if thread.posts[0].comment.count > 0 {
+            let commentString = thread.posts[0].comment
+            commentStringHeight += heightForComment(commentString, width: textWidthAvailable)
+        }
+        totalTextHeightAddition += commentStringHeight
+        totalTextHeightAddition += padding
+        totalHeight += max(totalTextHeightAddition, thumbnailWidth + padding)
+        return totalHeight.rounded(.up)
+    }
+    
+    static var commentHeight: CGFloat?
+    static var headingHeight: CGFloat?
+    
+    static func heightForComment(_ comment: String, width: CGFloat) -> CGFloat {
+        let height = comment.boundingRect(
+            with: CGSize(
+                width: width,
+                height: .greatestFiniteMagnitude
+            ),
+            options: [.usesFontLeading, .usesLineFragmentOrigin],
+            attributes: [
+                .font: UIFont.preferredFont(forTextStyle: .body).withSize(14.0)
+            ],
+            context: nil
+        ).size.height
+        
+        return min(height, CGFloat(90.0))
+    }
+    
+    static func heightForHeading(_ heading: String, width: CGFloat) -> CGFloat {
+        let height = heading.boundingRect(
+            with: CGSize(
+                width: width,
+                height: .greatestFiniteMagnitude
+            ),
+            options: [.usesFontLeading, .usesLineFragmentOrigin],
+            attributes: [
+                .font: UIFont.preferredFont(forTextStyle: .headline).withSize(17.0)
+            ],
+            context: nil
+        ).size.height
+        
+        return height
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        let padding: CGFloat = 15.0
+        let thumbnailWidth: CGFloat = 80.0
+        let textWidthAvailable = bounds.width - padding * 3 - thumbnailWidth
+        
+        threadThumbnail.frame = CGRect(x: padding, y: padding, width: 80.0, height: 80.0)
+        
+        heading.frame = CGRect(
+            x: padding + thumbnailWidth + padding,
+            y: padding, width: textWidthAvailable,
+            height: ThreadCell.heightForHeading(heading.text ?? "", width: textWidthAvailable)
+        )
+        heading.preferredMaxLayoutWidth = heading.frame.width
+    
+        print("ThreadCell.commentHeight = \(ThreadCell.commentHeight)")
+        detailText.frame = CGRect(x: padding + thumbnailWidth + padding, y: padding + heading.frame.height + padding, width: textWidthAvailable, height: ThreadCell.heightForComment(detailText.text ?? "", width: textWidthAvailable))
+            detailText.preferredMaxLayoutWidth = detailText.frame.width
+    }*/
     // MARK: - Instance Properties
     let threadThumbnail: UIImageView = {
-        let imageView = UIImageView()
+        let imageView = UIImageView(image: UIImage(named: "placeholder"))
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
@@ -28,14 +110,7 @@ class ThreadCell: BoardsListTableViewCell {
         label.textColor = #colorLiteral(red: 0.831299305, green: 0.8314197063, blue: 0.8391151428, alpha: 1)
         return label
     }()
-    
-    let detail: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-//        view.backgroundColor = .red
-        return view
-    }()
-    
+
     let detailText: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -46,77 +121,22 @@ class ThreadCell: BoardsListTableViewCell {
         return label
     }()
 
-    let fileImage: UIImageView = {
-        let configuration = UIImage.SymbolConfiguration(scale: .small)
-        var image = UIImage(systemName: "photo", withConfiguration: configuration)!
-        image = image.withTintColor(#colorLiteral(red: 0.5960256457, green: 0.5921916366, blue: 0.6116896868, alpha: 1), renderingMode: .alwaysOriginal)
-        
-        var imageView = UIImageView(image: image)
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .bottom
-        return imageView
-    }()
-    
-    let filesCount: UILabel = {
+    var statLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "46"
-        label.font = UIFont.preferredFont(forTextStyle: .footnote).withSize(12.0)
+        label.font = UIFont.preferredFont(forTextStyle: .footnote).withSize(13.0)
         label.textColor = #colorLiteral(red: 0.5960256457, green: 0.5921916366, blue: 0.6116896868, alpha: 1)
         return label
     }()
-    
-    
-    let commentImage: UIImageView = {
-        let configuration = UIImage.SymbolConfiguration(scale: .small)
-        var image = UIImage(systemName: "text.bubble", withConfiguration: configuration)!
-        image = image.withTintColor(#colorLiteral(red: 0.5960256457, green: 0.5921916366, blue: 0.6116896868, alpha: 1), renderingMode: .alwaysOriginal)
-        
-        var imageView = UIImageView(image: image)
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .bottom
-        return imageView
-    }()
-    
-    
-    let postsCount: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "146"
-        label.font = UIFont.preferredFont(forTextStyle: .footnote).withSize(12.0)
-        label.textColor = #colorLiteral(red: 0.5960256457, green: 0.5921916366, blue: 0.6116896868, alpha: 1)
-
-        return label
-    }()
-    
-    
-    let clockImage: UIImageView = {
-        let configuration = UIImage.SymbolConfiguration(scale: .small)
-        var image = UIImage(systemName: "clock", withConfiguration: configuration)!
-        image = image.withTintColor(#colorLiteral(red: 0.5960256457, green: 0.5921916366, blue: 0.6116896868, alpha: 1), renderingMode: .alwaysOriginal)
-        var imageView = UIImageView(image: image)
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .bottom
-        return imageView
-    }()
-    
-    let date: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "16.06.2020, 15:36"
-        label.font = UIFont.preferredFont(forTextStyle: .footnote).withSize(12.0)
-        label.textColor = #colorLiteral(red: 0.5960256457, green: 0.5921916366, blue: 0.6116896868, alpha: 1)
-
-        return label
-    }()
-    
-    
-    
     
     // MARK: - Intialization
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        contentView.addSubview(threadThumbnail)
+        contentView.addSubview(heading)
+        contentView.addSubview(detailText)
         
         setupViews()
         setupSwipeIcon()
@@ -124,13 +144,10 @@ class ThreadCell: BoardsListTableViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-       
     }
     
-    // MARK: - Instance Properties
-
-
     // MARK: - Instance Methods
+    
     func setupSwipeIcon() {
         let configuration = UIImage.SymbolConfiguration(scale: .large)
         var image = UIImage(systemName: "bookmark.fill", withConfiguration: configuration)!
@@ -138,63 +155,50 @@ class ThreadCell: BoardsListTableViewCell {
         starImage.image = image
     }
     
+    func createStatsString(filesCount: Int, postsCount: Int, date: String) {
+        let string = NSMutableAttributedString(string: " \(filesCount)   \(postsCount)   \(date)", attributes: [:])
+        let fileImage = UIImage(systemName: "photo")!
+        let fileImageAttachment = NSTextAttachment(image: fileImage)
+        let fileString = NSAttributedString(attachment: fileImageAttachment)
+        string.insert(fileString, at: 0)
+        print(fileString.string.count)
+        let commentImage = UIImage(systemName: "text.bubble")!
+        let commentImageAttachment = NSTextAttachment(image: commentImage)
+        let commentString = NSAttributedString(attachment: commentImageAttachment)
+        string.insert(commentString, at: fileString.string.count + String(filesCount).count + 3)
+        let dateImage = UIImage(systemName: "clock")!
+        let dateImageAttachment = NSTextAttachment(image: dateImage)
+        let dateString = NSAttributedString(attachment: dateImageAttachment)
+        string.insert(dateString, at: fileString.string.count + String(filesCount).count + commentString.string.count + String(postsCount).count + 6)
+         statLabel.attributedText = string
+    }
     
     func setupViews() {
-//        backgroundColor = #colorLiteral(red: 0.07841930538, green: 0.0823603943, blue: 0.09017961472, alpha: 1)
-        
-
-        contentView.addSubview(detail)
-        detail.addSubview(heading)
-        detail.addSubview(detailText)
-        detail.addSubview(fileImage)
-        detail.addSubview(filesCount)
-        detail.addSubview(commentImage)
-        detail.addSubview(postsCount)
-        detail.addSubview(clockImage)
-        detail.addSubview(date)
+        contentView.addSubview(heading)
+        contentView.addSubview(detailText)
+        contentView.addSubview(statLabel)
         contentView.addSubview(threadThumbnail)
 
-        detail.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 15.0).isActive = true
-        detail.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -15.0).isActive = true
-        detail.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 118.0).isActive = true
-        detail.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -20.0).isActive = true
-        
-        heading.topAnchor.constraint(equalTo: detail.topAnchor).isActive = true
-        heading.leftAnchor.constraint(equalTo: detail.leftAnchor).isActive = true
-        heading.rightAnchor.constraint(equalTo: detail.rightAnchor).isActive = true
+        heading.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 15.0).isActive = true
+        heading.leftAnchor.constraint(equalTo:  contentView.leftAnchor, constant: 118.0).isActive = true
+        heading.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -20.0).isActive = true
         heading.setContentHuggingPriority(UILayoutPriority.defaultHigh, for: .vertical)
         
-        
         detailText.topAnchor.constraint(equalTo: heading.bottomAnchor, constant: 5.0).isActive = true
-        detailText.leftAnchor.constraint(equalTo: detail.leftAnchor).isActive = true
-        detailText.rightAnchor.constraint(equalTo: detail.rightAnchor).isActive = true
+        detailText.leftAnchor.constraint(equalTo:  heading.leftAnchor).isActive = true
+        detailText.rightAnchor.constraint(equalTo: heading.rightAnchor).isActive = true
         detailText.setContentHuggingPriority(UILayoutPriority.defaultHigh, for: .vertical)
-
-        fileImage.topAnchor.constraint(equalTo: detailText.bottomAnchor, constant: 5.0).isActive = true
-        fileImage.leftAnchor.constraint(equalTo: detailText.leftAnchor).isActive = true
-        fileImage.bottomAnchor.constraint(equalTo: detail.bottomAnchor).isActive = true
         
-        filesCount.centerYAnchor.constraint(equalTo: fileImage.centerYAnchor).isActive = true
-        filesCount.leftAnchor.constraint(equalTo: fileImage.rightAnchor, constant: 3.0).isActive = true
-        
-        commentImage.centerYAnchor.constraint(equalTo: fileImage.centerYAnchor).isActive = true
-        commentImage.leftAnchor.constraint(equalTo: filesCount.rightAnchor, constant: 5.0).isActive = true
-        
-        postsCount.centerYAnchor.constraint(equalTo: fileImage.centerYAnchor).isActive = true
-        postsCount.leftAnchor.constraint(equalTo: commentImage.rightAnchor, constant: 3.0).isActive = true
-        
-        clockImage.centerYAnchor.constraint(equalTo: fileImage.centerYAnchor).isActive = true
-        clockImage.leftAnchor.constraint(equalTo: postsCount.rightAnchor, constant: 5.0).isActive = true
-        
-        date.centerYAnchor.constraint(equalTo: fileImage.centerYAnchor).isActive = true
-        date.leftAnchor.constraint(equalTo: clockImage.rightAnchor, constant: 3.0).isActive = true
-
+        statLabel.topAnchor.constraint(equalTo: detailText.bottomAnchor, constant: 5.0).isActive = true
+        statLabel.leftAnchor.constraint(equalTo: detailText.leftAnchor).isActive = true
+        statLabel.rightAnchor.constraint(equalTo: detailText.rightAnchor).isActive = true
+        statLabel.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -15.0).isActive = true
+ 
         threadThumbnail.widthAnchor.constraint(equalToConstant: 88.0).isActive = true
         threadThumbnail.heightAnchor.constraint(equalToConstant: 88.0).isActive = true
         threadThumbnail.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 15.0).isActive = true
         threadThumbnail.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 15.0).isActive = true
         threadThumbnail.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -15.0).isActive = true
-    }
-
+     }
 }
 
