@@ -104,7 +104,7 @@ class ThreadCell: BoardsListTableViewCell {
     let heading: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.numberOfLines = 2
+        label.numberOfLines = 0
         label.lineBreakMode = .byTruncatingTail
         label.font = UIFont.preferredFont(forTextStyle: .headline).withSize(17.0)
         label.textColor = #colorLiteral(red: 0.831299305, green: 0.8314197063, blue: 0.8391151428, alpha: 1)
@@ -172,6 +172,19 @@ class ThreadCell: BoardsListTableViewCell {
         string.insert(dateString, at: fileString.string.count + String(filesCount).count + commentString.string.count + String(postsCount).count + 6)
          statLabel.attributedText = string
     }
+    
+    
+    func configure(_ thread: Thread) {
+        threadThumbnail.image = thread.image ?? UIImage(named: "placeholder")
+        detailText.text = thread.posts[0].comment
+        heading.text = thread.posts[0].subject
+        createStatsString(
+           filesCount: thread.postsCount,
+           postsCount: thread.filesCount,
+           date: thread.posts[0].dateString
+        )
+    }
+    
     
     func setupViews() {
         contentView.addSubview(heading)
