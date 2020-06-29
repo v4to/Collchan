@@ -185,7 +185,6 @@ class ThreadCell: BoardsListTableViewCell {
             completion: nil
         )
         */
-        
         threadThumbnail.image = thread.image ?? UIImage(named: "placeholder")
         detailText.text = thread.posts[0].comment
         heading.text = thread.posts[0].subject
