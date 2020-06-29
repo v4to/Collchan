@@ -7,7 +7,7 @@
 //
 
 import XCTest
-@testable import Makaba
+@testable import Thunder
 
 class MakabaTests: XCTestCase {
 

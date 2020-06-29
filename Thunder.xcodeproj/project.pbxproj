@@ -15,10 +15,10 @@
 		494711EB249FEB660028F57D /* ThreadsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 494711EA249FEB660028F57D /* ThreadsTableViewController.swift */; };
 		4949BB5324908922005AA6FE /* ActionSheetButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4949BB5224908922005AA6FE /* ActionSheetButton.swift */; };
 		494F6E5F248B32BE00D878A0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 494F6E5E248B32BE00D878A0 /* Constants.swift */; };
+		495164B724AA21AB0023AF79 /* ThreadsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495164B624AA21AB0023AF79 /* ThreadsService.swift */; };
 		4952E90C24A3871A00B42E35 /* ThreadCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4952E90B24A3871A00B42E35 /* ThreadCell.swift */; };
 		495ABBB224832A6700233583 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495ABBB124832A6700233583 /* NetworkService.swift */; };
 		495ABBB424832ACA00233583 /* BoardsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495ABBB324832ACA00233583 /* BoardsService.swift */; };
-		495EF6B02499432100AC47C1 /* ThreadsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495EF6AF2499432100AC47C1 /* ThreadsService.swift */; };
 		499F7C3B248C5A9F0010B97A /* ThreadsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 499F7C3A248C5A9F0010B97A /* ThreadsModel.swift */; };
 		499FAEAE24979358001B4A1C /* Thunder.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 499FAEAC24979358001B4A1C /* Thunder.xcdatamodeld */; };
 		499FC06A2498D1C400EBE0FB /* FavoriteBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 499FC0682498D1C400EBE0FB /* FavoriteBoard.swift */; };
@@ -28,8 +28,8 @@
 		49EA7BE52476DC8500BFEC13 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49EA7BE42476DC8500BFEC13 /* ViewController.swift */; };
 		49EA7BED2476DC8A00BFEC13 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49EA7BEC2476DC8A00BFEC13 /* Assets.xcassets */; };
 		49EA7BF02476DC8A00BFEC13 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 49EA7BEE2476DC8A00BFEC13 /* LaunchScreen.storyboard */; };
-		49EA7BFB2476DC8B00BFEC13 /* MakabaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49EA7BFA2476DC8B00BFEC13 /* MakabaTests.swift */; };
-		49EA7C062476DC8B00BFEC13 /* MakabaUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49EA7C052476DC8B00BFEC13 /* MakabaUITests.swift */; };
+		49EA7BFB2476DC8B00BFEC13 /* ThunderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49EA7BFA2476DC8B00BFEC13 /* ThunderTests.swift */; };
+		49EA7C062476DC8B00BFEC13 /* ThunderUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49EA7C052476DC8B00BFEC13 /* ThunderUITests.swift */; };
 		49EBD101247819450051A348 /* SavedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49EBD100247819450051A348 /* SavedViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -59,10 +59,10 @@
 		494711EA249FEB660028F57D /* ThreadsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadsTableViewController.swift; sourceTree = "<group>"; };
 		4949BB5224908922005AA6FE /* ActionSheetButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionSheetButton.swift; sourceTree = "<group>"; };
 		494F6E5E248B32BE00D878A0 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		495164B624AA21AB0023AF79 /* ThreadsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadsService.swift; sourceTree = "<group>"; };
 		4952E90B24A3871A00B42E35 /* ThreadCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadCell.swift; sourceTree = "<group>"; };
 		495ABBB124832A6700233583 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		495ABBB324832ACA00233583 /* BoardsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardsService.swift; sourceTree = "<group>"; };
-		495EF6AF2499432100AC47C1 /* ThreadsService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ThreadsService.swift; path = Makaba/Model/ThreadsService.swift; sourceTree = SOURCE_ROOT; };
 		499F7C3A248C5A9F0010B97A /* ThreadsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadsModel.swift; sourceTree = "<group>"; };
 		499FAEAD24979358001B4A1C /* Thunder.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Thunder.xcdatamodel; sourceTree = "<group>"; };
 		499FC0682498D1C400EBE0FB /* FavoriteBoard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteBoard.swift; sourceTree = "<group>"; };
@@ -75,10 +75,10 @@
 		49EA7BEF2476DC8A00BFEC13 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		49EA7BF12476DC8A00BFEC13 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		49EA7BF62476DC8B00BFEC13 /* MakabaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MakabaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		49EA7BFA2476DC8B00BFEC13 /* MakabaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MakabaTests.swift; sourceTree = "<group>"; };
+		49EA7BFA2476DC8B00BFEC13 /* ThunderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThunderTests.swift; sourceTree = "<group>"; };
 		49EA7BFC2476DC8B00BFEC13 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		49EA7C012476DC8B00BFEC13 /* MakabaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MakabaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		49EA7C052476DC8B00BFEC13 /* MakabaUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MakabaUITests.swift; sourceTree = "<group>"; };
+		49EA7C052476DC8B00BFEC13 /* ThunderUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThunderUITests.swift; sourceTree = "<group>"; };
 		49EA7C072476DC8B00BFEC13 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		49EBD100247819450051A348 /* SavedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -169,10 +169,10 @@
 		499FAEBB24982286001B4A1C /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				495EF6AF2499432100AC47C1 /* ThreadsService.swift */,
 				495ABBB124832A6700233583 /* NetworkService.swift */,
 				495ABBB324832ACA00233583 /* BoardsService.swift */,
 				494711E6249F9D810028F57D /* NetworkRequests.swift */,
+				495164B624AA21AB0023AF79 /* ThreadsService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -180,9 +180,9 @@
 		49EA7BD42476DC8500BFEC13 = {
 			isa = PBXGroup;
 			children = (
-				49EA7BDF2476DC8500BFEC13 /* Makaba */,
-				49EA7BF92476DC8B00BFEC13 /* MakabaTests */,
-				49EA7C042476DC8B00BFEC13 /* MakabaUITests */,
+				49EA7BDF2476DC8500BFEC13 /* Thunder */,
+				49EA7BF92476DC8B00BFEC13 /* ThunderTests */,
+				49EA7C042476DC8B00BFEC13 /* ThunderUITests */,
 				49EA7BDE2476DC8500BFEC13 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -197,7 +197,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		49EA7BDF2476DC8500BFEC13 /* Makaba */ = {
+		49EA7BDF2476DC8500BFEC13 /* Thunder */ = {
 			isa = PBXGroup;
 			children = (
 				499FAEBB24982286001B4A1C /* Services */,
@@ -211,25 +211,25 @@
 				49EA7BEE2476DC8A00BFEC13 /* LaunchScreen.storyboard */,
 				49EA7BF12476DC8A00BFEC13 /* Info.plist */,
 			);
-			path = Makaba;
+			path = Thunder;
 			sourceTree = "<group>";
 		};
-		49EA7BF92476DC8B00BFEC13 /* MakabaTests */ = {
+		49EA7BF92476DC8B00BFEC13 /* ThunderTests */ = {
 			isa = PBXGroup;
 			children = (
-				49EA7BFA2476DC8B00BFEC13 /* MakabaTests.swift */,
+				49EA7BFA2476DC8B00BFEC13 /* ThunderTests.swift */,
 				49EA7BFC2476DC8B00BFEC13 /* Info.plist */,
 			);
-			path = MakabaTests;
+			path = ThunderTests;
 			sourceTree = "<group>";
 		};
-		49EA7C042476DC8B00BFEC13 /* MakabaUITests */ = {
+		49EA7C042476DC8B00BFEC13 /* ThunderUITests */ = {
 			isa = PBXGroup;
 			children = (
-				49EA7C052476DC8B00BFEC13 /* MakabaUITests.swift */,
+				49EA7C052476DC8B00BFEC13 /* ThunderUITests.swift */,
 				49EA7C072476DC8B00BFEC13 /* Info.plist */,
 			);
-			path = MakabaUITests;
+			path = ThunderUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -362,6 +362,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				495164B724AA21AB0023AF79 /* ThreadsService.swift in Sources */,
 				499FAEAE24979358001B4A1C /* Thunder.xcdatamodeld in Sources */,
 				495ABBB224832A6700233583 /* NetworkService.swift in Sources */,
 				49EBD101247819450051A348 /* SavedViewController.swift in Sources */,
@@ -373,7 +374,6 @@
 				49EA7BE12476DC8500BFEC13 /* AppDelegate.swift in Sources */,
 				499F7C3B248C5A9F0010B97A /* ThreadsModel.swift in Sources */,
 				495ABBB424832ACA00233583 /* BoardsService.swift in Sources */,
-				495EF6B02499432100AC47C1 /* ThreadsService.swift in Sources */,
 				494F6E5F248B32BE00D878A0 /* Constants.swift in Sources */,
 				4918E38C249BC5A30081DF7C /* UIViewExtension.swift in Sources */,
 				49EA7BE32476DC8500BFEC13 /* SceneDelegate.swift in Sources */,
@@ -389,7 +389,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				49EA7BFB2476DC8B00BFEC13 /* MakabaTests.swift in Sources */,
+				49EA7BFB2476DC8B00BFEC13 /* ThunderTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -397,7 +397,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				49EA7C062476DC8B00BFEC13 /* MakabaUITests.swift in Sources */,
+				49EA7C062476DC8B00BFEC13 /* ThunderUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -548,7 +548,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = MF5RYH2YK2;
-				INFOPLIST_FILE = Makaba/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/Thunder/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -567,7 +567,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = MF5RYH2YK2;
-				INFOPLIST_FILE = Makaba/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/Thunder/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
