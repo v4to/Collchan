@@ -14,7 +14,7 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
     
     var page = 0
     var tasks = [IndexPath: URLSessionDataTask]()
-    var cellHeights = [IndexPath: CGFloat]()
+    var cellHeights = [Int: CGFloat]()
     var isAllowedToLoadMore = true
     private var threadsService = ThreadsService()
     private var imageRequests = [ImageRequest]()
@@ -61,7 +61,9 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
     
     func setupTableView() {
         tableView.register(ThreadCell.self, forCellReuseIdentifier: cellId)
-//        tableView.estimatedRowHeight = 160.0
+//        tableView.estimatedRowHeight = 180.0
+//        self.tableView.estimatedSectionHeaderHeight = 0;
+//        self.tableView.estimatedSectionFooterHeight = 0;
 //        tableView.rowHeight = 180.0
         tableView.prefetchDataSource = self
         // remove bottom separator when tableView is empty
@@ -112,6 +114,10 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
         return result
     }
     
+//    func calculateHeightForNewItems() {
+//
+//    }
+    
     func loadThreads() {
         guard isAllowedToLoadMore else {
             return
@@ -133,23 +139,61 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
             if result.isCurrentPageTheLast {
                 self.isAllowedToLoadMore = false
             }
+//
             
-            self.sectionsArray += result.threads
-            
-            for i in self.sectionsArray.indices {
-                self.sectionsArray[i].posts[0].comment = String(self.sectionsArray[i].posts[0].comment.prefix(160))
+//            DispatchQueue.global(qos: .userInteractive) {
+            let width = self.tableView.bounds.width
+            DispatchQueue.global(qos: .userInteractive).async {
+//            DispatchQueue.global().async {
+                self.sectionsArray += result.threads/*[0..<result.threads.count - 10]*/
+                for i in self.sectionsArray.indices {
+//                    self.sectionsArray[i].comment = String(self.sectionsArray[i].comment.prefix(160))
+
+                    self.sectionsArray[i].posts[0].comment = String(self.sectionsArray[i].posts[0].comment.prefix(160))
+//                    let thread = self.sectionsArray[i]
+//                    let height = ThreadCell.preferredHeightForThread(thread, andWidth: width)
+//                    self.cellHeights[i] = height
+                }
+                
+                for i in (self.sectionsArray.count - result.threads.count)..<self.sectionsArray.count {
+                    let thread = self.sectionsArray[i]
+                    let height = ThreadCell.preferredHeightForThread(thread, andWidth: width)
+                    self.cellHeights[i] = height
+                }
+                
+                
+//                for i in r
+//                func caculateHeightFonNewItems()
+                let indexPathsToInsert = self.generateIndexPathsToInsert(newItemsCount: result.threads.count)
+                DispatchQueue.main.async {
+                     if self.page == 0 {
+                                     self.tableView.reloadData()
+                                 } else {
+////                                     UIView.performWithoutAnimation {
+//                     //                self.tableView.beginUpdates()
+////                        self.tableView.performBatchUpdates({
+////                        UIView.performWithoutAnimation {
+                            self.tableView.insertRows(at: indexPathsToInsert, with: .fade)
+//
+                        }
+//
+
+//                                     }
+//                                 }
+                                 self.page += 1
+//                }
+            }
             }
             
+           
             
+            /*
             if self.page == 0 {
                 self.tableView.reloadData()
             } else {
-//                UIView.performWithoutAnimation {
-                    self.tableView.insertRows(at: self.generateIndexPathsToInsert(newItemsCount: result.threads.count) , with: .automatic)
-
-//                }
-            }
-            self.page += 1
+                    self.tableView.insertRows(at: self.generateIndexPathsToInsert(newItemsCount: result.threads.count) , with: .fade)
+            }*/
+//            self.page += 1
         }
     }
    
@@ -180,13 +224,62 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return sectionsArray.count
+//        return 120
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! ThreadCell
-        print(indexPath)
+//        print(indexPath)
+        if indexPath.row == self.sectionsArray.count - 4 {
+                    loadThreads()
+                }
+        var thread = sectionsArray[indexPath.row]
         
-        let thread = sectionsArray[indexPath.row]
+//        if let image = thread.image {
+//            UIView.transition(
+//            with: cell.threadThumbnail,
+//                    duration: 3.0,
+//                    options: .transitionCrossDissolve,
+//                    animations: {  cell.threadThumbnail.image = thread.image },
+//                    completion: nil
+//                )
+////            cell.threadThumbnail.image = image
+//        }
+        
+        /*
+        if let path = thread.thumbnailURL {
+            if tasks[indexPath] != nil {
+                if let image = thread.image {
+                    cell.threadThumbnail.image = image
+                    tasks.removeValue(forKey: indexPath)
+                }
+            } else {
+                let url = URL(string: BaseUrls.dvach + path)!
+                let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+                    if let error = error {
+                        print(error)
+                    }
+                    if let data = data {
+                        let image = UIImage(data: data)
+                        thread.image = image
+                        self.sectionsArray[indexPath.row] = thread
+                        DispatchQueue.main.async {
+    //                            cell.configure(thread)
+//                            UIView.transition(
+//                                with: cell.threadThumbnail,
+//                                        duration: 3.0,
+//                                        options: .transitionCrossDissolve,
+//                                        animations: {  cell.threadThumbnail.image = thread.image },
+//                                        completion: nil
+//                                    )
+//                            cell.threadThumbnail.image = thread.image
+                        }
+                    }
+                }
+                task.resume()
+                tasks[indexPath] = task
+            }
+        }*/
         
         cell.configure(thread)
         
@@ -219,7 +312,24 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
    
 //     caching height to prevent scroll jump
     override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return cellHeights[indexPath] ?? 166.0
+        return UITableView.automaticDimension
+    }
+    
+//    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+//        return 15.0
+//    }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if let height = cellHeights[indexPath.row] {
+            return height
+        }
+        
+        return cellHeights[indexPath.row]!
+        /*
+        let thread = sectionsArray[indexPath.row]
+        let height = ThreadCell.preferredHeightForThread(thread, andWidth: tableView.bounds.width)
+        cellHeights[indexPath] = height*/
+//        return height
     }
 //
 //
@@ -231,7 +341,7 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
     
     
     func collectionView(_ tableView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
-      print(indexPaths)
+//      print(indexPaths)
     }
     
     
@@ -240,7 +350,7 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
 //            if let _ = tasks[indexPath] {
 //                continue
 //            }
-        
+           
         
 //
 //            var thread = sectionsArray[indexPath.row]
@@ -269,23 +379,25 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
     override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if let dataTask = tasks[indexPath] {
             dataTask.cancel()
-            print("removed")
+//            print("removed")
             tasks.removeValue(forKey: indexPath)
         }
     }
     
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        cellHeights[indexPath] = cell.frame.size.height
-        if indexPath.row == self.sectionsArray.count - 3 {
-            loadThreads()
-        }
+//        cellHeights[indexPath] = cell.frame.size.height
+        
+        
         guard let cell = cell as? ThreadCell else {
             return
         }
         var thread = sectionsArray[indexPath.row]
-        if let _ = thread.image {
+        /*
+        if let image = thread.image {
+//            return cell.threadThumbnail.image = image
+//            cell.configure(thread)
             return
-        }
+        }*/
         
         // TODO: - Create separate image request
         
@@ -307,6 +419,11 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
                         self.sectionsArray[indexPath.row] = thread
                         DispatchQueue.main.async {
                             cell.configure(thread)
+//                            if let cell = tableView.cellForRow(at: indexPath) as? ThreadCell {
+//                                cell.threadThumbnail.image = thread.image
+//                            tableView.reloadRows(at: [indexPath], with: .automatic)
+//                            }
+                            
                         }
                     }
                 }

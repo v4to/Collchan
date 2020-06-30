@@ -10,7 +10,7 @@ import UIKit
 
 class ThreadCell: BoardsListTableViewCell {
     
-    /*
+    
     static func preferredHeightForThread(_ thread: Thread, andWidth width: CGFloat) -> CGFloat {
         let padding: CGFloat = 15.0
         let thumbnailWidth: CGFloat = 80.0
@@ -18,26 +18,48 @@ class ThreadCell: BoardsListTableViewCell {
         let textWidthAvailable = width - padding * 3 - thumbnailWidth
         var totalTextHeightAddition: CGFloat = 0.0
         var headingStringHeight: CGFloat = 0.0
+//        if thread.heading.count > 0 {
         if thread.posts[0].subject.count > 0 {
+//            let headingString = thread.heading
+
             let headingString = thread.posts[0].subject
             headingStringHeight += heightForHeading(headingString, width: textWidthAvailable)
-            
+            totalTextHeightAddition += headingStringHeight
+            totalTextHeightAddition += padding
         }
-        totalTextHeightAddition += headingStringHeight
-        totalTextHeightAddition += padding
+        
+        /*
         var commentStringHeight: CGFloat = 0.0
         if thread.posts[0].comment.count > 0 {
+
+//        if thread.comment.count > 0 {
+//            let commentString = thread.comment
+
             let commentString = thread.posts[0].comment
             commentStringHeight += heightForComment(commentString, width: textWidthAvailable)
-        }
-        totalTextHeightAddition += commentStringHeight
+            totalTextHeightAddition += commentStringHeight
+            totalTextHeightAddition += padding
+        }*/
+        
+        
+        var statsStringHeight: CGFloat = 0.0
+//        let statsString = createStatsString(filesCount: thread.filesCount, postsCount: thread.postsCount, date: thread.dateString)
+        
+        /*
+        let statsString = createStatsString(filesCount: thread.filesCount, postsCount: thread.postsCount, date: thread.posts[0].dateString)
+        statsStringHeight += heightForComment(statsString.string, width: textWidthAvailable)
+        totalTextHeightAddition += statsStringHeight
         totalTextHeightAddition += padding
+        */
         totalHeight += max(totalTextHeightAddition, thumbnailWidth + padding)
         return totalHeight.rounded(.up)
     }
     
     static var commentHeight: CGFloat?
     static var headingHeight: CGFloat?
+    
+    
+    
     
     static func heightForComment(_ comment: String, width: CGFloat) -> CGFloat {
         let height = comment.boundingRect(
@@ -79,21 +101,54 @@ class ThreadCell: BoardsListTableViewCell {
         let textWidthAvailable = bounds.width - padding * 3 - thumbnailWidth
         
         threadThumbnail.frame = CGRect(x: padding, y: padding, width: 80.0, height: 80.0)
+        heading.frame = CGRect.zero
+        detailText.frame = CGRect.zero
+        var currentY: CGFloat = padding
         
-        heading.frame = CGRect(
-            x: padding + thumbnailWidth + padding,
-            y: padding, width: textWidthAvailable,
-            height: ThreadCell.heightForHeading(heading.text ?? "", width: textWidthAvailable)
-        )
-        heading.preferredMaxLayoutWidth = heading.frame.width
-    
-        print("ThreadCell.commentHeight = \(ThreadCell.commentHeight)")
-        detailText.frame = CGRect(x: padding + thumbnailWidth + padding, y: padding + heading.frame.height + padding, width: textWidthAvailable, height: ThreadCell.heightForComment(detailText.text ?? "", width: textWidthAvailable))
+        if heading.text!.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
+            heading.frame = CGRect(
+                x: padding + thumbnailWidth + padding,
+                y: padding,
+                width: textWidthAvailable,
+                height: ThreadCell.heightForHeading(heading.text ?? "", width: textWidthAvailable)
+            )
+            heading.preferredMaxLayoutWidth = heading.frame.width
+            currentY += heading.frame.height
+            currentY += padding
+        }
+        
+//        print("deatailText.text = \(detailText.text!)a")
+//        print("ThreadCell.commentHeight = \(ThreadCell.commentHeight)")
+        /*
+        if detailText.text!.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
+//            print(detailText.text!)
+            detailText.frame = CGRect(
+                x: padding + thumbnailWidth + padding,
+//                y: padding + heading.frame.height + padding,
+                y: currentY,
+                width: textWidthAvailable,
+                height: ThreadCell.heightForComment(detailText.text ?? "", width: textWidthAvailable)
+            )
             detailText.preferredMaxLayoutWidth = detailText.frame.width
-    }*/
+            currentY += detailText.frame.height
+            currentY += padding
+        }*/
+//        print(detailText.frame)
+        /*
+        statLabel.frame = CGRect(
+            x: padding + thumbnailWidth + padding,
+            y: currentY,
+//            + heading.frame.height + padding + detailText.frame.height + padding
+            width: textWidthAvailable,
+            height: ThreadCell.heightForComment(statLabel.attributedText!.string, width: textWidthAvailable)
+        )*/
+        
+    }
     // MARK: - Instance Properties
     let threadThumbnail: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "placeholder"))
+        let imageView = UIImageView()
+//        let imageView = UIImageView(image: UIImage(named: "placeholder"))
+
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
@@ -103,7 +158,7 @@ class ThreadCell: BoardsListTableViewCell {
     
     let heading: UILabel = {
         let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
+//        label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
         label.lineBreakMode = .byTruncatingTail
         label.font = UIFont.preferredFont(forTextStyle: .headline).withSize(17.0)
@@ -113,7 +168,7 @@ class ThreadCell: BoardsListTableViewCell {
 
     let detailText: UILabel = {
         let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
+//        label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = #colorLiteral(red: 0.5960256457, green: 0.5921916366, blue: 0.6116896868, alpha: 1)
         label.numberOfLines = 5
         label.lineBreakMode = .byTruncatingTail
@@ -123,7 +178,7 @@ class ThreadCell: BoardsListTableViewCell {
 
     var statLabel: UILabel = {
         let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
+//        label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.preferredFont(forTextStyle: .footnote).withSize(13.0)
         label.textColor = #colorLiteral(red: 0.5960256457, green: 0.5921916366, blue: 0.6116896868, alpha: 1)
         return label
@@ -137,8 +192,9 @@ class ThreadCell: BoardsListTableViewCell {
         contentView.addSubview(threadThumbnail)
         contentView.addSubview(heading)
         contentView.addSubview(detailText)
+        contentView.addSubview(statLabel)
         
-        setupViews()
+//        setupViews()
         setupSwipeIcon()
     }
     
@@ -155,13 +211,13 @@ class ThreadCell: BoardsListTableViewCell {
         starImage.image = image
     }
     
-    func createStatsString(filesCount: Int, postsCount: Int, date: String) {
+    static func createStatsString(filesCount: Int, postsCount: Int, date: String) -> NSMutableAttributedString {
         let string = NSMutableAttributedString(string: " \(filesCount)   \(postsCount)   \(date)", attributes: [:])
         let fileImage = UIImage(systemName: "photo")!
         let fileImageAttachment = NSTextAttachment(image: fileImage)
         let fileString = NSAttributedString(attachment: fileImageAttachment)
         string.insert(fileString, at: 0)
-        print(fileString.string.count)
+//        print(fileString.string.count)
         let commentImage = UIImage(systemName: "text.bubble")!
         let commentImageAttachment = NSTextAttachment(image: commentImage)
         let commentString = NSAttributedString(attachment: commentImageAttachment)
@@ -170,25 +226,30 @@ class ThreadCell: BoardsListTableViewCell {
         let dateImageAttachment = NSTextAttachment(image: dateImage)
         let dateString = NSAttributedString(attachment: dateImageAttachment)
         string.insert(dateString, at: fileString.string.count + String(filesCount).count + commentString.string.count + String(postsCount).count + 6)
-         statLabel.attributedText = string
+//        statLabel.attributedText = string
+        return string
     }
     
+//    static var attributedText:
     
     func configure(_ thread: Thread) {
         UIView.transition(
             with: threadThumbnail,
-            duration: 0.2,
+            duration: 0.3,
             options: .transitionCrossDissolve,
-            animations: {  self.threadThumbnail.image = thread.image ?? UIImage(named: "placeholder") },
+            animations: {  self.threadThumbnail.image = thread.image },
             completion: nil
         )
+//        detailText.text = thread.comment
+//        heading.text = thread.heading
         detailText.text = thread.posts[0].comment
         heading.text = thread.posts[0].subject
-        createStatsString(
-           filesCount: thread.postsCount,
-           postsCount: thread.filesCount,
-           date: thread.posts[0].dateString
-        )
+        statLabel.attributedText = ThreadCell.createStatsString(filesCount: thread.filesCount, postsCount: thread.postsCount, date: /*thread.posts[0].dateString*/ "12.05.2020, 15:08")
+//        createStatsString(
+//           filesCount: thread.postsCount,
+//           postsCount: thread.filesCount,
+//           date: thread.posts[0].dateString
+//        )
     }
 
     func setupViews() {

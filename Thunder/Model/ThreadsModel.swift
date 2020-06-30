@@ -84,7 +84,7 @@ extension Thread {
 //    let files: [File]
 //    var image: UIImage?
 //    let creationDate: Date
-//    let comment: String
+//    var comment: String
 //
 //    private enum CodingKeys: String, CodingKey {
 //        case heading = "subject"
@@ -96,9 +96,9 @@ extension Thread {
 //        case comment
 //    }
 //}
-
-
-
+//
+//
+//
 //extension Thread {
 //    var thumbnailURL: String? {
 //        guard files.count > 0 else {

@@ -17,9 +17,11 @@ struct ThreadsService {
     var imageRequest: ImageRequest?
     
     // MARK: - Instance methods
+//    mutating func getThreads(fromBoard boardId: String, completion: @escaping (Threads?) -> Void) {
     mutating func getThreads(fromBoard boardId: String, onPage page: Int, completion: @escaping (Threads?) -> Void) {
         let page = page == 0 ? "index" : String(page)
         
+//        threadsRequest = APIRequest(resource: ThreadsResource(threadId: boardId))
         threadsRequest = APIRequest(resource: ThreadsResource(threadId: boardId, page: page))
         threadsRequest!.load(withCompletion: completion)
     }
