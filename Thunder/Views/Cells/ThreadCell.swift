@@ -8,97 +8,114 @@
 
 import UIKit
 
+
+struct Frames {
+    var headingFrame: CGRect
+    var commentFrame: CGRect
+    var statsFrame: CGRect
+}
+
 class ThreadCell: BoardsListTableViewCell {
     
-    
-    static func preferredHeightForThread(_ thread: Thread, andWidth width: CGFloat) -> CGFloat {
-        let padding: CGFloat = 15.0
+    static func preferredHeightForThread(_ thread: Thread, andWidth width: CGFloat, index: Int) -> CGFloat {
+        let padding: CGFloat = 10.0
         let thumbnailWidth: CGFloat = 80.0
         var totalHeight: CGFloat = padding
         let textWidthAvailable = width - padding * 3 - thumbnailWidth
         var totalTextHeightAddition: CGFloat = 0.0
         var headingStringHeight: CGFloat = 0.0
-//        if thread.heading.count > 0 {
-        if thread.posts[0].subject.count > 0 {
-//            let headingString = thread.heading
-
-            let headingString = thread.posts[0].subject
-            headingStringHeight += heightForHeading(headingString, width: textWidthAvailable)
+        
+        var headingRect: CGRect = CGRect.zero
+        let headingString = thread.posts[0].subject
+        if headingString.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
+            headingRect = rectForString(
+                headingString,
+                font: UIFont.preferredFont(forTextStyle: .headline).withSize(17.0),
+                width: textWidthAvailable
+            )
+            headingStringHeight += headingRect.height
             totalTextHeightAddition += headingStringHeight
             totalTextHeightAddition += padding
         }
         
-        /*
         var commentStringHeight: CGFloat = 0.0
-        if thread.posts[0].comment.count > 0 {
-
-//        if thread.comment.count > 0 {
-//            let commentString = thread.comment
-
+        var commentRect: CGRect = CGRect.zero
+        let commentString = thread.posts[0].comment
+        if commentString.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
             let commentString = thread.posts[0].comment
-            commentStringHeight += heightForComment(commentString, width: textWidthAvailable)
+            commentRect = rectForString(
+                commentString,
+                font: UIFont.preferredFont(forTextStyle: .body).withSize(14.0),
+                width: textWidthAvailable
+            )
+            commentStringHeight += commentRect.height
             totalTextHeightAddition += commentStringHeight
             totalTextHeightAddition += padding
-        }*/
+        }
         
         
         var statsStringHeight: CGFloat = 0.0
-//        let statsString = createStatsString(filesCount: thread.filesCount, postsCount: thread.postsCount, date: thread.dateString)
-        
-        /*
         let statsString = createStatsString(filesCount: thread.filesCount, postsCount: thread.postsCount, date: thread.posts[0].dateString)
-        statsStringHeight += heightForComment(statsString.string, width: textWidthAvailable)
+        let statsRect = rectForAttributedString(
+            statsString,
+            font: UIFont.preferredFont(forTextStyle: .footnote).withSize(13.0),
+            width: textWidthAvailable
+        )
+        statsStringHeight += statsRect.height
         totalTextHeightAddition += statsStringHeight
         totalTextHeightAddition += padding
-        */
+        
         totalHeight += max(totalTextHeightAddition, thumbnailWidth + padding)
+   
+        frames[index] = Frames(headingFrame: headingRect, commentFrame: commentRect, statsFrame: statsRect)
+        
         return totalHeight.rounded(.up)
     }
+
+    static var frames = [Int: Frames]()
     
-    static var commentHeight: CGFloat?
-    static var headingHeight: CGFloat?
+    var index = 0
     
-    
-    
-    
-    static func heightForComment(_ comment: String, width: CGFloat) -> CGFloat {
-        let height = comment.boundingRect(
+    static func rectForString(_ string: String, font: UIFont, width: CGFloat) -> CGRect {
+
+        var rect = string.boundingRect(
             with: CGSize(
                 width: width,
                 height: .greatestFiniteMagnitude
             ),
             options: [.usesFontLeading, .usesLineFragmentOrigin],
-            attributes: [
-                .font: UIFont.preferredFont(forTextStyle: .body).withSize(14.0)
-            ],
+            attributes: [ .font: font ],
             context: nil
-        ).size.height
-        
-        return min(height, CGFloat(90.0))
+        )
+            
+        rect.size.height = min(rect.size.height.rounded(.up), CGFloat(90.0))
+        return rect
     }
     
-    static func heightForHeading(_ heading: String, width: CGFloat) -> CGFloat {
-        let height = heading.boundingRect(
+    
+    
+    static func rectForAttributedString(_ string: NSAttributedString, font: UIFont, width: CGFloat) -> CGRect {
+        var rect = string.boundingRect(
             with: CGSize(
                 width: width,
                 height: .greatestFiniteMagnitude
             ),
             options: [.usesFontLeading, .usesLineFragmentOrigin],
-            attributes: [
-                .font: UIFont.preferredFont(forTextStyle: .headline).withSize(17.0)
-            ],
+//            attributes: [ .font: font ],
             context: nil
-        ).size.height
-        
-        return height
+        )
+            
+        rect.size.height = min(rect.size.height.rounded(.up), CGFloat(90.0))
+        return rect
     }
     
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        let padding: CGFloat = 15.0
+        let padding: CGFloat = 10.0
         let thumbnailWidth: CGFloat = 80.0
-        let textWidthAvailable = bounds.width - padding * 3 - thumbnailWidth
+        let leftEdgeOffset = padding + thumbnailWidth + padding
+//        let textWidthAvailable = bounds.width - padding * 3 - thumbnailWidth
         
         threadThumbnail.frame = CGRect(x: padding, y: padding, width: 80.0, height: 80.0)
         heading.frame = CGRect.zero
@@ -106,19 +123,35 @@ class ThreadCell: BoardsListTableViewCell {
         var currentY: CGFloat = padding
         
         if heading.text!.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
+            heading.frame = ThreadCell.frames[index]!.headingFrame
+            heading.frame.origin = CGPoint(x: leftEdgeOffset, y: currentY)
+            currentY += heading.frame.height
+            currentY += padding
+        }
+        /*
+        if heading.text!.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
             heading.frame = CGRect(
                 x: padding + thumbnailWidth + padding,
                 y: padding,
                 width: textWidthAvailable,
-                height: ThreadCell.heightForHeading(heading.text ?? "", width: textWidthAvailable)
+//                height: ThreadCell.heightForHeading(heading.text ?? "", width: textWidthAvailable)
+                height: ThreadCell.heights[index]!.headingHeight
+
             )
             heading.preferredMaxLayoutWidth = heading.frame.width
             currentY += heading.frame.height
             currentY += padding
-        }
+        }*/
         
 //        print("deatailText.text = \(detailText.text!)a")
 //        print("ThreadCell.commentHeight = \(ThreadCell.commentHeight)")
+        if detailText.text!.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
+            detailText.frame = ThreadCell.frames[index]!.commentFrame
+            detailText.frame.origin = CGPoint(x: leftEdgeOffset, y: currentY)
+//            detailText.frame = CGRect(x: leftEdgeOffset, y: currentY, width: detailText.frame.width, height:  detailText.frame.height)
+            currentY += detailText.frame.height
+            currentY += padding
+        }
         /*
         if detailText.text!.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
 //            print(detailText.text!)
@@ -127,21 +160,34 @@ class ThreadCell: BoardsListTableViewCell {
 //                y: padding + heading.frame.height + padding,
                 y: currentY,
                 width: textWidthAvailable,
-                height: ThreadCell.heightForComment(detailText.text ?? "", width: textWidthAvailable)
+//                height: ThreadCell.heightForComment(detailText.text ?? "", width: textWidthAvailable)
+                height: ThreadCell.heights[index]!.commentHeight
             )
             detailText.preferredMaxLayoutWidth = detailText.frame.width
             currentY += detailText.frame.height
             currentY += padding
         }*/
 //        print(detailText.frame)
-        /*
-        statLabel.frame = CGRect(
-            x: padding + thumbnailWidth + padding,
-            y: currentY,
-//            + heading.frame.height + padding + detailText.frame.height + padding
-            width: textWidthAvailable,
-            height: ThreadCell.heightForComment(statLabel.attributedText!.string, width: textWidthAvailable)
-        )*/
+        print(statLabel.attributedText)
+        statLabel.frame = ThreadCell.frames[index]!.statsFrame
+//        statLabel.sizeToFit()
+        statLabel.frame.origin = CGPoint(x: leftEdgeOffset, y: currentY)
+
+//        statLabel.frame.size.width = statLabel.frame.width
+//        statLabel.frame = CGRect(x: padding + thumbnailWidth + padding, y: currentY, width: statLabel.frame.width, height:  statLabel.frame.height)
+//        statLabel.preferredMaxLayoutWidth = statLabel.frame.width
+        
+        
+        
+//        statLabel.frame = CGRect(
+//            x: padding + thumbnailWidth + padding,
+//            y: currentY,
+////            + heading.frame.height + padding + detailText.frame.height + padding
+//            width: textWidthAvailable,
+////            height: ThreadCell.heightForComment(statLabel.attributedText!.string, width: textWidthAvailable)
+//            height: ThreadCell.frames[index]!.statsFrame
+//
+//        )
         
     }
     // MARK: - Instance Properties
@@ -149,7 +195,7 @@ class ThreadCell: BoardsListTableViewCell {
         let imageView = UIImageView()
 //        let imageView = UIImageView(image: UIImage(named: "placeholder"))
 
-        imageView.translatesAutoresizingMaskIntoConstraints = false
+//        imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 10.0
@@ -178,6 +224,7 @@ class ThreadCell: BoardsListTableViewCell {
 
     var statLabel: UILabel = {
         let label = UILabel()
+        label.numberOfLines = 0
 //        label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.preferredFont(forTextStyle: .footnote).withSize(13.0)
         label.textColor = #colorLiteral(red: 0.5960256457, green: 0.5921916366, blue: 0.6116896868, alpha: 1)
@@ -233,18 +280,22 @@ class ThreadCell: BoardsListTableViewCell {
 //    static var attributedText:
     
     func configure(_ thread: Thread) {
-        UIView.transition(
-            with: threadThumbnail,
-            duration: 0.3,
-            options: .transitionCrossDissolve,
-            animations: {  self.threadThumbnail.image = thread.image },
-            completion: nil
-        )
+//        UIView.transition(
+//            with: threadThumbnail,
+//            duration: 0.3,
+//            options: .transitionCrossDissolve,
+//            animations: {  self.threadThumbnail.image = thread.image },
+//            completion: nil
+//        )
+        
+        if thread.image != nil {
+            self.threadThumbnail.image = thread.image
+        }
 //        detailText.text = thread.comment
 //        heading.text = thread.heading
         detailText.text = thread.posts[0].comment
         heading.text = thread.posts[0].subject
-        statLabel.attributedText = ThreadCell.createStatsString(filesCount: thread.filesCount, postsCount: thread.postsCount, date: /*thread.posts[0].dateString*/ "12.05.2020, 15:08")
+        statLabel.attributedText = ThreadCell.createStatsString(filesCount: thread.filesCount, postsCount: thread.postsCount, date: thread.posts[0].dateString)
 //        createStatsString(
 //           filesCount: thread.postsCount,
 //           postsCount: thread.filesCount,
