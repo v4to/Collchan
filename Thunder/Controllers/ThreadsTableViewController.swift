@@ -63,8 +63,7 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
         // remove bottom separator when tableView is empty
         tableView.tableFooterView = UIView(frame: CGRect.zero)
         tableView.tableHeaderView = UIView(frame: CGRect.zero)
-
-//        tableView.showsVerticalScrollIndicator = false
+        tableView.showsVerticalScrollIndicator = false
 
     }
     
@@ -78,15 +77,31 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
         }
     }
     
-    func generateIndexPathsToInsert(newItemsCount: Int) -> [IndexPath] {
+    func generateIndexPathsToInsertAndPrecaculateHeight(newItemsCount: Int, width: CGFloat) -> [IndexPath] {
         var result = [IndexPath]()
         let startIndex = sectionsArray.count - newItemsCount
         
         for i in startIndex..<sectionsArray.count {
             result.append(IndexPath(row: i, section: 0))
+            let thread = self.sectionsArray[i]
+            let height = ThreadCell.preferredHeightForThread(thread, andWidth: width, index: i)
+            self.cellHeights[i] = height
         }
         
         return result
+    }
+    
+    func precalculateCellsHeightsForWidth(_ width: CGFloat, newItemsCount: Int) {
+        for i in (self.sectionsArray.count - newItemsCount)..<self.sectionsArray.count {
+            let thread = self.sectionsArray[i]
+            let height = ThreadCell.preferredHeightForThread(thread, andWidth: width, index: i)
+            self.cellHeights[i] = height
+        }
+    }
+    
+    
+    func updateDataWithTableView() {
+        
     }
 
     // MARK: - UIGestureRecognizerDelegate
@@ -137,68 +152,60 @@ extension ThreadsTableViewController {
 // MARK: - Network
 
 extension ThreadsTableViewController {
-        func loadThreads() {
-            isLoadingThreads = true
-            
-            guard isAllowedToLoadMore else {
+    func loadThreads() {
+        isLoadingThreads = true
+        
+        guard isAllowedToLoadMore else {
+            return
+        }
+        
+        threadsService.getThreads(fromBoard: boardId, onPage: page) { [weak self] result in
+            guard let self = self, let result = result else {
                 return
             }
             
-            threadsService.getThreads(fromBoard: boardId, onPage: page) { [weak self] result in
-                guard let self = self else {
-                    return
+            self.isLoadingThreads = false
+            
+            if self.page == 0 {
+                self.spinner.stopAnimating()
+            }
+            
+            let width = self.tableView.bounds.width
+            DispatchQueue.global().async {
+                
+                if result.isCurrentPageTheLast {
+                    self.isAllowedToLoadMore = false
                 }
                 
-                self.isLoadingThreads = false
+                self.sectionsArray += result.threads
                 
-                if self.page == 0 {
-                    self.spinner.stopAnimating()
+                for i in self.sectionsArray.indices {
+                    
+                    // very long text makes tableView flicker need to cut it
+                    let comment = String(self.sectionsArray[i].posts[0].comment.prefix(160))
+                    self.sectionsArray[i].posts[0].comment = comment
                 }
                 
-                let width = self.tableView.bounds.width
-                DispatchQueue.global(qos: .userInteractive).async {
-                    guard let result = result else {
-                        return
-                    }
-                    
-                    if result.isCurrentPageTheLast {
-                        self.isAllowedToLoadMore = false
-                    }
-                    
-                    self.sectionsArray += result.threads
-                    
-                    for i in self.sectionsArray.indices {
-                        // very long text makes tableView flicker
-                        let comment = String(self.sectionsArray[i].posts[0].comment.prefix(160))
-                        self.sectionsArray[i].posts[0].comment = comment
-                       
-    //                    let thread = self.sectionsArray[i]
-    //                    let height = ThreadCell.preferredHeightForThread(thread, andWidth: width)
-    //                    self.cellHeights[i] = height
-                    }
-                    
-                    for i in (self.sectionsArray.count - result.threads.count)..<self.sectionsArray.count {
-                        let thread = self.sectionsArray[i]
-                        let height = ThreadCell.preferredHeightForThread(thread, andWidth: width, index: i)
-                        self.cellHeights[i] = height
-                    }
-                    
-                    let indexPathsToInsert = self.generateIndexPathsToInsert(newItemsCount: result.threads.count)
-                    DispatchQueue.main.async {
-                        if self.page == 0 {
-                            self.tableView.reloadData()
-                        } else {
-//                            UIView.performWithoutAnimation {
-//                                self.tableView.insertRows(at: indexPathsToInsert, with: .automatic)
-//                            }
+                self.precalculateCellsHeightsForWidth(width, newItemsCount: result.threads.count)
+                
+                let indexPathsToInsert = self.generateIndexPathsToInsertAndPrecaculateHeight(
+                    newItemsCount: result.threads.count,
+                    width: width
+                )
+                DispatchQueue.main.async {
+                    if self.page == 0 {
+                        self.tableView.reloadData()
+                    } else {
+                        UIView.performWithoutAnimation {
                             self.tableView.insertRows(at: indexPathsToInsert, with: .automatic)
                         }
-                        
-                        self.page += 1
                     }
+        
+                    self.page += 1
                 }
             }
         }
+    }
 
 }
 
@@ -208,11 +215,6 @@ extension ThreadsTableViewController {
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return cellHeights[indexPath.row]!
     }
-    
-    
-//    override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-//        return cellHeights[indexPath.row] ?? 180.0
-//    }
     
     override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if let dataTask = tasks[indexPath] {
