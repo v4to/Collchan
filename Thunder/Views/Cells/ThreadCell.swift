@@ -39,16 +39,15 @@ class ThreadCell: BoardsListTableViewCell {
     let detailText: UILabel = {
         let label = UILabel()
         label.textColor = #colorLiteral(red: 0.5960256457, green: 0.5921916366, blue: 0.6116896868, alpha: 1)
-        label.numberOfLines = 5
+        label.numberOfLines = 7
         label.lineBreakMode = .byTruncatingTail
         label.font = UIFont.preferredFont(forTextStyle: .body).withSize(14.0)
         return label
     }()
 
-    var statLabel: UILabel = {
+    var threadStats: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
-        label.font = UIFont.preferredFont(forTextStyle: .footnote).withSize(13.0)
         label.textColor = #colorLiteral(red: 0.5960256457, green: 0.5921916366, blue: 0.6116896868, alpha: 1)
         return label
     }()
@@ -126,9 +125,9 @@ class ThreadCell: BoardsListTableViewCell {
             currentY += padding
         }*/
 //        print(detailText.frame)
-        statLabel.frame = ThreadCell.frames[index]!.statsFrame
+        threadStats.frame = ThreadCell.frames[index]!.statsFrame
 //        statLabel.sizeToFit()
-        statLabel.frame.origin = CGPoint(x: leftEdgeOffset, y: currentY)
+        threadStats.frame.origin = CGPoint(x: leftEdgeOffset, y: currentY)
 
 //        statLabel.frame.size.width = statLabel.frame.width
 //        statLabel.frame = CGRect(x: padding + thumbnailWidth + padding, y: currentY, width: statLabel.frame.width, height:  statLabel.frame.height)
@@ -156,21 +155,36 @@ class ThreadCell: BoardsListTableViewCell {
     }
     
     static func createStatsString(filesCount: Int, postsCount: Int, date: String) -> NSMutableAttributedString {
-        let string = NSMutableAttributedString(string: " \(filesCount)   \(postsCount)   \(date)", attributes: [:])
+        let string = NSMutableAttributedString(string: " \(filesCount)   \(postsCount)   \(date)", attributes: [
+            .font: UIFont.preferredFont(forTextStyle: .footnote).withSize(12.0)
+        ])
         
         let fileImage = UIImage(systemName: "photo")!
         let fileImageAttachment = NSTextAttachment(image: fileImage)
-        let fileString = NSAttributedString(attachment: fileImageAttachment)
+        let fileString = NSMutableAttributedString(attachment: fileImageAttachment)
+        
+        fileString.addAttributes(
+            [NSAttributedString.Key.font : UIFont.preferredFont(forTextStyle: .footnote).withSize(12.0)],
+            range: NSRange(location: 0, length: 1)
+        )
         string.insert(fileString, at: 0)
         
         let commentImage = UIImage(systemName: "text.bubble")!
         let commentImageAttachment = NSTextAttachment(image: commentImage)
-        let commentString = NSAttributedString(attachment: commentImageAttachment)
+        let commentString = NSMutableAttributedString(attachment: commentImageAttachment)
+        commentString.addAttributes(
+            [NSAttributedString.Key.font : UIFont.preferredFont(forTextStyle: .footnote).withSize(12.0)],
+            range: NSRange(location: 0, length: 1)
+        )
         string.insert(commentString, at: fileString.string.count + String(filesCount).count + 3)
         
         let dateImage = UIImage(systemName: "clock")!
         let dateImageAttachment = NSTextAttachment(image: dateImage)
-        let dateString = NSAttributedString(attachment: dateImageAttachment)
+        let dateString = NSMutableAttributedString(attachment: dateImageAttachment)
+        dateString.addAttributes(
+            [NSAttributedString.Key.font : UIFont.preferredFont(forTextStyle: .footnote).withSize(12.0)],
+            range: NSRange(location: 0, length: 1)
+        )
         string.insert(dateString, at: fileString.string.count + String(filesCount).count + commentString.string.count + String(postsCount).count + 6)
         
         return string
@@ -180,16 +194,16 @@ class ThreadCell: BoardsListTableViewCell {
         if thread.image != nil {
             self.threadThumbnail.image = thread.image
         }
-        detailText.text = thread.posts[0].comment
-        heading.text = thread.posts[0].subject
-        statLabel.attributedText = ThreadCell.createStatsString(filesCount: thread.filesCount, postsCount: thread.postsCount, date: thread.posts[0].dateString)
+        detailText.text = thread.opPost.comment
+        heading.text = thread.opPost.subject
+        threadStats.attributedText = ThreadCell.createStatsString(filesCount: thread.filesCount, postsCount: thread.postsCount, date: thread.opPost.dateString)
     }
     
     func setupViews() {
         contentView.addSubview(threadThumbnail)
         contentView.addSubview(heading)
         contentView.addSubview(detailText)
-        contentView.addSubview(statLabel)
+        contentView.addSubview(threadStats)
         
         setupSwipeIcon()
     }
@@ -199,6 +213,11 @@ class ThreadCell: BoardsListTableViewCell {
         var commentFrame: CGRect
         var statsFrame: CGRect
     }
+    
+    // MARK: - Static Properties
+    static var frames = [Int: Frames]()
+
+
     
     // MARK: - Static Methods
     
@@ -257,7 +276,6 @@ class ThreadCell: BoardsListTableViewCell {
         return totalHeight.rounded(.up)
     }
 
-    static var frames = [Int: Frames]()
     
     
     static func rectForString(_ string: String, font: UIFont, width: CGFloat) -> CGRect {
@@ -272,7 +290,7 @@ class ThreadCell: BoardsListTableViewCell {
             context: nil
         )
             
-        rect.size.height = min(rect.size.height.rounded(.up), CGFloat(90.0))
+        rect.size.height = min(rect.size.height.rounded(.up), CGFloat(130.0))
         return rect
     }
     
@@ -283,11 +301,12 @@ class ThreadCell: BoardsListTableViewCell {
                 height: .greatestFiniteMagnitude
             ),
             options: [.usesFontLeading, .usesLineFragmentOrigin],
-//            attributes: [ .font: font ],
             context: nil
         )
-            
+
         rect.size.height = min(rect.size.height.rounded(.up), CGFloat(90.0))
         return rect
+        
+   
     }
 }

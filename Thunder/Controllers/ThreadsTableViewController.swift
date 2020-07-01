@@ -136,7 +136,6 @@ extension ThreadsTableViewController {
         }
         
         override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//            print(indexPath)
             let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! ThreadCell
             
             
@@ -182,8 +181,8 @@ extension ThreadsTableViewController {
                 for i in self.sectionsArray.indices {
                     
                     // very long text makes tableView flicker need to cut it
-                    let comment = String(self.sectionsArray[i].posts[0].comment.prefix(160))
-                    self.sectionsArray[i].posts[0].comment = comment
+//                    let comment = String(self.sectionsArray[i].posts[0].comment.prefix(250))
+//                    self.sectionsArray[i].posts[0].comment = comment
                 }
                 
                 self.precalculateCellsHeightsForWidth(width, newItemsCount: result.threads.count)

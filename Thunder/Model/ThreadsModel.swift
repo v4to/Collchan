@@ -74,6 +74,12 @@ extension Thread {
         }
         return posts[0].files[0].thumbnail
     }
+    
+    var opPost: Post {
+        var post = posts[0]
+        post.comment = String(post.comment.prefix(250))
+        return post
+    }
 }
 
 //struct Thread: Decodable {
