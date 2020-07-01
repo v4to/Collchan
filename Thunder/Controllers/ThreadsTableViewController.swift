@@ -54,8 +54,7 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
     
     func setupTableView() {
         tableView.register(ThreadCell.self, forCellReuseIdentifier: cellId)
-        tableView.estimatedRowHeight = 0.0
-//        tableView.estimatedRowHeight = 0.0
+//        tableView.estimatedRowHeight = 180.0
         tableView.estimatedSectionFooterHeight = 0.0
         tableView.estimatedSectionHeaderHeight = 0.0
         tableView.prefetchDataSource = self
@@ -63,7 +62,6 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
         // remove bottom separator when tableView is empty
         tableView.tableFooterView = UIView(frame: CGRect.zero)
         tableView.tableHeaderView = UIView(frame: CGRect.zero)
-
 //        tableView.showsVerticalScrollIndicator = false
 
     }
@@ -127,7 +125,6 @@ extension ThreadsTableViewController {
             
             
             let thread = sectionsArray[indexPath.row]
-            cell.index = indexPath.row
             cell.configure(thread)
             return cell
         }
@@ -171,16 +168,6 @@ extension ThreadsTableViewController {
                         // very long text makes tableView flicker
                         let comment = String(self.sectionsArray[i].posts[0].comment.prefix(160))
                         self.sectionsArray[i].posts[0].comment = comment
-                       
-    //                    let thread = self.sectionsArray[i]
-    //                    let height = ThreadCell.preferredHeightForThread(thread, andWidth: width)
-    //                    self.cellHeights[i] = height
-                    }
-                    
-                    for i in (self.sectionsArray.count - result.threads.count)..<self.sectionsArray.count {
-                        let thread = self.sectionsArray[i]
-                        let height = ThreadCell.preferredHeightForThread(thread, andWidth: width, index: i)
-                        self.cellHeights[i] = height
                     }
                     
                     let indexPathsToInsert = self.generateIndexPathsToInsert(newItemsCount: result.threads.count)
@@ -206,13 +193,20 @@ extension ThreadsTableViewController {
 
 extension ThreadsTableViewController {
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return cellHeights[indexPath.row]!
+        return cellHeights[indexPath.row] ?? UITableView.automaticDimension
     }
     
+    override func tableView(_ tableView: UITableView, estimatedHeightForFooterInSection section: Int) -> CGFloat {
+        return UITableView.automaticDimension
+    }
     
-//    override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-//        return cellHeights[indexPath.row] ?? 180.0
-//    }
+    override func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
+        return UITableView.automaticDimension
+    }
+    
+    override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return cellHeights[indexPath.row] ?? UITableView.automaticDimension
+    }
     
     override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if let dataTask = tasks[indexPath] {
@@ -223,7 +217,7 @@ extension ThreadsTableViewController {
     }
     
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-//        cellHeights[indexPath.row] = cell.frame.height
+        cellHeights[indexPath.row] = cell.frame.height
         if indexPath.row == self.sectionsArray.count - 4 {
             if !isLoadingThreads {
                 loadThreads()
