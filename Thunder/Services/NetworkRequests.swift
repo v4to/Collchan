@@ -101,12 +101,12 @@ extension APIResource {
     }
 }
 
-class ThreadResource: APIResource {
-    typealias ModelType = Thread
-    var methodPath: String
+class PostsResource: APIResource {
+    typealias ModelType = [Post]
+    var methodPath = EndPoints.makabaMobile
     var queryItems: [URLQueryItem]
+    
     init(boardId: String, threadId: String, postId: String) {
-        methodPath = BaseUrls.dvach + "/" + boardId + "/" + threadId + "/" + postId
         queryItems = [
             URLQueryItem(name: "task", value: "get_thread"),
             URLQueryItem(name: "board", value: boardId),

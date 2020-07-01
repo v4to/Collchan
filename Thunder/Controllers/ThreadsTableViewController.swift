@@ -123,30 +123,6 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
     
 }
 
-// MARK: - UITableViewDataSource
-
-extension ThreadsTableViewController {
-     override func numberOfSections(in tableView: UITableView) -> Int {
-            return 1
-        }
-
-        override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-            
-            return sectionsArray.count
-        }
-        
-        override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-            let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! ThreadCell
-            
-            
-            
-            let thread = sectionsArray[indexPath.row]
-            cell.index = indexPath.row
-            cell.configure(thread)
-            return cell
-        }
-}
-
 
 // MARK: - Network
 
@@ -208,9 +184,46 @@ extension ThreadsTableViewController {
 
 }
 
+
+// MARK: - UITableViewDataSource
+
+extension ThreadsTableViewController {
+     override func numberOfSections(in tableView: UITableView) -> Int {
+            return 1
+        }
+
+        override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+            
+            return sectionsArray.count
+        }
+        
+        override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+            let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! ThreadCell
+            
+            
+            
+            let thread = sectionsArray[indexPath.row]
+            cell.index = indexPath.row
+            cell.configure(thread)
+            return cell
+        }
+}
+
+
+
 // MARK: - UITableViewDelegate
 
 extension ThreadsTableViewController {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        let threadTVC = ThreadTableViewController(style: .plain)
+        threadTVC.boardId = boardId
+        threadTVC.threadId = sectionsArray[indexPath.row].threadId
+        navigationController!.pushViewController(threadTVC, animated: true)
+    }
+    
+    
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return cellHeights[indexPath.row]!
     }

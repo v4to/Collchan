@@ -10,13 +10,12 @@ import Foundation
 import UIKit
 
 struct NetworkService {
-    static let shared = NetworkService()
+    static var shared = NetworkService()
     
     let boardsRequest = APIRequest(resource: BoardsResource())
-    
     var threadsRequest: APIRequest<ThreadsResource>?
-    
     var imageRequest: ImageRequest?
+    var threadRequest: APIRequest<PostsResource>?
     
     private init() {}
     
@@ -35,10 +34,9 @@ struct NetworkService {
         imageRequest?.load(withCompletion: completion)
     }
     
-    var threadRequest: APIRequest<ThreadResource>?
     
-    mutating func getPostsFrom(boardId: String, threadId: String, completion: @escaping (Thread?) -> Void) {
-        threadRequest = APIRequest(resource: ThreadResource(boardId: boardId, threadId: threadId, postId: threadId))
+    mutating func getPostsFrom(boardId: String, threadId: String, completion: @escaping ([Post]?) -> Void) {
+        threadRequest = APIRequest(resource: PostsResource(boardId: boardId, threadId: threadId, postId: threadId))
         threadRequest?.load(withCompletion: completion)
     }
 }
@@ -77,7 +75,7 @@ struct ThreadsResource: APIResource {
 struct BoardsResource: APIResource {
     typealias ModelType = BoardsCategories
     
-    let methodPath = EndPoints.boards
+    let methodPath = EndPoints.makabaMobile
     
     let queryItems = [
            URLQueryItem(name: "task", value: "get_boards"),

@@ -19,6 +19,7 @@
 		4952E90C24A3871A00B42E35 /* ThreadCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4952E90B24A3871A00B42E35 /* ThreadCell.swift */; };
 		495ABBB224832A6700233583 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495ABBB124832A6700233583 /* NetworkService.swift */; };
 		495ABBB424832ACA00233583 /* BoardsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495ABBB324832ACA00233583 /* BoardsService.swift */; };
+		499C14B624AD3F7200CAAE26 /* ThreadTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 499C14B524AD3F7200CAAE26 /* ThreadTableViewController.swift */; };
 		499F7C3B248C5A9F0010B97A /* ThreadsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 499F7C3A248C5A9F0010B97A /* ThreadsModel.swift */; };
 		499FAEAE24979358001B4A1C /* Thunder.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 499FAEAC24979358001B4A1C /* Thunder.xcdatamodeld */; };
 		499FC06A2498D1C400EBE0FB /* FavoriteBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 499FC0682498D1C400EBE0FB /* FavoriteBoard.swift */; };
@@ -63,6 +64,7 @@
 		4952E90B24A3871A00B42E35 /* ThreadCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadCell.swift; sourceTree = "<group>"; };
 		495ABBB124832A6700233583 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		495ABBB324832ACA00233583 /* BoardsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardsService.swift; sourceTree = "<group>"; };
+		499C14B524AD3F7200CAAE26 /* ThreadTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadTableViewController.swift; sourceTree = "<group>"; };
 		499F7C3A248C5A9F0010B97A /* ThreadsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadsModel.swift; sourceTree = "<group>"; };
 		499FAEAD24979358001B4A1C /* Thunder.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Thunder.xcdatamodel; sourceTree = "<group>"; };
 		499FC0682498D1C400EBE0FB /* FavoriteBoard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteBoard.swift; sourceTree = "<group>"; };
@@ -134,6 +136,7 @@
 				49EA7BE42476DC8500BFEC13 /* ViewController.swift */,
 				49EBD100247819450051A348 /* SavedViewController.swift */,
 				494711EA249FEB660028F57D /* ThreadsTableViewController.swift */,
+				499C14B524AD3F7200CAAE26 /* ThreadTableViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -382,6 +385,7 @@
 				4952E90C24A3871A00B42E35 /* ThreadCell.swift in Sources */,
 				494711E9249FB2480028F57D /* BoardsTableViewController.swift in Sources */,
 				49AB299A2478460B00084A6C /* SettingsViewController.swift in Sources */,
+				499C14B624AD3F7200CAAE26 /* ThreadTableViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
