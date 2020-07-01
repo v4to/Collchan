@@ -52,6 +52,13 @@ class ThreadCell: BoardsListTableViewCell {
         return label
     }()
     
+    var bottomMargin: UIView = {
+        let view = UIView()
+        view.layer.borderColor = UIColor(#colorLiteral(red: 0.1411602199, green: 0.1411868334, blue: 0.1411544085, alpha: 1)).cgColor
+        view.layer.borderWidth = 1.0
+        view.backgroundColor = #colorLiteral(red: 0.04705037922, green: 0.0470642224, blue: 0.04704734683, alpha: 1)
+        return view
+    }()
     // MARK: - Intialization
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -68,16 +75,19 @@ class ThreadCell: BoardsListTableViewCell {
     
      override func layoutSubviews() {
         super.layoutSubviews()
-        
+        separatorInset = UIEdgeInsets(top: 0.0, left: bounds.size.width, bottom: 0.0, right: 0.0);
         let padding: CGFloat = 10.0
+        let topAndBottomPadding: CGFloat = 15.0
         let thumbnailWidth: CGFloat = 80.0
         let leftEdgeOffset = padding + thumbnailWidth + padding
 //        let textWidthAvailable = bounds.width - padding * 3 - thumbnailWidth
         
-        threadThumbnail.frame = CGRect(x: padding, y: padding, width: 80.0, height: 80.0)
+        
+        
+        threadThumbnail.frame = CGRect(x: padding, y: topAndBottomPadding, width: 80.0, height: 80.0)
         heading.frame = CGRect.zero
         detailText.frame = CGRect.zero
-        var currentY: CGFloat = padding
+        var currentY: CGFloat = topAndBottomPadding
         
         if heading.text!.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
             heading.frame = ThreadCell.frames[index]!.headingFrame
@@ -134,7 +144,8 @@ class ThreadCell: BoardsListTableViewCell {
 //        statLabel.preferredMaxLayoutWidth = statLabel.frame.width
         
         
-        
+        bottomMargin.frame = CGRect(x: -5.0, y: bounds.maxY - 10.0, width: bounds.width + 10.0, height: 10.0)
+//        bottomMargin.bounds. = bounds.midX
 //        statLabel.frame = CGRect(
 //            x: padding + thumbnailWidth + padding,
 //            y: currentY,
@@ -204,6 +215,7 @@ class ThreadCell: BoardsListTableViewCell {
         contentView.addSubview(heading)
         contentView.addSubview(detailText)
         contentView.addSubview(threadStats)
+        addSubview(bottomMargin)
         
         setupSwipeIcon()
     }
@@ -223,8 +235,9 @@ class ThreadCell: BoardsListTableViewCell {
     
     static func preferredHeightForThread(_ thread: Thread, andWidth width: CGFloat, index: Int) -> CGFloat {
         let padding: CGFloat = 10.0
+        let topAndBottomPadding: CGFloat = 15.0
         let thumbnailWidth: CGFloat = 80.0
-        var totalHeight: CGFloat = padding
+        var totalHeight: CGFloat = topAndBottomPadding
         let textWidthAvailable = width - padding * 3 - thumbnailWidth
         var totalTextHeightAddition: CGFloat = 0.0
         var headingStringHeight: CGFloat = 0.0
@@ -267,9 +280,9 @@ class ThreadCell: BoardsListTableViewCell {
         )
         statsStringHeight += statsRect.height
         totalTextHeightAddition += statsStringHeight
-        totalTextHeightAddition += padding
+        totalTextHeightAddition += topAndBottomPadding + padding
         
-        totalHeight += max(totalTextHeightAddition, thumbnailWidth + padding)
+        totalHeight += max(totalTextHeightAddition, thumbnailWidth + topAndBottomPadding)
    
         frames[index] = Frames(headingFrame: headingRect, commentFrame: commentRect, statsFrame: statsRect)
         
