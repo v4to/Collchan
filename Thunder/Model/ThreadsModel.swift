@@ -134,6 +134,7 @@ struct Post: Decodable {
     var comment: String
     let subject: String
     let creationDate: Date
+    let postId: String
    
     var images: [UIImage]? = nil
     
@@ -142,6 +143,7 @@ struct Post: Decodable {
         case comment
         case subject
         case creationDate = "timestamp"
+        case postId = "num"
     }
 }
 
