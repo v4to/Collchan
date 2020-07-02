@@ -14,6 +14,16 @@ class PostCell: BoardsListTableViewCell {
     override var actionViewBackgroundColor: UIColor {
         return #colorLiteral(red: 0, green: 0.5098509789, blue: 0.9645856023, alpha: 1)
     }
+    lazy var postId = createHeaderLabel()
+    lazy var date = createHeaderLabel()
+    
+    func createHeaderLabel() -> UILabel {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont.preferredFont(forTextStyle: .headline).withSize(13.0)
+        label.textColor = #colorLiteral(red: 0.5960256457, green: 0.5921916366, blue: 0.6116896868, alpha: 1)
+        return label
+    }
     
     // MARK: - Initialization
     
@@ -21,6 +31,7 @@ class PostCell: BoardsListTableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         setupSwipeIcon()
+        setupViews()
     }
     
     required init?(coder: NSCoder) {
@@ -28,6 +39,22 @@ class PostCell: BoardsListTableViewCell {
     }
     
     // MARK: - Instance Methods
+    func setupViews() {
+        contentView.addSubview(postId)
+        contentView.addSubview(date)
+        
+        postId.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 15.0).isActive = true
+        postId.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 10.0).isActive = true
+        
+        date.centerYAnchor.constraint(equalTo: postId.centerYAnchor).isActive = true
+        date.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -10.0).isActive = true
+    }
+    
+    func configure(_ post: Post) {
+        postId.text = "#" + post.postId
+        date.text = post.dateString
+    }
+    
     
     func setupSwipeIcon() {
         let configuration = UIImage.SymbolConfiguration(scale: .large)
@@ -175,10 +202,11 @@ extension ThreadTableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
-
-        // Configure the cell...
-
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! PostCell
+        
+        let post = postsArray[indexPath.row]
+        cell.configure(post)
+        
         return cell
     }
 }
