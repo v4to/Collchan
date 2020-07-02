@@ -154,13 +154,6 @@ extension ThreadsTableViewController {
                 
                 self.sectionsArray += result.threads
                 
-                for i in self.sectionsArray.indices {
-                    
-                    // very long text makes tableView flicker need to cut it
-//                    let comment = String(self.sectionsArray[i].posts[0].comment.prefix(250))
-//                    self.sectionsArray[i].posts[0].comment = comment
-                }
-                
                 self.precalculateCellsHeightsForWidth(width, newItemsCount: result.threads.count)
                 
                 let indexPathsToInsert = self.generateIndexPathsToInsertAndPrecaculateHeight(
@@ -254,8 +247,9 @@ extension ThreadsTableViewController {
         if let thumbnailURL = thread.thumbnailURL {
             let url = URL(string: BaseUrls.dvach + thumbnailURL)!
             let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
-                if let error = error {
-                   print(error)
+                if let _ = error {
+//                    print(error)
+                    return
                 }
                 if let data = data {
                     let image = UIImage(data: data)
