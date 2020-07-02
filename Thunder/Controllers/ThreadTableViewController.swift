@@ -14,13 +14,22 @@ class PostCell: BoardsListTableViewCell {
     override var actionViewBackgroundColor: UIColor {
         return #colorLiteral(red: 0, green: 0.5098509789, blue: 0.9645856023, alpha: 1)
     }
-    lazy var postId = createHeaderLabel()
-    lazy var date = createHeaderLabel()
+    lazy var postId = createHeaderLabelWithFont(UIFont.preferredFont(forTextStyle: .headline).withSize(12.0))
+    lazy var date = createHeaderLabelWithFont(UIFont.preferredFont(forTextStyle: .footnote).withSize(12.0))
     
-    func createHeaderLabel() -> UILabel {
+    let comment: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.preferredFont(forTextStyle: .headline).withSize(13.0)
+        label.numberOfLines = 0
+        label.font = UIFont.preferredFont(forTextStyle: .body).withSize(14.0)
+        label.textColor = #colorLiteral(red: 0.831299305, green: 0.8314197063, blue: 0.8391151428, alpha: 1)
+        return label
+    }()
+    
+    func createHeaderLabelWithFont(_ font: UIFont) -> UILabel {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = font
         label.textColor = #colorLiteral(red: 0.5960256457, green: 0.5921916366, blue: 0.6116896868, alpha: 1)
         return label
     }
@@ -42,17 +51,28 @@ class PostCell: BoardsListTableViewCell {
     func setupViews() {
         contentView.addSubview(postId)
         contentView.addSubview(date)
+        contentView.addSubview(comment)
         
-        postId.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 15.0).isActive = true
-        postId.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 10.0).isActive = true
+        let padding: CGFloat = 15.0
+        let margin: CGFloat = 10.0
+        
+        postId.topAnchor.constraint(equalTo: contentView.topAnchor, constant: padding).isActive = true
+        postId.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: padding).isActive = true
         
         date.centerYAnchor.constraint(equalTo: postId.centerYAnchor).isActive = true
-        date.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -10.0).isActive = true
+        date.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -padding).isActive = true
+        
+        comment.topAnchor.constraint(equalTo: postId.bottomAnchor, constant: margin).isActive = true
+        comment.leftAnchor.constraint(equalTo: postId.leftAnchor).isActive = true
+        comment.rightAnchor.constraint(equalTo: date.rightAnchor).isActive = true
+        comment.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -padding).isActive = true
+
     }
     
     func configure(_ post: Post) {
         postId.text = "#" + post.postId
         date.text = post.dateString
+        comment.text = post.comment
     }
     
     
@@ -92,8 +112,7 @@ class ThreadTableViewController: UITableViewController, UIGestureRecognizerDeleg
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
-        
-        tableView.register(PostCell.self, forCellReuseIdentifier: cellId)
+        setupTableView()
         setUpPopGesture()
         loadPosts()
     }
@@ -110,6 +129,13 @@ class ThreadTableViewController: UITableViewController, UIGestureRecognizerDeleg
             gestureRecognizer.delegate = self
         }
     }
+    
+    func setupTableView() {
+            tableView.register(PostCell.self, forCellReuseIdentifier: cellId)
+
+            // remove bottom separator when tableView is empty
+            tableView.tableFooterView = UIView(frame: CGRect.zero)
+        }
    
     
     
