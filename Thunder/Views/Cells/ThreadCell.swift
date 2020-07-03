@@ -166,37 +166,58 @@ class ThreadCell: BoardsListTableViewCell {
     }
     
     static func createStatsString(filesCount: Int, postsCount: Int, date: String) -> NSMutableAttributedString {
-        let string = NSMutableAttributedString(string: " \(filesCount)   \(postsCount)   \(date)", attributes: [
-            .font: UIFont.preferredFont(forTextStyle: .footnote).withSize(12.0)
-        ])
+        let string = NSMutableAttributedString()
         
         let fileImage = UIImage(systemName: "photo")!
         let fileImageAttachment = NSTextAttachment(image: fileImage)
         let fileString = NSMutableAttributedString(attachment: fileImageAttachment)
-        
         fileString.addAttributes(
-            [NSAttributedString.Key.font : UIFont.preferredFont(forTextStyle: .footnote).withSize(12.0)],
+            [NSAttributedString.Key.font : UIFont.preferredFont(forTextStyle: .footnote).withSize(13.0)],
             range: NSRange(location: 0, length: 1)
         )
-        string.insert(fileString, at: 0)
+        string.append(fileString)
+        
+        let filesCountAttributedString = NSMutableAttributedString(
+            string: " \(filesCount)   ",
+            attributes: [
+                NSAttributedString.Key.font : UIFont.preferredFont(forTextStyle: .footnote).withSize(13.0)
+            ]
+        )
+        string.append(filesCountAttributedString)
         
         let commentImage = UIImage(systemName: "text.bubble")!
         let commentImageAttachment = NSTextAttachment(image: commentImage)
         let commentString = NSMutableAttributedString(attachment: commentImageAttachment)
         commentString.addAttributes(
-            [NSAttributedString.Key.font : UIFont.preferredFont(forTextStyle: .footnote).withSize(12.0)],
+            [NSAttributedString.Key.font : UIFont.preferredFont(forTextStyle: .footnote).withSize(13.0)],
             range: NSRange(location: 0, length: 1)
         )
-        string.insert(commentString, at: fileString.string.count + String(filesCount).count + 3)
+        string.append(commentString)
+        
+        let postsCountAttributedString = NSMutableAttributedString(
+            string: " \(postsCount)   ",
+            attributes: [
+                NSAttributedString.Key.font : UIFont.preferredFont(forTextStyle: .footnote).withSize(13.0)
+            ]
+        )
+        string.append(postsCountAttributedString)
         
         let dateImage = UIImage(systemName: "clock")!
         let dateImageAttachment = NSTextAttachment(image: dateImage)
         let dateString = NSMutableAttributedString(attachment: dateImageAttachment)
         dateString.addAttributes(
-            [NSAttributedString.Key.font : UIFont.preferredFont(forTextStyle: .footnote).withSize(12.0)],
+            [NSAttributedString.Key.font : UIFont.preferredFont(forTextStyle: .footnote).withSize(13.0)],
             range: NSRange(location: 0, length: 1)
         )
-        string.insert(dateString, at: fileString.string.count + String(filesCount).count + commentString.string.count + String(postsCount).count + 6)
+        string.append(dateString)
+        
+        let dateAttributedString = NSMutableAttributedString(
+            string: " \(date)",
+            attributes: [
+                NSAttributedString.Key.font : UIFont.preferredFont(forTextStyle: .footnote).withSize(13.0)
+            ]
+        )
+        string.append(dateAttributedString)
         
         return string
     }
