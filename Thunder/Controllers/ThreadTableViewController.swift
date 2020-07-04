@@ -8,83 +8,6 @@
 
 import UIKit
 
-class PostCell: BoardsListTableViewCell {
-    // MARK: - Instance Propeties
-    
-    override var actionViewBackgroundColor: UIColor {
-        return #colorLiteral(red: 0, green: 0.5098509789, blue: 0.9645856023, alpha: 1)
-    }
-    lazy var postId = createHeaderLabelWithFont(UIFont.preferredFont(forTextStyle: .headline).withSize(12.0))
-    lazy var date = createHeaderLabelWithFont(UIFont.preferredFont(forTextStyle: .footnote).withSize(12.0))
-    
-    let comment: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.numberOfLines = 0
-        label.font = UIFont.preferredFont(forTextStyle: .body).withSize(14.0)
-        label.textColor = #colorLiteral(red: 0.831299305, green: 0.8314197063, blue: 0.8391151428, alpha: 1)
-        return label
-    }()
-    
-    func createHeaderLabelWithFont(_ font: UIFont) -> UILabel {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = font
-        label.textColor = #colorLiteral(red: 0.5960256457, green: 0.5921916366, blue: 0.6116896868, alpha: 1)
-        return label
-    }
-    
-    // MARK: - Initialization
-    
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
-        setupSwipeIcon()
-        setupViews()
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    // MARK: - Instance Methods
-    func setupViews() {
-        contentView.addSubview(postId)
-        contentView.addSubview(date)
-        contentView.addSubview(comment)
-        
-        let padding: CGFloat = 15.0
-        let margin: CGFloat = 10.0
-        
-        postId.topAnchor.constraint(equalTo: contentView.topAnchor, constant: padding).isActive = true
-        postId.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: padding).isActive = true
-        
-        date.centerYAnchor.constraint(equalTo: postId.centerYAnchor).isActive = true
-        date.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -padding).isActive = true
-        
-        comment.topAnchor.constraint(equalTo: postId.bottomAnchor, constant: margin).isActive = true
-        comment.leftAnchor.constraint(equalTo: postId.leftAnchor).isActive = true
-        comment.rightAnchor.constraint(equalTo: date.rightAnchor).isActive = true
-        comment.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -padding).isActive = true
-
-    }
-    
-    func configure(_ post: Post) {
-        postId.text = "#" + post.postId
-        date.text = post.dateString
-        comment.text = post.comment
-    }
-    
-    
-    func setupSwipeIcon() {
-        let configuration = UIImage.SymbolConfiguration(scale: .large)
-        var image = UIImage(systemName: "arrowshape.turn.up.left.circle", withConfiguration: configuration)!
-        image = image.withTintColor(#colorLiteral(red: 1, green: 1, blue: 1, alpha: 1), renderingMode: .alwaysOriginal)
-        starImage.image = image
-    }
-}
-
-
 class ThreadTableViewController: UITableViewController, UIGestureRecognizerDelegate {
     // MARK: - Instance Methods
     
@@ -131,16 +54,13 @@ class ThreadTableViewController: UITableViewController, UIGestureRecognizerDeleg
     }
     
     func setupTableView() {
-            tableView.register(PostCell.self, forCellReuseIdentifier: cellId)
-
-            // remove bottom separator when tableView is empty
-            tableView.tableFooterView = UIView(frame: CGRect.zero)
+        tableView.register(PostTableViewCell.self, forCellReuseIdentifier: cellId)
+        tableView.estimatedRowHeight = 200.0
+        tableView.allowsSelection = false
+        // remove bottom separator when tableView is empty
+        tableView.tableFooterView = UIView(frame: CGRect.zero)
         }
-   
-    
-    
 
-    
     
     /*
     
@@ -201,16 +121,15 @@ extension ThreadTableViewController {
         guard let boardId = boardId, let threadId = threadId else {
             return
         }
-           
+        
         NetworkService.shared.getPostsFrom(boardId: boardId, threadId: threadId) { [weak self] (posts: [Post]?) in
             guard let self = self, let posts = posts else {
                 return
             }
             
             self.postsArray = posts
-            self.tableView.reloadData()
-//            print(posts.count)
             
+            self.tableView.reloadData()
         }
     }
 }
@@ -228,7 +147,7 @@ extension ThreadTableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! PostCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! PostTableViewCell
         
         let post = postsArray[indexPath.row]
         cell.configure(post)
