@@ -246,14 +246,14 @@ class BoardsTableViewController: UITableViewController, SwipeableCellDelegate, U
     
     func featchBoards() {
         boardsRequest.load { (boardsCategories: BoardsCategories?) in
-            guard let boardsCategories = boardsCategories else {
-                fatalError("Error: No Boards")
-            }
-            
             self.spinner.stopAnimating()
-            self.boardsCategories = boardsCategories.array
             let favoriteBoards = try! FavoriteBoard.findFavoriteBoards(in: self.container!.viewContext)
             self.favoriteBoards = favoriteBoards
+            
+            if let boardsCategories = boardsCategories {
+                self.boardsCategories = boardsCategories.array
+            }
+        
             self.tableView.reloadData()
         }
     }
@@ -351,6 +351,12 @@ class BoardsTableViewController: UITableViewController, SwipeableCellDelegate, U
     }
 
     // MARK: - UITableViewDelegate
+    override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        view.tintColor = #colorLiteral(red: 0.07842033356, green: 0.07843843848, blue: 0.07841636986, alpha: 1)
+        let header = view as! UITableViewHeaderFooterView
+        header.textLabel?.textColor = #colorLiteral(red: 0.5646546483, green: 0.5647388697, blue: 0.5724784732, alpha: 1)
+    }
+    
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
