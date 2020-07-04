@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+import Fuzi
 
 
 
@@ -39,9 +39,9 @@ class ThreadCell: BoardsListTableViewCell {
     let detailText: UILabel = {
         let label = UILabel()
         label.textColor = #colorLiteral(red: 0.5960256457, green: 0.5921916366, blue: 0.6116896868, alpha: 1)
-        label.numberOfLines = 7
+        label.numberOfLines = 0
         label.lineBreakMode = .byTruncatingTail
-        label.font = UIFont.preferredFont(forTextStyle: .body).withSize(14.0)
+        label.font = UIFont.preferredFont(forTextStyle: .body).withSize(15.0)
         return label
     }()
 
@@ -59,6 +59,7 @@ class ThreadCell: BoardsListTableViewCell {
         view.backgroundColor = #colorLiteral(red: 0.04705037922, green: 0.0470642224, blue: 0.04704734683, alpha: 1)
         return view
     }()
+    
     // MARK: - Intialization
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -95,67 +96,18 @@ class ThreadCell: BoardsListTableViewCell {
             currentY += heading.frame.height
             currentY += padding
         }
-        /*
-        if heading.text!.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
-            heading.frame = CGRect(
-                x: padding + thumbnailWidth + padding,
-                y: padding,
-                width: textWidthAvailable,
-//                height: ThreadCell.heightForHeading(heading.text ?? "", width: textWidthAvailable)
-                height: ThreadCell.heights[index]!.headingHeight
-
-            )
-            heading.preferredMaxLayoutWidth = heading.frame.width
-            currentY += heading.frame.height
-            currentY += padding
-        }*/
-        
-//        print("deatailText.text = \(detailText.text!)a")
-//        print("ThreadCell.commentHeight = \(ThreadCell.commentHeight)")
-        if detailText.text!.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
+   
+        if detailText.text != nil {
             detailText.frame = ThreadCell.frames[index]!.commentFrame
             detailText.frame.origin = CGPoint(x: leftEdgeOffset, y: currentY)
-//            detailText.frame = CGRect(x: leftEdgeOffset, y: currentY, width: detailText.frame.width, height:  detailText.frame.height)
             currentY += detailText.frame.height
             currentY += padding
         }
-        /*
-        if detailText.text!.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
-//            print(detailText.text!)
-            detailText.frame = CGRect(
-                x: padding + thumbnailWidth + padding,
-//                y: padding + heading.frame.height + padding,
-                y: currentY,
-                width: textWidthAvailable,
-//                height: ThreadCell.heightForComment(detailText.text ?? "", width: textWidthAvailable)
-                height: ThreadCell.heights[index]!.commentHeight
-            )
-            detailText.preferredMaxLayoutWidth = detailText.frame.width
-            currentY += detailText.frame.height
-            currentY += padding
-        }*/
-//        print(detailText.frame)
+
         threadStats.frame = ThreadCell.frames[index]!.statsFrame
-//        statLabel.sizeToFit()
         threadStats.frame.origin = CGPoint(x: leftEdgeOffset, y: currentY)
 
-//        statLabel.frame.size.width = statLabel.frame.width
-//        statLabel.frame = CGRect(x: padding + thumbnailWidth + padding, y: currentY, width: statLabel.frame.width, height:  statLabel.frame.height)
-//        statLabel.preferredMaxLayoutWidth = statLabel.frame.width
-        
-        
         bottomMargin.frame = CGRect(x: -5.0, y: bounds.maxY - 10.0, width: bounds.width + 10.0, height: 10.0)
-//        bottomMargin.bounds. = bounds.midX
-//        statLabel.frame = CGRect(
-//            x: padding + thumbnailWidth + padding,
-//            y: currentY,
-////            + heading.frame.height + padding + detailText.frame.height + padding
-//            width: textWidthAvailable,
-////            height: ThreadCell.heightForComment(statLabel.attributedText!.string, width: textWidthAvailable)
-//            height: ThreadCell.frames[index]!.statsFrame
-//
-//        )
-            
     }
     
     func setupSwipeIcon() {
@@ -223,11 +175,9 @@ class ThreadCell: BoardsListTableViewCell {
     }
     
     func configure(_ thread: Thread) {
-        if thread.image != nil {
-            self.threadThumbnail.image = thread.image
-        }
-        detailText.text = thread.opPost.comment
+        threadThumbnail.image = thread.image ?? UIImage(named: "placeholder")
         heading.text = thread.opPost.subject
+        detailText.text = thread.opPost.comment
         threadStats.attributedText = ThreadCell.createStatsString(filesCount: thread.filesCount, postsCount: thread.postsCount, date: thread.opPost.dateString)
     }
     
@@ -248,10 +198,9 @@ class ThreadCell: BoardsListTableViewCell {
     }
     
     // MARK: - Static Properties
+    
     static var frames = [Int: Frames]()
 
-
-    
     // MARK: - Static Methods
     
     static func preferredHeightForThread(_ thread: Thread, andWidth width: CGFloat, index: Int) -> CGFloat {
@@ -261,10 +210,10 @@ class ThreadCell: BoardsListTableViewCell {
         var totalHeight: CGFloat = topAndBottomPadding
         let textWidthAvailable = width - padding * 3 - thumbnailWidth
         var totalTextHeightAddition: CGFloat = 0.0
-        var headingStringHeight: CGFloat = 0.0
         
+        var headingStringHeight: CGFloat = 0.0
         var headingRect: CGRect = CGRect.zero
-        let headingString = thread.posts[0].subject
+        let headingString = thread.opPost.subject
         if headingString.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
             headingRect = rectForString(
                 headingString,
@@ -278,12 +227,11 @@ class ThreadCell: BoardsListTableViewCell {
         
         var commentStringHeight: CGFloat = 0.0
         var commentRect: CGRect = CGRect.zero
-        let commentString = thread.posts[0].comment
+        let commentString = thread.opPost.comment
         if commentString.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
-            let commentString = thread.posts[0].comment
             commentRect = rectForString(
                 commentString,
-                font: UIFont.preferredFont(forTextStyle: .body).withSize(14.0),
+                font: UIFont.preferredFont(forTextStyle: .body).withSize(15.0),
                 width: textWidthAvailable
             )
             commentStringHeight += commentRect.height
@@ -296,14 +244,13 @@ class ThreadCell: BoardsListTableViewCell {
         let statsString = createStatsString(filesCount: thread.filesCount, postsCount: thread.postsCount, date: thread.posts[0].dateString)
         let statsRect = rectForAttributedString(
             statsString,
-            font: UIFont.preferredFont(forTextStyle: .footnote).withSize(13.0),
             width: textWidthAvailable
         )
         statsStringHeight += statsRect.height
         totalTextHeightAddition += statsStringHeight
         totalTextHeightAddition += topAndBottomPadding + padding
         
-        totalHeight += max(totalTextHeightAddition, thumbnailWidth + topAndBottomPadding)
+        totalHeight += max(totalTextHeightAddition, thumbnailWidth + topAndBottomPadding + padding)
    
         frames[index] = Frames(headingFrame: headingRect, commentFrame: commentRect, statsFrame: statsRect)
         
@@ -324,11 +271,11 @@ class ThreadCell: BoardsListTableViewCell {
             context: nil
         )
             
-        rect.size.height = min(rect.size.height.rounded(.up), CGFloat(130.0))
+        rect.size.height = min(rect.size.height.rounded(.up), CGFloat(100.0))
         return rect
     }
     
-    static func rectForAttributedString(_ string: NSAttributedString, font: UIFont, width: CGFloat) -> CGRect {
+    static func rectForAttributedString(_ string: NSAttributedString, width: CGFloat) -> CGRect {
         var rect = string.boundingRect(
             with: CGSize(
                 width: width,
@@ -338,9 +285,8 @@ class ThreadCell: BoardsListTableViewCell {
             context: nil
         )
 
-        rect.size.height = min(rect.size.height.rounded(.up), CGFloat(90.0))
+        rect.size.height = rect.size.height.rounded(.up)
         return rect
-        
-   
     }
 }
+
