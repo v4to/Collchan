@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-import UIKit
+import Fuzi
 
 
 struct Threads: Decodable {
@@ -77,7 +77,17 @@ extension Thread {
     
     var opPost: Post {
         var post = posts[0]
-        post.comment = String(post.comment.prefix(250))
+
+        let commentNormalized = try? HTMLDocument(string: post.comment.replacingOccurrences(of: "<br>", with: " "))
+        let subjectNormalized = try? HTMLDocument(string: post.subject)
+        
+        if let commentBody = commentNormalized?.body, let subjectBody = subjectNormalized?.body {
+            let comment = commentBody.stringValue.trimmingCharacters(in: .whitespacesAndNewlines)
+            let subject = subjectBody.stringValue.trimmingCharacters(in: .whitespacesAndNewlines)
+            post.subject = comment.hasPrefix(subject) ? "" : post.subject
+            post.comment = String(commentBody.stringValue.prefix(200))
+        }
+    
         return post
     }
 }
@@ -129,10 +139,12 @@ struct File: Decodable {
     let thumbnail: String
 }
 
+//struct Ps
+
 struct Post: Decodable {
     let files: [File]
     var comment: String
-    let subject: String
+    var subject: String
     let creationDate: Date
     let postId: String
    
