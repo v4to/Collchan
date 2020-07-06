@@ -18,7 +18,6 @@ class BoardsTableViewController: UITableViewController, SwipeableCellDelegate, U
 
     // MARK: - Instance Properties
     
-    let boardsRequest = APIRequest(resource: BoardsResource())
     let cellReuseIdentifier = "board"
     var actionButtonsContainerBottomAnchorConstraint: NSLayoutConstraint?
     var isSearchFieldPresented = false
@@ -121,7 +120,7 @@ class BoardsTableViewController: UITableViewController, SwipeableCellDelegate, U
         setupViews()
         subscribeToKeyboardNotifications()
         spinner.startAnimating()
-        featchBoards()
+        loadBoards()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -244,7 +243,7 @@ class BoardsTableViewController: UITableViewController, SwipeableCellDelegate, U
         textFieldName.leftView?.widthAnchor.constraint(equalToConstant: 15.0).isActive = true
     }
     
-    func featchBoards() {
+    func loadBoards() {
         NetworkService.shared.getBoards { (boardsCategories: BoardsWrapper?) in
             self.spinner.stopAnimating()
             
