@@ -13,6 +13,7 @@ struct BaseUrls {
 }
 
 struct EndPoints {
+    static let boards = "/boards.json"
     static let makabaMobile = "/makaba/mobile.fcgi"
     static let threads = "/catalog.json"
 }

@@ -245,15 +245,16 @@ class BoardsTableViewController: UITableViewController, SwipeableCellDelegate, U
     }
     
     func featchBoards() {
-        boardsRequest.load { (boardsCategories: BoardsCategories?) in
+        NetworkService.shared.getBoards { (boardsCategories: BoardsWrapper?) in
             self.spinner.stopAnimating()
+            
             let favoriteBoards = try! FavoriteBoard.findFavoriteBoards(in: self.container!.viewContext)
             self.favoriteBoards = favoriteBoards
             
             if let boardsCategories = boardsCategories {
-                self.boardsCategories = boardsCategories.array
+                self.boardsCategories = boardsCategories.sortedArray
             }
-        
+            
             self.tableView.reloadData()
         }
     }

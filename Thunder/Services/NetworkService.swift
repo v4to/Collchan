@@ -73,12 +73,10 @@ struct ThreadsResource: APIResource {
 
 
 struct BoardsResource: APIResource {
-    typealias ModelType = BoardsCategories
+    typealias ModelType = BoardsWrapper
+
+    let methodPath = EndPoints.boards
     
-    let methodPath = EndPoints.makabaMobile
-    
-    let queryItems = [
-           URLQueryItem(name: "task", value: "get_boards"),
-    ]
+    let queryItems: [URLQueryItem] = []
 }
 
