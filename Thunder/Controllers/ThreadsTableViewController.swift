@@ -55,7 +55,6 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
     func setupTableView() {
         tableView.register(ThreadCell.self, forCellReuseIdentifier: cellId)
         tableView.estimatedRowHeight = 0.0
-//        tableView.estimatedRowHeight = 0.0
         tableView.estimatedSectionFooterHeight = 0.0
         tableView.estimatedSectionHeaderHeight = 0.0
         tableView.prefetchDataSource = self
@@ -134,7 +133,7 @@ extension ThreadsTableViewController {
             return
         }
         
-        threadsService.getThreads(fromBoard: boardId, onPage: page) { [weak self] result in
+        NetworkService.shared.getThreads(fromBoard: boardId, onPage: page) { [weak self] result in
             guard let self = self, let result = result else {
                 return
             }

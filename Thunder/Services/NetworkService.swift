@@ -23,18 +23,20 @@ struct NetworkService {
         boardsRequest.load(withCompletion: completion)
     }
     
-//    mutating func getThreads(from boardId: String, completion: @escaping (Threads?) -> Void) {
-//       threadsRequest = APIRequest(resource: ThreadsResource(threadId: boardId, page: ))
-//       threadsRequest!.load(withCompletion: completion)
-//    }
+    mutating func getThreads(fromBoard boardId: String, onPage page: Int, completion: @escaping (Threads?) -> Void) {
+        let page = page == 0 ? "index" : String(page)
+        
+        // threadsRequest = APIRequest(resource: ThreadsResource(threadId: boardId))
+        threadsRequest = APIRequest(resource: ThreadsResource(threadId: boardId, page: page))
+        threadsRequest!.load(withCompletion: completion)
+    }
     
     mutating func getImageAtPath(_ path: String, completion: @escaping (UIImage?) -> Void) {
         let url = URL(string: BaseUrls.dvach + path)!
         imageRequest = ImageRequest(url: url)
         imageRequest?.load(withCompletion: completion)
     }
-    
-    
+
     mutating func getPostsFrom(boardId: String, threadId: String, completion: @escaping ([Post]?) -> Void) {
         threadRequest = APIRequest(resource: PostsResource(boardId: boardId, threadId: threadId, postId: threadId))
         threadRequest?.load(withCompletion: completion)
