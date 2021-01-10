@@ -8,12 +8,15 @@
 
 import UIKit
 
-class SavedViewController: UIViewController {
+class FavoritesViewController: UIViewController {
  
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        tabBarItem.title = "Saved"
-        tabBarItem.image = UIImage(named: "saved-tab-image")
+        tabBarItem.title = "Favorites"
+//        tabBarItem.image = UIImage(named: "saved-tab-image")
+        tabBarItem.image = UIImage(systemName: "star.fill")
+//        tabBarItem.image = UIImage(systemName: "star")
+
     }
     
     required init?(coder: NSCoder) {
