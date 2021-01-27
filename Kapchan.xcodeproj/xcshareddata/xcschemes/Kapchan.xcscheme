@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "49EA7BDC2476DC8500BFEC13"
-               BuildableName = "Thunder.app"
-               BlueprintName = "Thunder"
-               ReferencedContainer = "container:Thunder.xcodeproj">
+               BuildableName = "Kapchan.app"
+               BlueprintName = "Kapchan"
+               ReferencedContainer = "container:Kapchan.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -35,7 +35,7 @@
                BlueprintIdentifier = "49EA7BF52476DC8B00BFEC13"
                BuildableName = "ThunderTest.xctest"
                BlueprintName = "ThunderTest"
-               ReferencedContainer = "container:Thunder.xcodeproj">
+               ReferencedContainer = "container:Kapchan.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -43,9 +43,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "49867F0125B708050015D56C"
-               BuildableName = "ThunderUITests.xctest"
-               BlueprintName = "ThunderUITests"
-               ReferencedContainer = "container:Thunder.xcodeproj">
+               BuildableName = "KapchanUITests.xctest"
+               BlueprintName = "KapchanUITests"
+               ReferencedContainer = "container:Kapchan.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -53,9 +53,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "49867EEA25B707D10015D56C"
-               BuildableName = "ThunderTests.xctest"
-               BlueprintName = "ThunderTests"
-               ReferencedContainer = "container:Thunder.xcodeproj">
+               BuildableName = "KapchanTests.xctest"
+               BlueprintName = "KapchanTests"
+               ReferencedContainer = "container:Kapchan.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -75,9 +75,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "49EA7BDC2476DC8500BFEC13"
-            BuildableName = "Thunder.app"
-            BlueprintName = "Thunder"
-            ReferencedContainer = "container:Thunder.xcodeproj">
+            BuildableName = "Kapchan.app"
+            BlueprintName = "Kapchan"
+            ReferencedContainer = "container:Kapchan.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -92,9 +92,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "49EA7BDC2476DC8500BFEC13"
-            BuildableName = "Thunder.app"
-            BlueprintName = "Thunder"
-            ReferencedContainer = "container:Thunder.xcodeproj">
+            BuildableName = "Kapchan.app"
+            BlueprintName = "Kapchan"
+            ReferencedContainer = "container:Kapchan.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

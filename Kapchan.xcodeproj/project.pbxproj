@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1BE905493C6474D767185438 /* libPods-Thunder.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE3661EBA430217CA67E5FBE /* libPods-Thunder.a */; };
 		4918E38C249BC5A30081DF7C /* UIViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4918E38B249BC5A30081DF7C /* UIViewExtension.swift */; };
 		491FB2B424B1337B00F2C1FF /* PostTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491FB2B324B1337B00F2C1FF /* PostTableViewCell.swift */; };
 		49210FEC2479D2650020ECBC /* BoardsListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49210FEB2479D2640020ECBC /* BoardsListTableViewCell.swift */; };
@@ -41,6 +40,7 @@
 		49EA7BED2476DC8A00BFEC13 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49EA7BEC2476DC8A00BFEC13 /* Assets.xcassets */; };
 		49EA7BF02476DC8A00BFEC13 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 49EA7BEE2476DC8A00BFEC13 /* LaunchScreen.storyboard */; };
 		49EBD101247819450051A348 /* FavoritesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49EBD100247819450051A348 /* FavoritesViewController.swift */; };
+		6B0F1F04EC48F6377751BC75 /* libPods-Kapchan.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A8BC8A65D8C01CB61DDE9AA /* libPods-Kapchan.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,7 +61,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0717E33AF93DFE08D8EEA8D2 /* Pods-Thunder.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Thunder.debug.xcconfig"; path = "Target Support Files/Pods-Thunder/Pods-Thunder.debug.xcconfig"; sourceTree = "<group>"; };
+		1278FBEC8B99B3813D55B778 /* Pods-Kapchan.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kapchan.debug.xcconfig"; path = "Target Support Files/Pods-Kapchan/Pods-Kapchan.debug.xcconfig"; sourceTree = "<group>"; };
 		4918E38B249BC5A30081DF7C /* UIViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtension.swift; sourceTree = "<group>"; };
 		491FB2B324B1337B00F2C1FF /* PostTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostTableViewCell.swift; sourceTree = "<group>"; };
 		49210FEB2479D2640020ECBC /* BoardsListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardsListTableViewCell.swift; sourceTree = "<group>"; };
@@ -80,10 +80,10 @@
 		495ABBB324832ACA00233583 /* BoardsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardsService.swift; sourceTree = "<group>"; };
 		49703FF824B4A2730099B6DA /* CreatePostModalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePostModalViewController.swift; sourceTree = "<group>"; };
 		49703FFA24B4C4750099B6DA /* Recaptcha.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Recaptcha.swift; sourceTree = "<group>"; };
-		49867EEB25B707D10015D56C /* ThunderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ThunderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		49867EEB25B707D10015D56C /* KapchanTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KapchanTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		49867EED25B707D10015D56C /* ThunderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThunderTests.swift; sourceTree = "<group>"; };
 		49867EEF25B707D10015D56C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		49867F0225B708050015D56C /* ThunderUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ThunderUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		49867F0225B708050015D56C /* KapchanUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KapchanUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		49867F0425B708050015D56C /* ThunderUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThunderUITests.swift; sourceTree = "<group>"; };
 		49867F0625B708050015D56C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		499C14B524AD3F7200CAAE26 /* ThreadTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadTableViewController.swift; sourceTree = "<group>"; };
@@ -93,7 +93,7 @@
 		49A8EC092599C114007621C4 /* HistoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryViewController.swift; sourceTree = "<group>"; };
 		49AB29992478460B00084A6C /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		49BEC03124BE616B008D9836 /* PostRepliesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostRepliesViewController.swift; sourceTree = "<group>"; };
-		49EA7BDD2476DC8500BFEC13 /* Thunder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Thunder.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		49EA7BDD2476DC8500BFEC13 /* Kapchan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kapchan.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		49EA7BE02476DC8500BFEC13 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		49EA7BE22476DC8500BFEC13 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		49EA7BE42476DC8500BFEC13 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -105,8 +105,8 @@
 		49EA7C052476DC8B00BFEC13 /* ThunderUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThunderUITests.swift; sourceTree = "<group>"; };
 		49EA7C072476DC8B00BFEC13 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		49EBD100247819450051A348 /* FavoritesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesViewController.swift; sourceTree = "<group>"; };
-		CE3661EBA430217CA67E5FBE /* libPods-Thunder.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Thunder.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		E1BACCEE5C3EA22A0BED9097 /* Pods-Thunder.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Thunder.release.xcconfig"; path = "Target Support Files/Pods-Thunder/Pods-Thunder.release.xcconfig"; sourceTree = "<group>"; };
+		7A8BC8A65D8C01CB61DDE9AA /* libPods-Kapchan.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Kapchan.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E5B48050A8CD1B5563619662 /* Pods-Kapchan.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kapchan.release.xcconfig"; path = "Target Support Files/Pods-Kapchan/Pods-Kapchan.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,7 +128,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1BE905493C6474D767185438 /* libPods-Thunder.a in Frameworks */,
+				6B0F1F04EC48F6377751BC75 /* libPods-Kapchan.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -234,28 +234,28 @@
 		49EA7BD42476DC8500BFEC13 = {
 			isa = PBXGroup;
 			children = (
-				49EA7BDF2476DC8500BFEC13 /* Thunder */,
+				49EA7BDF2476DC8500BFEC13 /* Kapchan */,
 				49EA7BF92476DC8B00BFEC13 /* ThunderTests */,
 				49EA7C042476DC8B00BFEC13 /* ThunderUITests */,
 				49867EEC25B707D10015D56C /* ThunderTests */,
 				49867F0325B708050015D56C /* ThunderUITests */,
 				49EA7BDE2476DC8500BFEC13 /* Products */,
 				FACD698E3DC8E60061D9C2F9 /* Pods */,
-				4B1A1DBE699BCD80A81E02AE /* Frameworks */,
+				A571F7879543EA4D2C8CDCDF /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
 		49EA7BDE2476DC8500BFEC13 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				49EA7BDD2476DC8500BFEC13 /* Thunder.app */,
-				49867EEB25B707D10015D56C /* ThunderTests.xctest */,
-				49867F0225B708050015D56C /* ThunderUITests.xctest */,
+				49EA7BDD2476DC8500BFEC13 /* Kapchan.app */,
+				49867EEB25B707D10015D56C /* KapchanTests.xctest */,
+				49867F0225B708050015D56C /* KapchanUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		49EA7BDF2476DC8500BFEC13 /* Thunder */ = {
+		49EA7BDF2476DC8500BFEC13 /* Kapchan */ = {
 			isa = PBXGroup;
 			children = (
 				499FAEBB24982286001B4A1C /* Services */,
@@ -269,7 +269,7 @@
 				49EA7BEE2476DC8A00BFEC13 /* LaunchScreen.storyboard */,
 				49EA7BF12476DC8A00BFEC13 /* Info.plist */,
 			);
-			path = Thunder;
+			path = Kapchan;
 			sourceTree = "<group>";
 		};
 		49EA7BF92476DC8B00BFEC13 /* ThunderTests */ = {
@@ -290,10 +290,10 @@
 			path = ThunderUITests;
 			sourceTree = "<group>";
 		};
-		4B1A1DBE699BCD80A81E02AE /* Frameworks */ = {
+		A571F7879543EA4D2C8CDCDF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				CE3661EBA430217CA67E5FBE /* libPods-Thunder.a */,
+				7A8BC8A65D8C01CB61DDE9AA /* libPods-Kapchan.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -301,8 +301,8 @@
 		FACD698E3DC8E60061D9C2F9 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				0717E33AF93DFE08D8EEA8D2 /* Pods-Thunder.debug.xcconfig */,
-				E1BACCEE5C3EA22A0BED9097 /* Pods-Thunder.release.xcconfig */,
+				1278FBEC8B99B3813D55B778 /* Pods-Kapchan.debug.xcconfig */,
+				E5B48050A8CD1B5563619662 /* Pods-Kapchan.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -310,9 +310,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		49867EEA25B707D10015D56C /* ThunderTests */ = {
+		49867EEA25B707D10015D56C /* KapchanTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 49867EF225B707D10015D56C /* Build configuration list for PBXNativeTarget "ThunderTests" */;
+			buildConfigurationList = 49867EF225B707D10015D56C /* Build configuration list for PBXNativeTarget "KapchanTests" */;
 			buildPhases = (
 				49867EE725B707D10015D56C /* Sources */,
 				49867EE825B707D10015D56C /* Frameworks */,
@@ -323,14 +323,14 @@
 			dependencies = (
 				49867EF125B707D10015D56C /* PBXTargetDependency */,
 			);
-			name = ThunderTests;
+			name = KapchanTests;
 			productName = ThunderTests;
-			productReference = 49867EEB25B707D10015D56C /* ThunderTests.xctest */;
+			productReference = 49867EEB25B707D10015D56C /* KapchanTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		49867F0125B708050015D56C /* ThunderUITests */ = {
+		49867F0125B708050015D56C /* KapchanUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 49867F0925B708050015D56C /* Build configuration list for PBXNativeTarget "ThunderUITests" */;
+			buildConfigurationList = 49867F0925B708050015D56C /* Build configuration list for PBXNativeTarget "KapchanUITests" */;
 			buildPhases = (
 				49867EFE25B708050015D56C /* Sources */,
 				49867EFF25B708050015D56C /* Frameworks */,
@@ -341,16 +341,16 @@
 			dependencies = (
 				49867F0825B708050015D56C /* PBXTargetDependency */,
 			);
-			name = ThunderUITests;
+			name = KapchanUITests;
 			productName = ThunderUITests;
-			productReference = 49867F0225B708050015D56C /* ThunderUITests.xctest */;
+			productReference = 49867F0225B708050015D56C /* KapchanUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
-		49EA7BDC2476DC8500BFEC13 /* Thunder */ = {
+		49EA7BDC2476DC8500BFEC13 /* Kapchan */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 49EA7C0A2476DC8B00BFEC13 /* Build configuration list for PBXNativeTarget "Thunder" */;
+			buildConfigurationList = 49EA7C0A2476DC8B00BFEC13 /* Build configuration list for PBXNativeTarget "Kapchan" */;
 			buildPhases = (
-				826DA2FE52305150BA54BA95 /* [CP] Check Pods Manifest.lock */,
+				D5F8BD51C6FAD048D4CCC035 /* [CP] Check Pods Manifest.lock */,
 				49EA7BD92476DC8500BFEC13 /* Sources */,
 				49EA7BDA2476DC8500BFEC13 /* Frameworks */,
 				49EA7BDB2476DC8500BFEC13 /* Resources */,
@@ -359,9 +359,9 @@
 			);
 			dependencies = (
 			);
-			name = Thunder;
+			name = Kapchan;
 			productName = Makaba;
-			productReference = 49EA7BDD2476DC8500BFEC13 /* Thunder.app */;
+			productReference = 49EA7BDD2476DC8500BFEC13 /* Kapchan.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -387,7 +387,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 49EA7BD82476DC8500BFEC13 /* Build configuration list for PBXProject "Thunder" */;
+			buildConfigurationList = 49EA7BD82476DC8500BFEC13 /* Build configuration list for PBXProject "Kapchan" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -400,9 +400,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				49EA7BDC2476DC8500BFEC13 /* Thunder */,
-				49867EEA25B707D10015D56C /* ThunderTests */,
-				49867F0125B708050015D56C /* ThunderUITests */,
+				49EA7BDC2476DC8500BFEC13 /* Kapchan */,
+				49867EEA25B707D10015D56C /* KapchanTests */,
+				49867F0125B708050015D56C /* KapchanUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -434,7 +434,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		826DA2FE52305150BA54BA95 /* [CP] Check Pods Manifest.lock */ = {
+		D5F8BD51C6FAD048D4CCC035 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -449,7 +449,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Thunder-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-Kapchan-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -516,12 +516,12 @@
 /* Begin PBXTargetDependency section */
 		49867EF125B707D10015D56C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 49EA7BDC2476DC8500BFEC13 /* Thunder */;
+			target = 49EA7BDC2476DC8500BFEC13 /* Kapchan */;
 			targetProxy = 49867EF025B707D10015D56C /* PBXContainerItemProxy */;
 		};
 		49867F0825B708050015D56C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 49EA7BDC2476DC8500BFEC13 /* Thunder */;
+			target = 49EA7BDC2476DC8500BFEC13 /* Kapchan */;
 			targetProxy = 49867F0725B708050015D56C /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -556,7 +556,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Thunder.app/Thunder";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Kapchan.app/Kapchan";
 			};
 			name = Debug;
 		};
@@ -578,7 +578,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Thunder.app/Thunder";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Kapchan.app/Kapchan";
 			};
 			name = Release;
 		};
@@ -740,20 +740,20 @@
 		};
 		49EA7C0B2476DC8B00BFEC13 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0717E33AF93DFE08D8EEA8D2 /* Pods-Thunder.debug.xcconfig */;
+			baseConfigurationReference = 1278FBEC8B99B3813D55B778 /* Pods-Kapchan.debug.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-3";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = MF5RYH2YK2;
-				INFOPLIST_FILE = "$(SRCROOT)/Thunder/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Kapchan/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.andrii.yehortsev..thunder;
-				PRODUCT_NAME = Thunder;
+				PRODUCT_BUNDLE_IDENTIFIER = com.app.kapchan;
+				PRODUCT_NAME = Kapchan;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -762,20 +762,20 @@
 		};
 		49EA7C0C2476DC8B00BFEC13 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E1BACCEE5C3EA22A0BED9097 /* Pods-Thunder.release.xcconfig */;
+			baseConfigurationReference = E5B48050A8CD1B5563619662 /* Pods-Kapchan.release.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-3";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = MF5RYH2YK2;
-				INFOPLIST_FILE = "$(SRCROOT)/Thunder/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Kapchan/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.andrii.yehortsev..thunder;
-				PRODUCT_NAME = Thunder;
+				PRODUCT_BUNDLE_IDENTIFIER = com.app.kapchan;
+				PRODUCT_NAME = Kapchan;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -785,7 +785,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		49867EF225B707D10015D56C /* Build configuration list for PBXNativeTarget "ThunderTests" */ = {
+		49867EF225B707D10015D56C /* Build configuration list for PBXNativeTarget "KapchanTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				49867EF325B707D10015D56C /* Debug */,
@@ -794,7 +794,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		49867F0925B708050015D56C /* Build configuration list for PBXNativeTarget "ThunderUITests" */ = {
+		49867F0925B708050015D56C /* Build configuration list for PBXNativeTarget "KapchanUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				49867F0A25B708050015D56C /* Debug */,
@@ -803,7 +803,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		49EA7BD82476DC8500BFEC13 /* Build configuration list for PBXProject "Thunder" */ = {
+		49EA7BD82476DC8500BFEC13 /* Build configuration list for PBXProject "Kapchan" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				49EA7C082476DC8B00BFEC13 /* Debug */,
@@ -812,7 +812,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		49EA7C0A2476DC8B00BFEC13 /* Build configuration list for PBXNativeTarget "Thunder" */ = {
+		49EA7C0A2476DC8B00BFEC13 /* Build configuration list for PBXNativeTarget "Kapchan" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				49EA7C0B2476DC8B00BFEC13 /* Debug */,
