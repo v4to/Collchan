@@ -25,8 +25,6 @@
 		495ABBB424832ACA00233583 /* BoardsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495ABBB324832ACA00233583 /* BoardsService.swift */; };
 		49703FF924B4A2730099B6DA /* CreatePostModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49703FF824B4A2730099B6DA /* CreatePostModalViewController.swift */; };
 		49703FFB24B4C4750099B6DA /* Recaptcha.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49703FFA24B4C4750099B6DA /* Recaptcha.swift */; };
-		49867EEE25B707D10015D56C /* ThunderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49867EED25B707D10015D56C /* ThunderTests.swift */; };
-		49867F0525B708050015D56C /* ThunderUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49867F0425B708050015D56C /* ThunderUITests.swift */; };
 		499C14B624AD3F7200CAAE26 /* ThreadTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 499C14B524AD3F7200CAAE26 /* ThreadTableViewController.swift */; };
 		499F7C3B248C5A9F0010B97A /* ThreadsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 499F7C3A248C5A9F0010B97A /* ThreadsModel.swift */; };
 		499FAEAE24979358001B4A1C /* Thunder.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 499FAEAC24979358001B4A1C /* Thunder.xcdatamodeld */; };
@@ -81,11 +79,7 @@
 		49703FF824B4A2730099B6DA /* CreatePostModalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePostModalViewController.swift; sourceTree = "<group>"; };
 		49703FFA24B4C4750099B6DA /* Recaptcha.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Recaptcha.swift; sourceTree = "<group>"; };
 		49867EEB25B707D10015D56C /* KapchanTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KapchanTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		49867EED25B707D10015D56C /* ThunderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThunderTests.swift; sourceTree = "<group>"; };
-		49867EEF25B707D10015D56C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		49867F0225B708050015D56C /* KapchanUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KapchanUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		49867F0425B708050015D56C /* ThunderUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThunderUITests.swift; sourceTree = "<group>"; };
-		49867F0625B708050015D56C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		499C14B524AD3F7200CAAE26 /* ThreadTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadTableViewController.swift; sourceTree = "<group>"; };
 		499F7C3A248C5A9F0010B97A /* ThreadsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadsModel.swift; sourceTree = "<group>"; };
 		499FAEAD24979358001B4A1C /* Thunder.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Thunder.xcdatamodel; sourceTree = "<group>"; };
@@ -100,10 +94,6 @@
 		49EA7BEC2476DC8A00BFEC13 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		49EA7BEF2476DC8A00BFEC13 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		49EA7BF12476DC8A00BFEC13 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		49EA7BFA2476DC8B00BFEC13 /* ThunderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThunderTests.swift; sourceTree = "<group>"; };
-		49EA7BFC2476DC8B00BFEC13 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		49EA7C052476DC8B00BFEC13 /* ThunderUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThunderUITests.swift; sourceTree = "<group>"; };
-		49EA7C072476DC8B00BFEC13 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		49EBD100247819450051A348 /* FavoritesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesViewController.swift; sourceTree = "<group>"; };
 		7A8BC8A65D8C01CB61DDE9AA /* libPods-Kapchan.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Kapchan.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E5B48050A8CD1B5563619662 /* Pods-Kapchan.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kapchan.release.xcconfig"; path = "Target Support Files/Pods-Kapchan/Pods-Kapchan.release.xcconfig"; sourceTree = "<group>"; };
@@ -155,24 +145,6 @@
 				49233F9825A8E28F0036E169 /* Colors.swift */,
 			);
 			path = Model;
-			sourceTree = "<group>";
-		};
-		49867EEC25B707D10015D56C /* ThunderTests */ = {
-			isa = PBXGroup;
-			children = (
-				49867EED25B707D10015D56C /* ThunderTests.swift */,
-				49867EEF25B707D10015D56C /* Info.plist */,
-			);
-			path = ThunderTests;
-			sourceTree = "<group>";
-		};
-		49867F0325B708050015D56C /* ThunderUITests */ = {
-			isa = PBXGroup;
-			children = (
-				49867F0425B708050015D56C /* ThunderUITests.swift */,
-				49867F0625B708050015D56C /* Info.plist */,
-			);
-			path = ThunderUITests;
 			sourceTree = "<group>";
 		};
 		499FAEB724982160001B4A1C /* Controllers */ = {
@@ -235,10 +207,6 @@
 			isa = PBXGroup;
 			children = (
 				49EA7BDF2476DC8500BFEC13 /* Kapchan */,
-				49EA7BF92476DC8B00BFEC13 /* ThunderTests */,
-				49EA7C042476DC8B00BFEC13 /* ThunderUITests */,
-				49867EEC25B707D10015D56C /* ThunderTests */,
-				49867F0325B708050015D56C /* ThunderUITests */,
 				49EA7BDE2476DC8500BFEC13 /* Products */,
 				FACD698E3DC8E60061D9C2F9 /* Pods */,
 				A571F7879543EA4D2C8CDCDF /* Frameworks */,
@@ -270,24 +238,6 @@
 				49EA7BF12476DC8A00BFEC13 /* Info.plist */,
 			);
 			path = Kapchan;
-			sourceTree = "<group>";
-		};
-		49EA7BF92476DC8B00BFEC13 /* ThunderTests */ = {
-			isa = PBXGroup;
-			children = (
-				49EA7BFA2476DC8B00BFEC13 /* ThunderTests.swift */,
-				49EA7BFC2476DC8B00BFEC13 /* Info.plist */,
-			);
-			path = ThunderTests;
-			sourceTree = "<group>";
-		};
-		49EA7C042476DC8B00BFEC13 /* ThunderUITests */ = {
-			isa = PBXGroup;
-			children = (
-				49EA7C052476DC8B00BFEC13 /* ThunderUITests.swift */,
-				49EA7C072476DC8B00BFEC13 /* Info.plist */,
-			);
-			path = ThunderUITests;
 			sourceTree = "<group>";
 		};
 		A571F7879543EA4D2C8CDCDF /* Frameworks */ = {
@@ -463,7 +413,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				49867EEE25B707D10015D56C /* ThunderTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -471,7 +420,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				49867F0525B708050015D56C /* ThunderUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
