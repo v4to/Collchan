@@ -176,8 +176,8 @@ struct Post: Decodable {
 
 extension Post {
     var dateString: String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd.MM.YYYY, HH:mm"
-        return dateFormatter.string(from: creationDate)
+        let relativeDateFormatter = RelativeDateTimeFormatter()
+        relativeDateFormatter.unitsStyle = .full
+        return relativeDateFormatter.localizedString(for: creationDate, relativeTo: Date())
     }
 }

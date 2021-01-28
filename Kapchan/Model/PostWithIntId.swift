@@ -48,9 +48,9 @@ struct PostWithIntId: Decodable {
     var creationDateString: String = ""
     
     mutating func mapDateToString() {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd.MM.YYYY, HH:mm"
-        creationDateString = dateFormatter.string(from: creationDate)
+        let relativeDateFormatter = RelativeDateTimeFormatter()
+        relativeDateFormatter.unitsStyle = .full
+        creationDateString = relativeDateFormatter.localizedString(for: creationDate, relativeTo: Date())
     }
     
     
