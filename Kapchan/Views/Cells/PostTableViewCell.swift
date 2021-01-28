@@ -87,7 +87,7 @@ class PostTableViewCell: BoardsListTableViewCell {
         
         var postIdStringHeight: CGFloat = 0.0
         var postIdRect: CGRect = CGRect.zero
-        let postIdString = "#\(post.postId)"
+        let postIdString = "#\(post.postId) • \(post.creationDateString)"
 //        print(postIdString)
         if postIdString.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
             postIdRect = rectForString(
@@ -197,7 +197,6 @@ class PostTableViewCell: BoardsListTableViewCell {
         
         thumbnailsCollectionView.frame = CGRect.zero
         postId.frame = CGRect.zero
-        date.frame = CGRect.zero
         postReplies.frame = CGRect.zero
         
         comment.frame = CGRect.zero
@@ -216,10 +215,7 @@ class PostTableViewCell: BoardsListTableViewCell {
         
 //        }
         
-        
-        date.frame = PostTableViewCell.frames[index]!.dateFrame
-        date.frame.origin = CGPoint(x: bounds.maxX - date.frame.width - padding, y: padding)
-        
+                
 //        currentY += date.frame.height
 //        currentY += padding
         
@@ -262,8 +258,6 @@ class PostTableViewCell: BoardsListTableViewCell {
     }
     
     lazy var postId = createHeaderLabelWithFont(UIFont.preferredFont(forTextStyle: .footnote).withSize(13.0))
-    lazy var date = createHeaderLabelWithFont(UIFont.preferredFont(forTextStyle: .footnote).withSize(13.0))
-    
     
     struct ThumbnailImage {
         var url: URL
@@ -410,7 +404,6 @@ class PostTableViewCell: BoardsListTableViewCell {
         postReplies.addTarget(nil, action: #selector(ThreadTableViewController.actionOpenRepliesModel(_:)), for: .touchUpInside)
 //        thumbnailsCollectionView.delegate = self
         contentView.addSubview(postId)
-        contentView.addSubview(date)
         contentView.addSubview(comment)
         contentView.addSubview(thumbnailsCollectionView)
         contentView.addSubview(postReplies)
@@ -545,9 +538,7 @@ class PostTableViewCell: BoardsListTableViewCell {
         setupThumbnails(images: post.images, post: post)
         
         postIdString = String(post.postId)
-        postId.text = "#\(post.postId)"
-        date.text = post.creationDateString
-//        date.text = post.dateString
+        postId.text = "#\(post.postId) • \(post.creationDateString)"
 //
 //
 //        postReplies.isHidden = false
@@ -581,7 +572,6 @@ class PostTableViewCell: BoardsListTableViewCell {
 
 //        contentView.addSubview(thumbnailsStackView)
         contentView.addSubview(postId)
-        contentView.addSubview(date)
         contentView.addSubview(comment)
         contentView.addSubview(thumbnailsCollectionView)
         contentView.addSubview(postReplies)
@@ -598,9 +588,7 @@ class PostTableViewCell: BoardsListTableViewCell {
 //        postId.setContentHuggingPriority(.defaultHigh, for: .vertical)
         
         //        date.centerYAnchor.constraint(equalTo: postId.centerYAnchor).isActive = true
-        date.topAnchor.constraint(equalTo: contentView.topAnchor, constant: padding).isActive = true
         
-        date.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -padding).isActive = true
         
         
         
@@ -608,7 +596,6 @@ class PostTableViewCell: BoardsListTableViewCell {
         thumbnailCollectioViewTopConstraintToPostIt?.isActive = true
         thumbnailCollectioViewLeftConstraintToPostIt = thumbnailsCollectionView.leftAnchor.constraint(equalTo: postId.leftAnchor)
         thumbnailCollectioViewLeftConstraintToPostIt?.isActive = true
-        thumbnailCollectioViewRightConstraintToDate = thumbnailsCollectionView.rightAnchor.constraint(equalTo: date.rightAnchor)
         thumbnailCollectioViewRightConstraintToDate?.isActive = true
         thumbnailsCollectionViewHeightConstraint = thumbnailsCollectionView.heightAnchor.constraint(equalToConstant: 90.0)
         thumbnailsCollectionViewHeightConstraint?.isActive = true
@@ -626,14 +613,12 @@ class PostTableViewCell: BoardsListTableViewCell {
         
         
         comment.leftAnchor.constraint(equalTo: postId.leftAnchor).isActive = true
-        comment.rightAnchor.constraint(equalTo: date.rightAnchor).isActive = true
         comment.setContentHuggingPriority(.defaultHigh, for: .vertical)
         commentBottomConstraint = comment.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -padding)
         commentBottomConstraint?.priority = .defaultHigh
         commentBottomConstraint?.isActive = false
         
         postReplies.topAnchor.constraint(equalTo: comment.bottomAnchor, constant: margin).isActive = true
-        postReplies.rightAnchor.constraint(equalTo: date.rightAnchor).isActive = true
         postReplies.setContentHuggingPriority(.defaultHigh, for: .vertical)
 
         postRepliesBottomConstraint = postReplies.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -padding)
