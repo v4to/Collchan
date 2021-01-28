@@ -372,7 +372,7 @@ class PostTableViewCell: BoardsListTableViewCell {
 //        label.titleLabel?.textColor = .systemBlue
         
 //        label.setTitleColor(.systemBlue, for: .normal)
-        label.setTitleColor(Constants.Design.Color.secondaryGray, for: .normal)
+        label.setTitleColor(.secondaryLabel, for: .normal)
 //        label.title label.titleLabel?.text?.uppercased()
         return label
     }()
