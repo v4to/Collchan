@@ -27,7 +27,7 @@ enum Constants {
         enum Color {
             static let background = UIColor { (traitCollection: UITraitCollection) -> UIColor in
                 if traitCollection.userInterfaceStyle == .dark {
-                    return UIColor(red: 0.129, green: 0.145, blue: 0.180, alpha: 1.0)
+                    return UIColor(red: 0.150, green: 0.162, blue: 0.197, alpha: 1.0)
                 } else {
                     return UIColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
                 }

@@ -70,8 +70,7 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
         tableView.tableHeaderView = UIView(frame: CGRect.zero)
         tableView.showsVerticalScrollIndicator = false
         
-        tableView.backgroundColor = Constants.Design.Color.background
-
+        self.tableView.backgroundColor = Constants.Design.Color.gap
     }
     
     func setUpPopGesture() {
