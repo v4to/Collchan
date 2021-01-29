@@ -32,16 +32,6 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "49EA7BF52476DC8B00BFEC13"
-               BuildableName = "ThunderTest.xctest"
-               BlueprintName = "ThunderTest"
-               ReferencedContainer = "container:Kapchan.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "49867F0125B708050015D56C"
                BuildableName = "KapchanUITests.xctest"
                BlueprintName = "KapchanUITests"
