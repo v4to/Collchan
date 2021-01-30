@@ -114,8 +114,14 @@ class ThreadTableViewController: UITableViewController {
         self.tableView.addSubview(self.scrollToBottomButton)
         self.scrollToBottomButton.heightAnchor.constraint(equalToConstant: 44.0).isActive = true
         self.scrollToBottomButton.widthAnchor.constraint(equalToConstant: 44.0).isActive = true
-        self.scrollToBottomButton.bottomAnchor.constraint(equalTo: self.tableView.safeAreaLayoutGuide.bottomAnchor, constant: -15.0).isActive = true
-        self.scrollToBottomButton.trailingAnchor.constraint(equalTo: self.tableView.safeAreaLayoutGuide.trailingAnchor, constant: -15.0).isActive = true
+        self.scrollToBottomButton.bottomAnchor.constraint(
+            equalTo: self.tableView.safeAreaLayoutGuide.bottomAnchor,
+            constant: -15.0
+        ).isActive = true
+        self.scrollToBottomButton.trailingAnchor.constraint(
+            equalTo: self.tableView.safeAreaLayoutGuide.trailingAnchor,
+            constant: -15.0
+        ).isActive = true
         
         self.tableView.addSubview(self.spinnerRefresh)
         self.spinnerRefresh.hidesWhenStopped = true
@@ -511,9 +517,19 @@ extension ThreadTableViewController {
             if maxY > contentSizeHeight + reloadDistance, !isDataSourceLoading {
                 spinnerRefresh.startAnimating()
                 
-                self.spinnerRefresh.frame = CGRect(x: 0, y: self.tableView.contentSize.height, width: self.tableView.bounds.size.width, height: 60.0)
+                self.spinnerRefresh.frame = CGRect(
+                    x: 0,
+                    y: self.tableView.contentSize.height,
+                    width: self.tableView.bounds.size.width,
+                    height: 60.0
+                )
 
-                self.tableView.contentInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: self.spinnerRefresh.frame.height, right: 0.0)
+                self.tableView.contentInset = UIEdgeInsets(
+                    top: 0.0,
+                    left: 0.0,
+                    bottom: self.spinnerRefresh.frame.height,
+                    right: 0.0
+                )
 
                 savedLastIndex = self.postsArray.count - 1
 
