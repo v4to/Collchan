@@ -32,6 +32,8 @@ class ThreadTableViewController: UITableViewController, UIGestureRecognizerDeleg
     // MARK: - Instance Methods
     var spinnerRefresh = UIActivityIndicatorView()
 
+    var isDataSourceLoading = true
+    
     var cellHeights = [Int: CGFloat]()
     var boardId: String?
     var threadId: String?
@@ -180,27 +182,8 @@ class ThreadTableViewController: UITableViewController, UIGestureRecognizerDeleg
         setupTableView()
         setUpPopGesture()
         loadPosts()
+        setupViews()
         
-        
-        
-//        spinnerRefresh = UIActivityIndicatorView(style: .medium)
-        
-        spinnerRefresh = UIActivityIndicatorView(frame: CGRect(x: 0, y: tableView.contentSize.height, width: tableView.bounds.size.width, height: 60.0))
-//        spinnerRefresh.backgroundColor = .red
-//        spinnerRefresh.stopAnimating()
-        spinnerRefresh.hidesWhenStopped = true
-//        spinnerRefresh.frame = CGRect(x: tableView.contentInset.bottom, y: 0, width: tableView.bounds.size.width, height: 60.0)
-        
-        tableView.addSubview(spinnerRefresh)
-        
-        self.tableView.layoutIfNeeded()
-        print("viewDidLoad --- \(tableView.contentSize.height)")
-//        spinnerRefresh.startAnimating()
-//        self.tableView.tableFooterView = UIView(frame: .zero)
-//        tableView.tableFooterView = spinnerRefresh
-//        tableView.tableFooterView?.isHidden = true
-    }
-    
     override func viewWillLayoutSubviews() {
         print("viewWillLayoutSubviews --- \(tableView.contentSize.height)")
 
@@ -213,6 +196,10 @@ class ThreadTableViewController: UITableViewController, UIGestureRecognizerDeleg
     
     override func viewWillAppear(_ animated: Bool) {
         print("viewWillAppear --- \(tableView.contentSize.height)")
+    
+    func setupViews() {
+        self.tableView.addSubview(self.spinnerRefresh)
+        self.spinnerRefresh.hidesWhenStopped = true
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -317,61 +304,32 @@ class ThreadTableViewController: UITableViewController, UIGestureRecognizerDeleg
     var savedLastIndex = 0
     
     override func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-//        print("scrollViewDidEndDragging")
             let offset = scrollView.contentOffset
             let bounds = scrollView.bounds
             let size = scrollView.contentSize
             let inset = scrollView.contentInset
 
-            let y = offset.y + bounds.size.height - inset.bottom
-            let h = size.height
+            let maxY = offset.y + bounds.size.height - inset.bottom
+
+            let contentSizeHeight = size.height
 
             let reloadDistance = CGFloat(120.0)
-            if y > h + reloadDistance {
-                self.spinnerRefresh.frame = CGRect(x: 0, y: self.tableView.contentSize.height, width: self.tableView.bounds.size.width, height: 60.0)
-//                self.tableView.contentSize.height = self.tableView.contentSize.height + self.spinnerRefresh.bounds.height
-                spinnerRefresh.startAnimating()
 
-//                UIView.animate(withDuration: 2.0) {
-                    self.tableView.contentInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: self.spinnerRefresh.frame.height, right: 0.0)
-                savedLastIndex = self.postsArray.count - 1
-                //savedOffP = self.tableView.contentOffset.y
-//                }
-//                tableView.tableFooterView = spinnerRefresh
-//                spinnerRefresh.frame.size.height = 60.0
-//                tableView.tableFooterView?.isHidden = false
-//                tableView.contentSize.height = tableView.contentSize.height + spinnerRefresh.bounds.height
-//                tableView.tableFooterView?.isHidden = false
-                print("scrollViewDidEndDragging --- \(self.tableView.contentSize.height)")
+            if maxY > contentSizeHeight + reloadDistance, !isDataSourceLoading {
+                spinnerRefresh.startAnimating()
                 
+                self.spinnerRefresh.frame = CGRect(x: 0, y: self.tableView.contentSize.height, width: self.tableView.bounds.size.width, height: 60.0)
+
+                self.tableView.contentInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: self.spinnerRefresh.frame.height, right: 0.0)
+
+                savedLastIndex = self.postsArray.count - 1
+
+
                 self.loadPosts()
-//                  let timer2 = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: false) { [weak self] timer in
-//
-////                    self?.tableView.tableFooterView = nil
-////                    self?.spinnerRefresh.removeFromSuperview()
-////                    self?.tableView.tableFooterView = nil
-////                    self?.tableView.reloadData()
-////                    self?.tableView.scrollToRow(at: IndexPath(row: self!.postsArray.count - 1, section: 0) , at: .bottom, animated: true)
-//                    self?.spinnerRefresh.stopAnimating()
-//                    UIView.animate(withDuration: 0.2) {
-//                        self?.tableView.contentSize.height = self!.tableView.contentSize.height - self!.spinnerRefresh.bounds.height
-//                    }
-//
-////                    self?.tableView.scrollToRow(at: IndexPath(row: self!.postsArray.count - 1, section: 0) , at: .bottom, animated: true)
-////                    self?.tableView.tableFooterView = UIView(frame: .zero)
-////                    self?.tableView.tableFooterView?.isHidden = true
-//
-//                    print("Timer fired!")
-//
-//                }
-//                spinnerRefresh.startAnimating()
+                self.isDataSourceLoading = true
             }
     }
-    
-    
-    
-    
-    
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
@@ -556,64 +514,28 @@ extension ThreadTableViewController {
             DispatchQueue.global().async {
                 self.setupReplies()
                 for index in self.postsArray.indices {
-                    self.cellHeights[index] = PostTableViewCell.preferredHeightForThread(self.postsArray[index], andWidth: width, index: index)
                 }
                 
                 DispatchQueue.main.async {
-
                     if self.spinnerRefresh.isAnimating {
                         self.spinnerRefresh.stopAnimating()
+                        
                         self.tableView.reloadData()
-//                        self.tableView.layoutIfNeeded()
-
-                        print("loadPosts --- \(self.tableView.contentSize.height)")
                         UIView.animate(withDuration: 0.3) {
                             self.tableView.contentInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: 0.0, right: 0.0)
                         }
-                        
-                        
-//                        self.tableView.setContentOffset(CGPoint(x: self.tableView.contentOffset.x, y: self.savedOffP), animated: true)
-//                        self.tableView.currnet
-//                        self.tableView.contentSize.height = self.tableView.contentSize.height - self.spinnerRefresh.bounds.height
-                        self.tableView.scrollToRow(at: IndexPath(row: self.savedLastIndex, section: 0) , at: .bottom , animated: true)
-//                        UIView.animate(withDuration: 0.2) {
-//                            self.tableView.contentSize.height = self.tableView.contentSize.height
+                        self.tableView.scrollToRow(
+                            at: IndexPath(row: self.savedLastIndex, section: 0),
+                            at: .bottom,
+                            animated: true
+                        )
 
-//                        }
-//                        DispatchQueue.main.async {
-//                        CATransaction.begin()
-//                        DispatchQueue.main.async {
-//                        self.tableView.beginUpdates()
-//                            self.tableView.scrollToRow(at: IndexPath(row: self.postsArray.count - 1, section: 0) , at: .bottom , animated: true)
-//                        self.tableView.endUpdates()
-//                        }
-//                        CATransaction.commit()
-//                            self.tableView.scrollToRow(at: IndexPath(row: self.postsArray.count - 1, section: 0) , at: .bottom , animated: true)
-//                            let bottomOffset = CGPoint(x: 0, y: self.tableView.contentSize.height - self.tableView.bounds.size.height + self.tableView.contentInset.bottom + self.tableView.contentInset.top)
-//                            self.tableView.setContentOffset(bottomOffset, animated: true)
-//                        }
                         
-                        
-                        
-                        self.spinnerRefresh.frame = CGRect(x: 0, y: self.tableView.contentSize.height, width: self.tableView.bounds.size.width, height: 60.0)
-//                        self.tableView.reloadData()
-//                        self.tableView.invalidateIntrinsicContentSize()
-//                        UIView.animate(withDuration: 0.2) {
-//                            self.tableView.invalidateIntrinsicContentSize()
-//                            self.tableView.reloadData()
-//                            self.tableView.layoutIfNeeded()
-//                            self.tableView.contentSize.height = self.tableView.contentSize.height
-//                            self.tableView.reloadData()
-//                            self.tableView.contentSize
-//                        }
                     } else {
                         self.spinner.stopAnimating()
                         self.tableView.reloadData()
                     }
-                    
-//                    self.tableView.reloadData()
-
-
+                    self.isDataSourceLoading = false
                 }
             }
             
