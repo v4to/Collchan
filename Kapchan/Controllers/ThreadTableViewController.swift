@@ -30,6 +30,26 @@ class ThreadTableViewController: UITableViewController, UIGestureRecognizerDeleg
 //        print("touch")
     }
     // MARK: - Instance Methods
+    lazy var scrollToBottomButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.addTarget(self, action: #selector(scrollToLastRow(_:)), for: .touchUpInside)
+        button.backgroundColor = Constants.Design.Color.gap
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.layer.borderWidth = 0.5
+        button.layer.borderColor = UIColor.separator.cgColor
+        button.layer.cornerRadius = 44.0/2
+
+        let configuration = UIImage.SymbolConfiguration(scale: .large)
+        var image = UIImage(
+            systemName: "chevron.down",
+            withConfiguration: configuration
+        )?.withTintColor(Constants.Design.Color.secondaryGray, renderingMode: .alwaysOriginal)
+        
+        button.setImage(image, for: .normal)
+
+        return button
+    }()
+    
     var spinnerRefresh = UIActivityIndicatorView()
 
     var isDataSourceLoading = true
@@ -92,19 +112,10 @@ class ThreadTableViewController: UITableViewController, UIGestureRecognizerDeleg
         present(presentationModelVC, animated: true, completion: nil)
     }
     
-    @objc func scrollToLastRow(_ sender: UIBarButtonItem) {
+    @objc func scrollToLastRow(_ sender: UIButton) {
         if self.tableView.numberOfRows(inSection: 0) > 0 {
             tableView.scrollToRow(at: IndexPath(row: self.postsArray.count - 1, section: 0) , at: .bottom , animated: true)
-//            tableView.scrollToRow(at: IndexPath(row: 6, section: 0) , at: .bottom , animated: true)
-
         }
-        
-//        let point = CGPoint(x: 0, y: self.tableView.contentSize.height + self.tableView.contentInset.bottom - self.tableView.frame.height)
-//        let point = CGPoint(x: 0, y: CGFloat.greatestFiniteMagnitude)
-//
-//        if point.y >= 0{
-//            self.tableView.setContentOffset(point, animated: false)
-//        }
     }
     
     // MARK: - ViewController lifecycle
@@ -198,6 +209,12 @@ class ThreadTableViewController: UITableViewController, UIGestureRecognizerDeleg
         print("viewWillAppear --- \(tableView.contentSize.height)")
     
     func setupViews() {
+        self.tableView.addSubview(self.scrollToBottomButton)
+        self.scrollToBottomButton.heightAnchor.constraint(equalToConstant: 44.0).isActive = true
+        self.scrollToBottomButton.widthAnchor.constraint(equalToConstant: 44.0).isActive = true
+        self.scrollToBottomButton.bottomAnchor.constraint(equalTo: self.tableView.safeAreaLayoutGuide.bottomAnchor, constant: -15.0).isActive = true
+        self.scrollToBottomButton.trailingAnchor.constraint(equalTo: self.tableView.safeAreaLayoutGuide.trailingAnchor, constant: -15.0).isActive = true
+        
         self.tableView.addSubview(self.spinnerRefresh)
         self.spinnerRefresh.hidesWhenStopped = true
     }
@@ -302,6 +319,33 @@ class ThreadTableViewController: UITableViewController, UIGestureRecognizerDeleg
 //    }
     
     var savedLastIndex = 0
+    
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let contentSizeHeight = scrollView.contentSize.height
+        let contentOffsetY = scrollView.contentOffset.y
+        let scrollViewHeight = scrollView.bounds.height
+        let adujustedInsetBottom = scrollView.adjustedContentInset.bottom
+        
+        guard contentSizeHeight > 0 else {
+            return
+        }
+    
+        if contentOffsetY + scrollViewHeight - adujustedInsetBottom >= contentSizeHeight {
+            UIView.animate(withDuration: 0.2) {
+                self.scrollToBottomButton.alpha = 0.0
+            } completion: { isFinished in
+                self.scrollToBottomButton.isHidden = true
+            }
+        } else {
+            UIView.animate(withDuration: 0.2) {
+                self.scrollToBottomButton.alpha = 1.0
+            } completion: { isFinished in
+                self.scrollToBottomButton.isHidden = false
+
+            }
+        }
+        
+    }
     
     override func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
             let offset = scrollView.contentOffset
@@ -533,7 +577,13 @@ extension ThreadTableViewController {
                         
                     } else {
                         self.spinner.stopAnimating()
+                        
                         self.tableView.reloadData()
+                
+                        if self.tableView.contentSize.height + self.tableView.adjustedContentInset.top
+                            + self.tableView.adjustedContentInset.bottom < self.tableView.bounds.height {
+                            self.scrollToBottomButton.isHidden = true
+                        }
                     }
                     self.isDataSourceLoading = false
                 }
