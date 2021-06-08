@@ -67,7 +67,7 @@ class BoardsTableViewController: UITableViewController, SwipeableCellDelegate, U
     }()
     lazy var addToFavoriteButton: ActionSheetButton = {
         let button = ActionSheetButton(frame: CGRect.zero, title: "Favorite", textColor: #colorLiteral(red: 0.1960576475, green: 0.1960917115, blue: 0.1960501969, alpha: 1))
-        button.addBorder(side: .bottom, color: #colorLiteral(red: 0.172529161, green: 0.1764830351, blue: 0.184286654, alpha: 1), width: 1.0)
+        button.addBorder(side: .bottom, color: Constants.Design.Color.gap, width: 1.0)
         button.isEnabled = false
         button.translatesAutoresizingMaskIntoConstraints = false
 
