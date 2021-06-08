@@ -8,6 +8,10 @@
 
 import UIKit
 import CoreData
+import Accelerate
+import WebKit
+import Fuzi
+let kernelLength = 51
 
 class BoardsTableViewController: UITableViewController, SwipeableCellDelegate, UISearchControllerDelegate, UIGestureRecognizerDelegate {
    
@@ -26,7 +30,6 @@ class BoardsTableViewController: UITableViewController, SwipeableCellDelegate, U
     lazy var overlay: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1).withAlphaComponent(0.9)
         view.alpha = 0.0
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideOverlayGesture))
         tapGesture.delegate = self
@@ -36,8 +39,10 @@ class BoardsTableViewController: UITableViewController, SwipeableCellDelegate, U
     lazy var textFieldContainer: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = #colorLiteral(red: 0.07841930538, green: 0.0823603943, blue: 0.09017961472, alpha: 1)
+        view.backgroundColor = Constants.Design.Color.background
         view.layer.cornerRadius = 10.0
+        view.layer.borderWidth = 1.0
+        view.layer.borderColor = Constants.Design.Color.gap.cgColor
         return view
     }()
     lazy var textFieldBoardId: UITextField = {
@@ -54,7 +59,9 @@ class BoardsTableViewController: UITableViewController, SwipeableCellDelegate, U
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.layer.cornerRadius = 10.0
-        view.backgroundColor = #colorLiteral(red: 0.07841930538, green: 0.0823603943, blue: 0.09017961472, alpha: 1)
+        view.backgroundColor = Constants.Design.Color.background
+        view.layer.borderWidth = 1.0
+        view.layer.borderColor = Constants.Design.Color.gap.cgColor
         view.clipsToBounds = true
         return view
     }()
@@ -68,7 +75,7 @@ class BoardsTableViewController: UITableViewController, SwipeableCellDelegate, U
         return button
     }()
     lazy var cancelButton: ActionSheetButton = {
-        let button = ActionSheetButton(frame: CGRect.zero, title: "Cancel", textColor: #colorLiteral(red: 0.0384538658, green: 0.5176959634, blue: 0.9998756051, alpha: 1))
+        let button = ActionSheetButton(frame: CGRect.zero, title: "Cancel", textColor: Constants.Design.Color.orange)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(actionCancelButton(_:)), for: .touchUpInside)
         return button
@@ -111,7 +118,7 @@ class BoardsTableViewController: UITableViewController, SwipeableCellDelegate, U
         super.viewDidLoad()
         tableView.register(BoardsListTableViewCell.self, forCellReuseIdentifier: cellReuseIdentifier)
         tableView.tableFooterView = UIView(frame: CGRect.zero)
-        tableView.backgroundColor = Constants.Design.Color.background
+        tableView.backgroundColor = Constants.Design.Color.teritaryBackground
         
         navigationItem.title = "Boards"
 //        navigationItem.rightBarButtonItem = UIBarButtonItem(
@@ -162,12 +169,12 @@ class BoardsTableViewController: UITableViewController, SwipeableCellDelegate, U
 //        navigationController?.navigationBar.
         navigationController?.navigationBar.prefersLargeTitles = true
         
-        let navBar = navigationController!.navigationBar
-        let appearance = UINavigationBarAppearance()
-        appearance.backgroundColor = Constants.Design.Color.backgroundWithOpacity
-        navBar.standardAppearance = appearance
-        appearance.backgroundColor = Constants.Design.Color.background
-        navBar.scrollEdgeAppearance = appearance
+//        let navBar = navigationController!.navigationBar
+//        let appearance = UINavigationBarAppearance()
+//        appearance.backgroundColor = Constants.Design.Color.background
+//        navBar.standardAppearance = appearance
+//        appearance.backgroundColor = Constants.Design.Color.background
+//        navBar.scrollEdgeAppearance = appearance
 
 //        navigationController?.navigationBar.standardAppearance = appearance
 //        navigationController?.navigationBar.scrollEdgeAppearance = appearance
@@ -212,10 +219,8 @@ class BoardsTableViewController: UITableViewController, SwipeableCellDelegate, U
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.placeholder = placeHolder
-        textField.layer.borderColor = #colorLiteral(red: 0.1921322048, green: 0.2078579366, blue: 0.2431031168, alpha: 1)
-        textField.layer.borderWidth = 1.0
         textField.layer.cornerRadius = 10.0
-        textField.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+        textField.backgroundColor = Constants.Design.Color.teritaryBackground
         textField.clearButtonMode = .always
         textField.leftView = UIView(frame: CGRect(x: 0.0, y: 0.0, width: 15.0, height: textField.bounds.height))
         textField.leftViewMode = .always
@@ -382,7 +387,7 @@ class BoardsTableViewController: UITableViewController, SwipeableCellDelegate, U
     
     func setUpFavoriteButtonStateAccordingToText(_ text: String) {
         if text.count > 0 {
-            addToFavoriteButton.setTitleColor(#colorLiteral(red: 0.0384538658, green: 0.5176959634, blue: 0.9998756051, alpha: 1), for: .normal)
+            addToFavoriteButton.setTitleColor(Constants.Design.Color.orange, for: .normal)
             addToFavoriteButton.isEnabled = true
         } else {
             addToFavoriteButton.setTitleColor(#colorLiteral(red: 0.1960576475, green: 0.1960917115, blue: 0.1960501969, alpha: 1), for: .normal)
@@ -403,13 +408,39 @@ class BoardsTableViewController: UITableViewController, SwipeableCellDelegate, U
     }
     
     @objc func actionOpenAddFavoriteModal(_ sender: UIBarButtonItem) {
+        let image = UIGraphicsImageRenderer(bounds: UIScreen.main.bounds).image { _ in
+            self.navigationController!.view.drawHierarchy(
+                in: UIScreen.main.bounds,
+                afterScreenUpdates: true
+            )
+        }
+        if let ciImage = CIImage(image: image) {
+            let filteredImage = ciImage.applyingFilter(
+                "CIGaussianBlur",
+                parameters: [
+                    kCIInputRadiusKey: 10.0,
+                    kCIInputImageKey: ciImage
+                ]
+            )
+            let imageSizeDifference = -filteredImage.extent.origin.x
+            let imageInset = filteredImage.extent.insetBy(
+                dx: imageSizeDifference,
+                dy: imageSizeDifference
+            )
+            let ciCtx = CIContext(options: nil)
+            let blurredImage = ciCtx.createCGImage(filteredImage, from: imageInset)!
+            let image = UIImage(cgImage: blurredImage)
+            let screenShotView = UIImageView(image: image)
+            screenShotView.frame = UIScreen.main.bounds
+            self.overlay.addSubview(screenShotView)
+            self.overlay.sendSubviewToBack(screenShotView)
+        }
         textFieldBoardId.becomeFirstResponder()
     }
 
     // MARK: - UITableViewDelegate
     override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-//        view.tintColor = #colorLiteral(red: 0.07842033356, green: 0.07843843848, blue: 0.07841636986, alpha: 1)
-        view.tintColor = Constants.Design.Color.gap
+        view.tintColor = Constants.Design.Color.teritaryBackground
         let header = view as! UITableViewHeaderFooterView
         header.textLabel?.textColor = #colorLiteral(red: 0.5646546483, green: 0.5647388697, blue: 0.5724784732, alpha: 1)
     }
