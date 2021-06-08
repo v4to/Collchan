@@ -339,6 +339,7 @@ class BoardsTableViewController: UITableViewController, SwipeableCellDelegate, U
     // MARK: - Gestures
     
     @objc func hideOverlayGesture() {
+        self.overlay.subviews[0].removeFromSuperview()
         textFieldBoardId.resignFirstResponder()
         textFieldBoardId.text = nil
         textFieldName.text = nil
