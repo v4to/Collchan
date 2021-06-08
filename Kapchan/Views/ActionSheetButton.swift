@@ -10,11 +10,10 @@ import UIKit
 
 
 class ActionSheetButton: UIButton {
-    
-    // MARK: - Instance properties
+	// MARK: - Instance properties
     override var isHighlighted: Bool {
         didSet {
-            backgroundColor = isHighlighted ? #colorLiteral(red: 0.2274276316, green: 0.2274661064, blue: 0.2352614105, alpha: 1) : #colorLiteral(red: 0.07449694723, green: 0.08236028999, blue: 0.08625844866, alpha: 1)
+            backgroundColor = isHighlighted ? Constants.Design.Color.teritaryBackground : Constants.Design.Color.background
         }
     }
     
@@ -26,7 +25,7 @@ class ActionSheetButton: UIButton {
         
         setTitle(title, for: UIControl.State.normal)
         setTitleColor(textColor, for: UIControl.State.normal)
-        backgroundColor = #colorLiteral(red: 0.07449694723, green: 0.08236028999, blue: 0.08625844866, alpha: 1)
+        backgroundColor = Constants.Design.Color.background
         titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
     }
     
