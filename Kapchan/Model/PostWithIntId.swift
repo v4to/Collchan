@@ -18,6 +18,11 @@ struct PostWithIntId: Decodable {
 //            print("didSet")
         }
     }
+    
+    var attributedComment: NSAttributedString = NSMutableAttributedString()
+        
+
+
     let postId: Int
     var images = [UIImage]()
     var replies = [PostWithIntId]()
@@ -76,9 +81,8 @@ struct PostWithIntId: Decodable {
         var commentStringHeight: CGFloat = 0.0
         var commentRect: CGRect = CGRect.zero
         let commentString = self.comment.replacingOccurrences(of: "<br>", with: "\n")
-        var commentAttributedString: NSMutableAttributedString
         if commentString.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
-            commentAttributedString = self.attributedComment
+            let commentAttributedString = self.attributedComment
             commentRect = commentAttributedString.rectThatFits(
                 CGSize(width: textWidthAvailable, height: .greatestFiniteMagnitude)
             )
@@ -176,9 +180,10 @@ struct PostWithIntId: Decodable {
         do {
             let doc = try HTMLDocument(string: comment)
             if let body = doc.body {
-                self.attributedComment = self.attributedStringFromHtml(body)
+                self.attributedComment = self.attributedStringFromHtml(body).trimmedAttributedString()
+                
             } else {
-                self.attributedComment = NSMutableAttributedString(string: comment)
+                self.attributedComment = NSMutableAttributedString(string: comment).trimmedAttributedString()
 //                return NSMutableAttributedString(string: comment)
             }
         } catch {
