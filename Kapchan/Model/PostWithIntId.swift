@@ -22,12 +22,99 @@ struct PostWithIntId: Decodable {
     var images = [UIImage]()
     var replies = [PostWithIntId]()
     
+    var name: String
+    var postIdFrame: CGRect = .zero
+    var dateFrame: CGRect = .zero
+    var commentFrame: CGRect = .zero
+    var thumbnailsFrame: CGRect = .zero
+    var postRepliesFrame: CGRect = .zero
+
+    mutating func calculateTotalHeighAndFrames(width: CGFloat) -> CGFloat{
+        let padding: CGFloat = 10.0
+        var totalHeight: CGFloat = padding
+        let textWidthAvailable = width - padding * 2
+        var totalTextHeightAddition: CGFloat = 0.0
+        
+        var postIdStringHeight: CGFloat = 0.0
+        var postIdRect: CGRect = CGRect.zero
+        let postIdString = "\(self.name) • #\(self.postId)"
+        
+        if postIdString.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
+            postIdRect =  postIdString.rectThatFits(
+                CGSize(width: textWidthAvailable, height: .greatestFiniteMagnitude),
+                and: Constants.Design.Fonts.footnote
+            )
+            
+            postIdStringHeight += postIdRect.height
+            totalTextHeightAddition += postIdStringHeight
+            totalTextHeightAddition += padding
+        }
+        
+        var dateStringHeight: CGFloat = 0.0
+        var dateRect: CGRect = CGRect.zero
+        let dateString = self.dateString
+        if dateString.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
+            dateRect = dateString.rectThatFits(
+                CGSize(
+                    width: textWidthAvailable,
+                    height: .greatestFiniteMagnitude
+                ),
+                and: Constants.Design.Fonts.footnote
+            )
+            dateStringHeight += dateRect.height
+            totalTextHeightAddition += dateStringHeight
+            totalTextHeightAddition += padding
+        }
+        
+        var thumbnailsRect: CGRect = CGRect.zero
+        if self.files.count > 0 {
+            thumbnailsRect = CGRect(x: padding, y: padding, width: textWidthAvailable, height: 90.0)
+            totalTextHeightAddition += 90.0
+            totalTextHeightAddition += padding
+        }
+        
+        var commentStringHeight: CGFloat = 0.0
+        var commentRect: CGRect = CGRect.zero
+        let commentString = self.comment.replacingOccurrences(of: "<br>", with: "\n")
+        var commentAttributedString: NSMutableAttributedString
+        if commentString.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
+            commentAttributedString = self.attributedComment
+            commentRect = commentAttributedString.rectThatFits(
+                CGSize(width: textWidthAvailable, height: .greatestFiniteMagnitude)
+            )
+            commentStringHeight += commentRect.height
+            totalTextHeightAddition += commentStringHeight
+            totalTextHeightAddition += padding
+        }
+        
+        var postRepliesRect: CGRect = CGRect.zero
+        let repliesCount = self.replies.count
+        if repliesCount != 0 {
+            let postRepliesString = "\(repliesCount) repl\(repliesCount > 1 ? "ies" : "y")" //.uppercased()
+            postRepliesRect = postRepliesString.rectThatFits(
+                CGSize(width: textWidthAvailable, height: .greatestFiniteMagnitude),
+                and: Constants.Design.Fonts.footnoteBold
+
+            )
+        }
+        totalHeight += totalTextHeightAddition
+        
+        self.postIdFrame = postIdRect
+        self.dateFrame = dateRect
+        self.commentFrame = commentRect
+        self.thumbnailsFrame = thumbnailsRect
+        self.postRepliesFrame = postRepliesRect
+        
+        return totalHeight.rounded(.up)
+    }
+    
     private enum CodingKeys: String, CodingKey {
         case files
         case comment
         case subject
         case creationDate = "timestamp"
         case postId = "num"
+        case name
     }
     
     var thumbnailUrls = [URL]()

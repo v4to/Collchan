@@ -18,6 +18,7 @@ class ThreadTableViewController: UITableViewController {
     
     // MARK: - Properties
     
+    var newPosts = [PostWithIntId]()
     var savedLastIndex = 0
     
     var isDataSourceLoading = true
@@ -162,13 +163,17 @@ class ThreadTableViewController: UITableViewController {
             
             let width = self.tableView.bounds.width
             DispatchQueue.global().async {
-                self.setupReplies()
-                for index in self.postsArray.indices {
-                    self.cellHeights[index] = PostTableViewCell.preferredHeightForThread(
-                        self.postsArray[index],
-                        andWidth: width,
-                        index: index
-                    )
+                if self.postsArray.count < wrapper.posts.count {
+                    let end = self.postsArray.count
+                    let newPosts = wrapper.posts[end..<wrapper.posts.count]
+                    self.postsArray.append(contentsOf: self.setupReplies(inArray: Array(newPosts)))
+                    for index in self.postsArray.indices {
+                        self.cellHeights[index] = self.postsArray[index]
+                            .calculateTotalHeighAndFrames(width: width)
+//                        self.postsArray[index].convertedAttributedString = self.postsArray[index].attributedComment.image(with: PostTableViewCell.frames[index]!.commentFrame.size)
+//                        self.postsArray[index].convertedAttributedStringLandscape = self.postsArray[index].attributedComment.image(with: PostTableViewCell.frames[index]!.commentFrame.size)
+
+                    }
                 }
                 
                 DispatchQueue.main.async {
