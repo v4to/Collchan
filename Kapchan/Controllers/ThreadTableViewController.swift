@@ -20,9 +20,7 @@ class ThreadTableViewController: UITableViewController {
     
     var newPosts = [PostWithIntId]()
     var savedLastIndex = 0
-    
-    var isDataSourceLoading = true
-    
+    var isDataSourceLoading = false
     var cellHeights = [Int: CGFloat]()
     var postsArray = [PostWithIntId]()
     
@@ -34,7 +32,20 @@ class ThreadTableViewController: UITableViewController {
 
     var cellId = "postCell"
     
-    // MARK: View properties
+    // MARK: View Properties
+    
+    var fakeTableView: UITableView = {
+        let tableView = UITableView(frame: .zero, style: .plain)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.backgroundColor = .clear
+        tableView.separatorStyle = .none
+        tableView.isUserInteractionEnabled = false
+        tableView.transform = CGAffineTransform(rotationAngle: CGFloat.pi)
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(loadPosts), for: .valueChanged)
+        tableView.refreshControl = refreshControl
+        return tableView
+    }()
     
     var scrollToBottomButton: UIButton = {
         let button = UIButton(type: .custom)
@@ -112,6 +123,21 @@ class ThreadTableViewController: UITableViewController {
     // MARK: - Methods
     
     func setupViews() {
+        let navigationController = self.navigationController!
+        navigationController.view.addSubview(self.fakeTableView)
+        self.fakeTableView.leadingAnchor.constraint(
+            equalTo: navigationController.view.safeAreaLayoutGuide.leadingAnchor
+        ).isActive = true
+        self.fakeTableView.trailingAnchor.constraint(
+            equalTo: navigationController.view.safeAreaLayoutGuide.trailingAnchor
+        ).isActive = true
+        self.fakeTableView.bottomAnchor.constraint(
+            equalTo: navigationController.view.bottomAnchor,
+            constant: -self.tabBarController!.tabBar.frame.height
+        ).isActive = true
+        self.fakeTableView.heightAnchor.constraint(
+            equalToConstant: 60.0
+        ).isActive = true
         self.tableView.addSubview(self.scrollToBottomButton)
         self.scrollToBottomButton.heightAnchor.constraint(equalToConstant: 44.0).isActive = true
         self.scrollToBottomButton.widthAnchor.constraint(equalToConstant: 44.0).isActive = true
@@ -143,14 +169,15 @@ class ThreadTableViewController: UITableViewController {
         self.tableView.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     }
     
-    func loadPosts() {
-        guard let boardId = boardId, let threadId = threadId else {
+    
+    
+    @objc func loadPosts() {
+        guard let boardId = boardId, let threadId = threadId, !self.isDataSourceLoading else {
             return
         }
+        self.isDataSourceLoading = true
         NetworkService.shared.getPostsFrom(boardId: boardId, threadId: threadId) { [weak self] (wrapper: PostsWrapper?) in
-
-//        NetworkService.shared.getPostsFrom(boardId: boardId, threadId: threadId) { [weak self] (posts: [Post]?) in
-            
+        	
             guard let self = self, let wrapper = wrapper else {
                 return
             }
@@ -175,14 +202,17 @@ class ThreadTableViewController: UITableViewController {
 
                     }
                 }
-                
                 DispatchQueue.main.async {
-                    if self.spinnerRefresh.isAnimating {
-                        self.spinnerRefresh.stopAnimating()
-                        
+                    if self.fakeTableView.refreshControl?.isRefreshing == true {
+                        self.fakeTableView.refreshControl?.endRefreshing()
                         self.tableView.reloadData()
                         UIView.animate(withDuration: 0.3) {
-                            self.tableView.contentInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: 0.0, right: 0.0)
+                            self.tableView.contentInset = UIEdgeInsets(
+                                top: 0.0,
+                                left: 0.0,
+                                bottom: 0.0,
+                                right: 0.0
+                            )
                         }
                         self.tableView.scrollToRow(
                             at: IndexPath(row: self.savedLastIndex, section: 0),
@@ -496,6 +526,18 @@ extension ThreadTableViewController {
             } completion: { isFinished in
                 self.scrollToBottomButton.isHidden = true
             }
+            if contentOffsetY + scrollViewHeight - adujustedInsetBottom - contentSizeHeight <= 80  {
+                if !self.isDataSourceLoading {
+                    self.fakeTableView.contentOffset.y = -(contentOffsetY + scrollViewHeight - adujustedInsetBottom - contentSizeHeight)
+                }
+            } else if !self.fakeTableView.refreshControl!.isRefreshing {
+                print(contentOffsetY + scrollViewHeight - adujustedInsetBottom - contentSizeHeight)
+                // make sure that finer still touching screen while dragging
+                if !scrollView.isDecelerating {
+                    self.fakeTableView.refreshControl?.beginRefreshing()
+                }
+                
+            }
         } else {
             UIView.animate(withDuration: 0.2) {
                 self.scrollToBottomButton.alpha = 1.0
@@ -517,30 +559,19 @@ extension ThreadTableViewController {
 
             let contentSizeHeight = size.height
 
-            let reloadDistance = CGFloat(120.0)
-
+            let reloadDistance = CGFloat(80.0)
             if maxY > contentSizeHeight + reloadDistance, !isDataSourceLoading {
-                spinnerRefresh.startAnimating()
-                
-                self.spinnerRefresh.frame = CGRect(
-                    x: 0,
-                    y: self.tableView.contentSize.height,
-                    width: self.tableView.bounds.size.width,
-                    height: 60.0
-                )
-
                 self.tableView.contentInset = UIEdgeInsets(
                     top: 0.0,
                     left: 0.0,
-                    bottom: self.spinnerRefresh.frame.height,
+                    bottom: 60.0,
                     right: 0.0
                 )
-
                 savedLastIndex = self.postsArray.count - 1
-
-
                 self.loadPosts()
                 self.isDataSourceLoading = true
+            } else {
+                self.fakeTableView.refreshControl?.endRefreshing()
             }
     }
 }
