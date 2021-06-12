@@ -117,13 +117,14 @@ class PostTableViewCell: BoardsListTableViewCell {
         self.postRepliesFrame = .zero
         self.postId.text = nil
         self.thumbnails = []
+        self.thumbnailsCollectionView.reloadData()
         self.comment.attributedText = nil
         self.date.text = nil
         self.postReplies.setTitle(nil, for: .normal)
     }
     
     func setupThumbnails(images: [UIImage], post: PostWithIntId) {
-        self.thumbnails.append(contentsOf: images)
+        self.thumbnails = images
         self.thumbnailsCollectionView.reloadData()
     }
     
@@ -223,11 +224,8 @@ extension PostTableViewCell: UICollectionViewDelegate {
         forItemAt indexPath: IndexPath)
     {
         let cell = cell as! ThumnailCollectionViewCell
-        if indexPath.row < thumbnails.count {
-            cell.thumbnail.image = thumbnails[indexPath.row]
-            UIView.animate(withDuration: 0.3) {
-                cell.thumbnail.layer.opacity = 1.0
-            }
+        UIView.animate(withDuration: 0.3) {
+            cell.thumbnail.layer.opacity = 1.0
         }
     }
 }
@@ -244,6 +242,7 @@ extension PostTableViewCell: UICollectionViewDataSource {
             withReuseIdentifier: thumbnailCollectionCellId,
             for: indexPath
         ) as! ThumnailCollectionViewCell
+        cell.thumbnail.image = thumbnails[indexPath.row]
         return cell
     }
 }
@@ -262,6 +261,11 @@ class ThumnailCollectionViewCell: UICollectionViewCell {
         return imageView
     }()
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        self.thumbnail.image = nil
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         addSubview(self.thumbnail)
@@ -270,8 +274,6 @@ class ThumnailCollectionViewCell: UICollectionViewCell {
         self.thumbnail.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
         self.thumbnail.leftAnchor.constraint(equalTo: leftAnchor).isActive = true
         self.thumbnail.rightAnchor.constraint(equalTo: rightAnchor).isActive = true
-
-		
     }
     
     required init?(coder: NSCoder) {

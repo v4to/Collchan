@@ -23,9 +23,7 @@ class ThreadTableViewController: UITableViewController {
     var isDataSourceLoading = false
     var cellHeights = [Int: CGFloat]()
     var postsArray = [PostWithIntId]()
-    
-    var imageTasks = [IndexPath: URLSessionDataTask]()
-
+    var imageTasks = [String: URLSessionDataTask]()
     var boardId: String?
     var threadId: String?
     var threadName: String?
@@ -394,13 +392,49 @@ extension ThreadTableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        var post = postsArray[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! PostTableViewCell
-        
-        let post = postsArray[indexPath.row]
-        cell.index = indexPath.row
         cell.delegate = self
         cell.configure(post)
-        
+        DispatchQueue.global().async {
+            for file in post.files {
+                if post.images.count != post.files.count ||
+                   !self.imageTasks.contains( where: { $0.key == file.thumbnail })
+                {
+                    let thumbnailUrl = URL(string:BaseUrls.dvach + file.thumbnail)!
+                    let task = URLSession.shared.dataTask(with: thumbnailUrl) {
+                        [weak self] (data, reponse, error) in
+                            guard let self = self else {
+                                return
+                            }
+                            if var data = data {
+                                data = data.fixHeader()
+                                if let image = UIImage(data: data) {
+                                    post.images.append(image)
+                                } else {
+                                    post.images.append(UIImage(named: "placeholder")!)
+                                }
+                                self.postsArray[indexPath.row] = post
+                                DispatchQueue.main.async {
+                                    // Image-fetching callbacks are holding references
+                                    // to the tableview cells. When the download completes,
+                                    // it sets the imageView.image property,
+                                    // even if you have recycled the cell to display a different row.
+                                    // Need to test whether the image is still relevant
+                                    // to the cell before setting the image
+                                    // https://stackoverflow.com/questions/15668160/asynchronous-downloading-of-images-for-uitableview-with-gcd/15668366#15668366
+                                    if cell.postIdString == "\(post.postId)" {
+                                        cell.setupThumbnails(images: post.images, post: post)
+                                    }
+                                }
+                            }
+                    }
+                    task.resume()
+                    self.imageTasks[file.thumbnail] = task
+                }
+                    
+            }
+        }
         return cell
     }
 }
