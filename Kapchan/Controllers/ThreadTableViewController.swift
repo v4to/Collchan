@@ -425,7 +425,7 @@ extension ThreadTableViewController {
                                     // to the cell before setting the image
                                     // https://stackoverflow.com/questions/15668160/asynchronous-downloading-of-images-for-uitableview-with-gcd/15668366#15668366
                                     if cell.postIdString == "\(post.postId)" {
-                                        cell.setupThumbnails(images: post.images, post: post)
+                                        cell.setupThumbnails(images: post.images)
                                     }
                                 }
                             }

@@ -144,7 +144,7 @@ class PostTableViewCell: BoardsListTableViewCell {
         self.dateFrame = post.dateFrame
         postIdString = "\(post.postId)"
         self.postId.text = "\(post.name) • #\(post.postId)"
-        self.setupThumbnails(images: post.images, post: post)
+        self.setupThumbnails(images: post.images)
         self.comment.attributedText = post.attributedComment
         self.date.text = post.dateString
         let repliesCount = post.replies.count
@@ -214,25 +214,9 @@ extension PostTableViewCell: UITextViewDelegate {
     }
 }
 
-
-// MARK: - UICollectionViewDelegate
-
-extension PostTableViewCell: UICollectionViewDelegate {
-    func collectionView(
-        _ collectionView: UICollectionView,
-        willDisplay cell: UICollectionViewCell,
-        forItemAt indexPath: IndexPath)
-    {
-        let cell = cell as! ThumnailCollectionViewCell
-        UIView.animate(withDuration: 0.3) {
-            cell.thumbnail.layer.opacity = 1.0
-        }
-    }
-}
-
 // MARK: - UICollectionViewDataSource
 
-extension PostTableViewCell: UICollectionViewDataSource {
+extension PostTableViewCell: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         thumbnails.count
     }
@@ -257,7 +241,6 @@ class ThumnailCollectionViewCell: UICollectionViewCell {
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 10.0
         imageView.backgroundColor = Constants.Design.Color.background
-        imageView.layer.opacity = 0.0
         return imageView
     }()
     
