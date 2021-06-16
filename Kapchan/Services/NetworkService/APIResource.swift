@@ -19,7 +19,6 @@ extension APIResource {
         var components = URLComponents(string: BaseUrls.dvach)!
         components.path = methodPath
         components.queryItems = queryItems
-        print(components.url)
         return components.url!
     }
 }

@@ -21,12 +21,11 @@ extension ImageRequest: NetworkRequest {
     func decode(_ data: Data) -> UIImage? {
         var image = UIImage(data: data)
         image = image?.resized(to: CGSize(width: 90.0, height: 90.0))
-        //        image.
         return image
-        //        return UIImage(data: data)
     }
     
     func load(withCompletion completion: @escaping (UIImage?) -> Void) {
-        load(url, withCompletion: completion)
+        let request = URLRequest(url: self.url)
+        load(request, withCompletion: completion)
     }
 }

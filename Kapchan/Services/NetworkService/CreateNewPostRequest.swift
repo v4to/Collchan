@@ -92,10 +92,8 @@ extension CreateNewPostRequest: NetworkRequest {
         let decoder = JSONDecoder()
         do {
             let wrapper = try decoder.decode(PostResponse.self, from: data)
-            print("WRAPPER ---- \(wrapper)")
             return wrapper
         } catch {
-            print(error)
             return nil
             
         }

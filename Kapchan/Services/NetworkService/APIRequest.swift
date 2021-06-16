@@ -33,8 +33,4 @@ extension APIRequest: NetworkRequest {
         let request = URLRequest(url: self.resource.url)
         load(request, withCompletion: completion)
     }
-    /*
-    func load(withCompletion completion: @escaping (Resource.ModelType?) -> Void) {
-        load(resource.url, withCompletion: completion)
-    }*/
 }
