@@ -16,7 +16,7 @@ struct NetworkService {
     var threadsRequest: APIRequest<ThreadsResource>?
     var imageRequest: ImageRequest?
     var threadRequest: APIRequest<PostsResource>?
-    
+    var createNewPostRequest: CreateNewPostRequest?
     private init() {}
     
     func getBoards(completion: @escaping (BoardsWrapper?) -> Void) {
@@ -46,76 +46,23 @@ struct NetworkService {
     
     
 
-    func createPostFrom(boardId: String, threadId: String, comment: String, googleRecaptchId: String, captchaId: String, completion:  @escaping (Result<PostResponse>) -> Void) {
-        let postService = PostService(
+    mutating func createPostFrom(
+        boardId: String,
+        threadId: String,
+        comment: String,
+        captchaType: CaptchaType,
+        captchaId: String,
+        completion:  @escaping (PostResponse?) -> Void
+
+    )
+    {
+        self.createNewPostRequest = CreateNewPostRequest(
             boardId: boardId,
             threadId: threadId,
-            commentText: comment,
-            googleRecaptchId: googleRecaptchId,
+            postText: comment,
+            captchaType: captchaType,
             captchaId: captchaId
         )
-        let provider = ServiceProvider<PostService>()
-//        provider.load(service: postService, completion: completion)
-        provider.load(service: postService, decodeType: PostResponse.self, completion: completion)
-    }
-}
-
-/*
-struct ThreadsResource: APIResource {
-    typealias ModelType = Threads
-        
-    let methodPath: String
-    
-    let queryItems: [URLQueryItem] = []
-    
-    init(threadId: String, page: String) {
-        self.methodPath = "/" + threadId + "/" + page + ".json"
-    }
-}*/
-
-
-struct ThreadsResource: APIResource {
-    typealias ModelType = Threads
-        
-    let methodPath: String
-    
-    let queryItems: [URLQueryItem] = []
-    
-    init(threadId: String, page: String) {
-//        init(threadId: String) {
-
-        self.methodPath = "/" + threadId + "/" + page + ".json"
-
-//        self.methodPath = "/" + threadId + EndPoints.threads
-    }
-}
-
-
-struct BoardsResource: APIResource {
-    typealias ModelType = BoardsWrapper
-
-    let methodPath = EndPoints.boards
-    
-    let queryItems: [URLQueryItem] = []
-}
-
-class PostsResource: APIResource {
-//    typealias ModelType = [Post]
-    typealias ModelType = PostsWrapper
-    var methodPath: String
-    
-    
-
-//    var methodPath = EndPoints.makabaMobile
-    var queryItems: [URLQueryItem] = []
-    
-    init(boardId: String, threadId: String, postId: String) {
-        methodPath = "/\(boardId)/res/\(threadId).json"
-//        queryItems = [
-//            URLQueryItem(name: "task", value: "get_thread"),
-//            URLQueryItem(name: "board", value: boardId),
-//            URLQueryItem(name: "thread", value: threadId),
-//            URLQueryItem(name: "num", value: postId)
-//        ]
+        self.createNewPostRequest?.load(withCompletion: completion)
     }
 }

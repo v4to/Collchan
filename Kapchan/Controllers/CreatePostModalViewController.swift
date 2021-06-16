@@ -199,18 +199,64 @@ class CreatePostModalViewController: UIViewController {
     // MARK: - Actions
     
     @objc func cancelAction(_ sender: UIBarButtonItem) {
-//        recaptchaView.evaluateJavaScript(<#T##javaScriptString: String##String#>, completionHandler: <#T##((Any?, Error?) -> Void)?##((Any?, Error?) -> Void)?##(Any?, Error?) -> Void#>)
         presentingViewController?.dismiss(animated: true)
-        
-//        self.recaptchaView.evaluateJavaScript("document.getElementById('b').click()", completionHandler: nil)
     }
     
+
     @objc func postAction(_ sender: UIBarButtonItem) {
-    //        recaptchaView.evaluateJavaScript(<#T##javaScriptString: String##String#>, completionHandler: <#T##((Any?, Error?) -> Void)?##((Any?, Error?) -> Void)?##(Any?, Error?) -> Void#>)
-    //        presentingViewController?.dismiss(animated: true)
+        URLSession.shared.dataTask(with: URL(string: "https://2ch.hk/api/captcha/app/id/A4QVHb0AQfvTnTOpUloTQfgSSb2JUTTe")!) { [weak self] (data, response, error) in
+            guard let self = self else {
+                return
+            }
             
-            self.recaptchaView.evaluateJavaScript("document.getElementById('b').click()", completionHandler: nil)
-        }
+            if let data = data {
+                let decoder = JSONDecoder()
+                decoder.dateDecodingStrategy = .secondsSince1970
+                do {
+//                    let wrapper = try decoder.decode(APPID.self, from: data)
+                    let wrapper = try decoder.decode(PostingNewPost.self, from: data)
+                    guard wrapper.error == nil else {
+                        print(error)
+                        DispatchQueue.main.async {
+                            self.recaptchaView.evaluateJavaScript(
+                                "document.getElementById('b').click()",
+                                completionHandler: nil
+                            )
+                        }
+                        return
+                    }
+                    DispatchQueue.main.async {
+                        NetworkService.shared.createPostFrom(
+                            boardId: self.boardId!,
+                            threadId: self.threadId!,
+                            comment: self.postText.text!,
+                            captchaType: .app,
+                            captchaId: wrapper.appResponseId!
+                        )
+                        {
+                            (result) in
+                            	if let error = result?.error,
+                                   error == .ErrorCaptchaNotValid {
+                                		self.recaptchaView.evaluateJavaScript(
+                                            "document.getElementById('b').click()",
+                                            completionHandler: nil
+                                        )
+                            	} else {
+                                	self.presentingViewController?.dismiss(animated: true)
+                            	}
+                        	}
+                    	}
+                } catch {
+                    print(error)
+                    return
+
+                }
+            }
+        }.resume()
+        
+        
+        
+    }
     /*
     // MARK: - Navigation
 
@@ -248,21 +294,11 @@ extension CreatePostModalViewController: WKNavigationDelegate {
 
 extension CreatePostModalViewController: WKScriptMessageHandler {
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-//        sw
-        
         switch message.name {
         case "buttonIsClicked":
             print("button is clicked")
             fallthrough
-        //case "noListener":
-            //print("no listener")
-//            fallthrough
-//        case "error":
-//            print("recaptcha error")
-//            print("error --- \(message.body)")
-//            fallthrough
         case "needToResolveCaptcha":
-//            print("needToResolveCaptcha")
             print("needToResolveCaptcha --- \(message.body)")
             postText.resignFirstResponder()
             recaptchaView.isHidden = false
@@ -272,21 +308,26 @@ extension CreatePostModalViewController: WKScriptMessageHandler {
             print(boardId)
             print(threadId)
             print("text === \(postText.text)")
-            NetworkService.shared.createPostFrom(boardId: boardId!, threadId: threadId!, comment: postText.text!, googleRecaptchId: message.body as! String, captchaId: publicKey) { (result: Result<PostResponse>) in
-                switch result {
-                case .success(let data):
-                    print("success --- \(data)")
-                case .failure(let error):
-                    print("error --- \(error)")
-                case .empty:
-                    print("empty")
-                }
-                self.presentingViewController?.dismiss(animated: true)
+            NetworkService.shared.createPostFrom(
+                boardId: boardId!,
+                threadId: threadId!,
+                comment: postText.text!,
+                captchaType: .invisibleRecaptcha,
+                captchaId: message.body as! String
+            )
+            {
+                (result) in
+                	guard result?.error == nil else {
+                	    if let error = result?.error {
+                	    	print("CREATE_POST_ERROR --- \(error)")
+                	    }
+						return
+                	}
+                	self.presentingViewController?.dismiss(animated: true)
             }
         default:
             break
         }
-//        print("message.name --- \(message.body)")
     }
     
     

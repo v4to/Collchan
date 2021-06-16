@@ -16,7 +16,6 @@ class ThreadsTableViewController: UITableViewController, UIGestureRecognizerDele
     var tasks = [IndexPath: URLSessionDataTask]()
     var cellHeights = [Int: CGFloat]()
     var isAllowedToLoadMore = true
-    private var threadsService = ThreadsService()
     private var imageRequests = [ImageRequest]()
     private var images = [UIImage?]()
     var boardId = ""
