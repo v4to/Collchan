@@ -191,7 +191,8 @@ class ThreadTableViewController: UITableViewController {
                 if self.postsArray.count < wrapper.posts.count {
                     let end = self.postsArray.count
                     let newPosts = wrapper.posts[end..<wrapper.posts.count]
-                    self.postsArray.append(contentsOf: self.setupReplies(inArray: Array(newPosts)))
+                    self.postsArray.append(contentsOf: Array(newPosts))
+                    self.postsArray = self.setupReplies(inArray: self.postsArray)
                     for index in self.postsArray.indices {
                         self.cellHeights[index] = self.postsArray[index]
                             .calculateTotalHeighAndFrames(width: width)
