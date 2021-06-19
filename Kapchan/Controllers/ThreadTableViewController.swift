@@ -149,6 +149,7 @@ class ThreadTableViewController: UITableViewController {
         ).isActive = true
         
         self.tableView.addSubview(self.spinnerRefresh)
+        self.tableView.prefetchDataSource = self
         self.spinnerRefresh.hidesWhenStopped = true
     }
     
@@ -324,51 +325,11 @@ extension ThreadTableViewController {
 //    }
     
     override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        DispatchQueue.global().async {
-            if let task = self.imageTasks[indexPath] {
+        let post = self.postsArray[indexPath.row]
+        for file in post.files {
+            if let task = self.imageTasks[file.thumbnail] {
                 task.cancel()
-                self.imageTasks.removeValue(forKey: indexPath)
-            }
-        }
-       
-    }
-    
-    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        var post = postsArray[indexPath.row]
-
-        if post.images.count > 0 || imageTasks[indexPath] != nil {
-            return
-        }
-        
-        let cell = cell as! PostTableViewCell
-
-        DispatchQueue.global().async {
-            if post.files.count > 0 {
-                for file in post.files {
-                    let thumbnailUrl = URL(string:BaseUrls.dvach + file.thumbnail)!
-                    let task = URLSession.shared.dataTask(with: thumbnailUrl) { (data, reponse, error) in
-                        if let data = data {
-                            let image = UIImage(data: data)!
-                            post.images.append(image)
-                            self.postsArray[indexPath.row] = post
-
-                            DispatchQueue.main.async {
-                                if post.images.count == post.files.count {
-                                    //                                cell.configure(post)
-                                    cell.setupThumbnails(images: post.images, post: post)
-
-//                                                                    tableView.reloadRows(at: [indexPath], with: .automatic)
-                                }
-                                //                            cell?.configure(post)
-                                //                            cell?.setupThumbnails(images: post.images)
-                                //                            cell?.thumbnails.append(image)
-                                //                            cell?.setupThumbnails(images: <#T##[UIImage]#>)
-                            }
-                        }
-                    }
-                    task.resume()
-                    self.imageTasks[indexPath] = task
-                }
+                self.imageTasks.removeValue(forKey: file.thumbnail)
             }
 
         }
@@ -397,43 +358,16 @@ extension ThreadTableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! PostTableViewCell
         cell.delegate = self
         cell.configure(post)
-        DispatchQueue.global().async {
-            for file in post.files {
-                if post.images.count != post.files.count ||
-                   !self.imageTasks.contains( where: { $0.key == file.thumbnail })
-                {
-                    let thumbnailUrl = URL(string:BaseUrls.dvach + file.thumbnail)!
-                    let task = URLSession.shared.dataTask(with: thumbnailUrl) {
-                        [weak self] (data, reponse, error) in
-                            guard let self = self else {
-                                return
-                            }
-                            if var data = data {
-                                data = data.fixHeader()
-                                if let image = UIImage(data: data) {
-                                    post.images.append(image)
-                                } else {
-                                    post.images.append(UIImage(named: "placeholder")!)
-                                }
-                                self.postsArray[indexPath.row] = post
-                                DispatchQueue.main.async {
-                                    // Image-fetching callbacks are holding references
-                                    // to the tableview cells. When the download completes,
-                                    // it sets the imageView.image property,
-                                    // even if you have recycled the cell to display a different row.
-                                    // Need to test whether the image is still relevant
-                                    // to the cell before setting the image
-                                    // https://stackoverflow.com/questions/15668160/asynchronous-downloading-of-images-for-uitableview-with-gcd/15668366#15668366
-                                    if cell.postIdString == "\(post.postId)" {
-                                        cell.setupThumbnails(images: post.images)
-                                    }
-                                }
-                            }
-                    }
-                    task.resume()
-                    self.imageTasks[file.thumbnail] = task
-                }
-                    
+        /*
+         When the table view initially appears, the images are all
+         missing from the visible rows. That’s because the runtime
+         calls tableView(_:prefetchRowsAt:) for future table rows,
+         but not for the rows that are initially visible! Need to call
+         prefetchRowsAt ourself
+        */
+        for file in post.files {
+    	    if self.imageTasks[file.thumbnail] == nil && post.images.count == 0 {
+	            self.tableView(tableView, prefetchRowsAt: [indexPath])
             }
         }
         return cell
@@ -473,46 +407,50 @@ extension ThreadTableViewController: UITableViewDataSourcePrefetching {
     // MARK: UITableViewDataSourcePrefetching protocol methods
 
     func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
-        DispatchQueue.global().async {
-            for indexPath in indexPaths {
-                var post = self.postsArray[indexPath.row]
-
-                if post.images.count > 0 || self.imageTasks[indexPath] != nil {
-                    continue
-                }
-
-                if post.files.count > 0 {
-                    for file in post.files {
-                        let thumbnailUrl = URL(string:BaseUrls.dvach + file.thumbnail)!
-                        let task = URLSession.shared.dataTask(with: thumbnailUrl) { (data, reponse, error) in
-                            if var data = data {
-                                //                            let dataFixedHeader = data.fixHeader()
-                                //                            data.fixHeader()
-//                                data = self.fixHeader(in: data)
-                                let image = UIImage(data: data)!
+        for indexPath in indexPaths {
+            var post = self.postsArray[indexPath.row]
+            for file in post.files {
+                if
+                    post.images.count != post.files.count &&
+                    !self.imageTasks.contains( where: { $0.key == file.thumbnail })
+                {
+                    let thumbnailUrl = URL(string:BaseUrls.dvach + file.thumbnail)!
+                    let task = URLSession.shared.dataTask(with: thumbnailUrl) {
+                        [weak self] (data, reponse, error) in
+                        guard let self = self else {
+                            return
+                        }
+                        if var data = data {
+                            data = data.fixHeader()
+                            if let image = UIImage(data: data) {
                                 post.images.append(image)
-                                self.postsArray[indexPath.row] = post
-
-//                                DispatchQueue.main.async {
-//                                    //                                tableView.reloadRows(at: [indexPath], with: .automatic)
-//                                }
+                            } else {
+                                post.images.append(UIImage(named: "placeholder")!)
+                            }
+                            self.postsArray[indexPath.row] = post
+                            DispatchQueue.main.async {
+                                if let cell = self.tableView.cellForRow(at: indexPath) as? PostTableViewCell,
+                                   cell.postIdString == "\(post.postId)" {
+                                    cell.setupThumbnails(images: post.images)
+                                }
                             }
                         }
-                        task.resume()
-                        self.imageTasks[indexPath] = task
                     }
+                    self.imageTasks[file.thumbnail] = task
+                    task.resume()
                 }
-
             }
-
         }
     }
-    
+  
     func tableView(_ tableView: UITableView, cancelPrefetchingForRowsAt indexPaths: [IndexPath]) {
         for indexPath in indexPaths {
-            if let task = imageTasks[indexPath] {
-                task.cancel()
-                imageTasks.removeValue(forKey: indexPath)
+            let post = self.postsArray[indexPath.row]
+            for file in post.files {
+                if let task = self.imageTasks[file.thumbnail] {
+                    task.cancel()
+                    self.imageTasks.removeValue(forKey: file.thumbnail)
+                }
             }
         }
     }
