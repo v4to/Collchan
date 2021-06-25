@@ -18,10 +18,20 @@ class BoardsTableViewController: UITableViewController, SwipeableCellDelegate, U
     // MARK: - Core Data
     
     var container: NSPersistentContainer? = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer
-    
 
     // MARK: - Instance Properties
-    
+
+    lazy var cookiesNavigationDelegate = CookiesWKNavigationDelegate {
+        let cookies = WKWebsiteDataStore.default().httpCookieStore
+        cookies.getAllCookies({ print($0) })
+    }
+
+    lazy var cookiesView: WKWebView = {
+        let view = WKWebView(frame: .zero, configuration: WKWebViewConfiguration())
+        view.navigationDelegate = cookiesNavigationDelegate
+        return view
+    }()
+
     let cellReuseIdentifier = "board"
     var actionButtonsContainerBottomAnchorConstraint: NSLayoutConstraint?
     var isSearchFieldPresented = false
@@ -111,7 +121,7 @@ class BoardsTableViewController: UITableViewController, SwipeableCellDelegate, U
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - View Controller Lifecycle
     
     override func viewDidLoad() {
@@ -184,14 +194,15 @@ class BoardsTableViewController: UITableViewController, SwipeableCellDelegate, U
         subscribeToKeyboardNotifications()
         spinner.startAnimating()
         loadBoards()
+        self.cookiesView.loadCookies()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
     }
-    
+
     // MARK: - Instance Methods
-    
+
     func addBoardToFavoritesWithId(_ id: String, and name: String) {
         if !FavoriteBoard.checkIfFavoriteBoardExists(withId: id, in: container!.viewContext) {
             let newFavoriteBoard = FavoriteBoard.createFavoriteBoard(withId: id, andName: name, in: container!.viewContext)
@@ -253,6 +264,8 @@ class BoardsTableViewController: UITableViewController, SwipeableCellDelegate, U
     }
     
     func setupViews() {
+        self.view.addSubview(self.cookiesView)
+
         actionSheetButtonsContainer.addSubview(addToFavoriteButton)
         actionSheetButtonsContainer.addSubview(cancelButton)
         

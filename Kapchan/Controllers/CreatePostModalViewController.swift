@@ -10,11 +10,26 @@ import UIKit
 import WebKit
 
 class CreatePostModalViewController: UIViewController {
-    
+
+    // MARK: - Properties
     var boardId: String?
     var threadId: String?
     var postToReplyId: String?
-    
+
+    // MARK: - View Properties
+    lazy var cookiesNavigationDelegate = CookiesWKNavigationDelegate {
+        print("COOKIE'S SETTED INSIDE CreatePostModalViewController")
+        let cookies = WKWebsiteDataStore.default().httpCookieStore
+        cookies.getAllCookies({ print($0) })
+        self.createNewPost()
+    }
+
+    lazy var cookiesView: WKWebView = {
+        let view = WKWebView(frame: .zero, configuration: WKWebViewConfiguration())
+        view.navigationDelegate = cookiesNavigationDelegate
+        return view
+    }()
+
     var accessoryView: UIView = {
         let view = UIView()
         view.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 44.0)
@@ -124,11 +139,13 @@ class CreatePostModalViewController: UIViewController {
         config.userContentController = contentController
         
         let webView = WKWebView(frame: .zero, configuration: config)
-        webView.navigationDelegate = self
         webView.translatesAutoresizingMaskIntoConstraints = false
         return webView
     }()
-    
+
+
+    // MARK: - ViewController Lifecycle
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -144,14 +161,26 @@ class CreatePostModalViewController: UIViewController {
     func setupRecpatchaView() {
         recaptchaView.isHidden = true
         
-        let recaptcha = Recaptcha(captchaId: publicKey)
-        recaptchaView.loadHTMLString(recaptcha.htmlString, baseURL: URL(string: "https://2ch.hk/")!)
+        let recaptcha = Recaptcha(captchaId: self.publicKey)
+        self.recaptchaView.loadHTMLString(recaptcha.htmlString, baseURL: URL(string: "https://2ch.hk/")!)
     }
+
+    // MARK: - Actions
     
-    
+    @objc func cancelAction(_ sender: UIBarButtonItem) {
+        presentingViewController?.dismiss(animated: true)
+    }
+
+    @objc func postAction(_ sender: UIBarButtonItem?) {
+        self.toolBarItem.rightBarButtonItem = self.loadingPostButton
+        self.cookiesView.loadCookies()
+    }
+
+    // MARK: - Methods
+
     func setupViews() {
-//        view.backgroundColor = .systemBackground
-        
+        //        view.backgroundColor = .systemBackground
+        self.view.addSubview(self.cookiesView)
         let appearance = UINavigationBarAppearance()
         appearance.backgroundColor = Constants.Design.Color.backgroundWithOpacity
         
@@ -191,32 +220,21 @@ class CreatePostModalViewController: UIViewController {
         recaptchaView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         recaptchaView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
     }
-    
-    func setupRecaptchaView() {
-        
-    }
-    
-    // MARK: - Actions
-    
-    @objc func cancelAction(_ sender: UIBarButtonItem) {
-        presentingViewController?.dismiss(animated: true)
-    }
-    
 
-    @objc func postAction(_ sender: UIBarButtonItem) {
+
+    func createNewPost() {
         URLSession.shared.dataTask(with: URL(string: "https://2ch.hk/api/captcha/app/id/A4QVHb0AQfvTnTOpUloTQfgSSb2JUTTe")!) { [weak self] (data, response, error) in
             guard let self = self else {
                 return
             }
-            
+
             if let data = data {
                 let decoder = JSONDecoder()
                 decoder.dateDecodingStrategy = .secondsSince1970
                 do {
-//                    let wrapper = try decoder.decode(APPID.self, from: data)
                     let wrapper = try decoder.decode(PostingNewPost.self, from: data)
                     guard wrapper.error == nil else {
-                        print(error)
+                        print(wrapper.error)
                         DispatchQueue.main.async {
                             self.recaptchaView.evaluateJavaScript(
                                 "document.getElementById('b').click()",
@@ -235,17 +253,22 @@ class CreatePostModalViewController: UIViewController {
                         )
                         {
                             (result) in
-                            	if let error = result?.error,
-                                   error == .ErrorCaptchaNotValid {
-                                		self.recaptchaView.evaluateJavaScript(
-                                            "document.getElementById('b').click()",
-                                            completionHandler: nil
-                                        )
-                            	} else {
-                                	self.presentingViewController?.dismiss(animated: true)
-                            	}
-                        	}
-                    	}
+                            if let error = result?.error, error == .errorCaptchaNotValid {
+                                self.recaptchaView.isHidden = false
+                            	self.recaptchaView.evaluateJavaScript(
+                            	    "document.getElementById('b').click()",
+                            	    completionHandler: nil
+                            	)
+                                self.recaptchaView.isHidden = false
+                            } else if result == nil {
+                                self.activityIndicator.stopAnimating()
+                                print("INVALID SERVER RESPONSE")
+                            } else {
+                                print(result)
+                                self.presentingViewController?.dismiss(animated: true)
+                            }
+                        }
+                    }
                 } catch {
                     print(error)
                     return
@@ -253,20 +276,7 @@ class CreatePostModalViewController: UIViewController {
                 }
             }
         }.resume()
-        
-        
-        
     }
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
 
 extension CreatePostModalViewController: UITextViewDelegate {
@@ -276,19 +286,6 @@ extension CreatePostModalViewController: UITextViewDelegate {
         } else {
             postButton.isEnabled = true
         }
-    }
-}
-
-extension CreatePostModalViewController: WKNavigationDelegate {
-    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, preferences: WKWebpagePreferences, decisionHandler: @escaping (WKNavigationActionPolicy, WKWebpagePreferences) -> Void) {
-        print("url host ---- \(navigationAction.request.url)")
-        decisionHandler(.allow, preferences)
-    }
-    
-    func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse, decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
-//        print(navigationResponse.response)
-//        webView.evaluateJavaScript("", completionHandler: <#T##((Any?, Error?) -> Void)?##((Any?, Error?) -> Void)?##(Any?, Error?) -> Void#>)
-        decisionHandler(.allow)
     }
 }
 
@@ -326,9 +323,8 @@ extension CreatePostModalViewController: WKScriptMessageHandler {
                 	self.presentingViewController?.dismiss(animated: true)
             }
         default:
+            print(message.name)
             break
         }
     }
-    
-    
 }
