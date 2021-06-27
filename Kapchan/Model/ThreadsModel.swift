@@ -137,6 +137,13 @@ struct File: Decodable {
     let fullname: String?
     let path: String
     let thumbnail: String
+    var thumbnailImage: UIImage?
+
+    enum CodingKeys: String, CodingKey {
+        case fullname
+        case path
+        case thumbnail
+    }
 }
 
 struct PostsWrapper: Decodable {

@@ -324,7 +324,11 @@ extension ThreadTableViewController {
 //        return cellHeights[indexPath] ?? 9999.0
 //    }
     
-    override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+    override func tableView(
+        _ tableView: UITableView,
+        didEndDisplaying cell: UITableViewCell,
+        forRowAt indexPath: IndexPath
+    ) {
         let post = self.postsArray[indexPath.row]
         for file in post.files {
             if let task = self.imageTasks[file.thumbnail] {
@@ -366,7 +370,7 @@ extension ThreadTableViewController {
          prefetchRowsAt ourself
         */
         for file in post.files {
-    	    if self.imageTasks[file.thumbnail] == nil && post.images.count == 0 {
+            if self.imageTasks[file.thumbnail] == nil && file.thumbnailImage == nil {
 	            self.tableView(tableView, prefetchRowsAt: [indexPath])
             }
         }
@@ -401,37 +405,34 @@ extension ThreadTableViewController: UIGestureRecognizerDelegate {
 // MARK: - UITableViewDataSourcePrefetching
 
 extension ThreadTableViewController: UITableViewDataSourcePrefetching {
-    
-    // MARK: - Methods
-    
-    // MARK: UITableViewDataSourcePrefetching protocol methods
 
     func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
         for indexPath in indexPaths {
             var post = self.postsArray[indexPath.row]
-            for file in post.files {
-                if
-                    post.images.count != post.files.count &&
-                    !self.imageTasks.contains( where: { $0.key == file.thumbnail })
-                {
-                    let thumbnailUrl = URL(string:BaseUrls.dvach + file.thumbnail)!
-                    let task = URLSession.shared.dataTask(with: thumbnailUrl) {
-                        [weak self] (data, reponse, error) in
+
+            for (index, file) in post.files.enumerated() {
+                if file.thumbnailImage == nil && !self.imageTasks.contains( where: { $0.key == file.thumbnail }) {
+                    let thumbnailUrl = URL(string: BaseUrls.dvach + file.thumbnail)!
+                    let task = URLSession.shared.dataTask(with: thumbnailUrl) { [weak self] (data, reponse, error) in
                         guard let self = self else {
                             return
                         }
+
                         if var data = data {
                             data = data.fixHeader()
-                            if let image = UIImage(data: data) {
-                                post.images.append(image)
+
+                            if let image = UIImage(data: data)/*?.resized(to: CGSize(width: 90.0, height: 90.0))*/ {
+                                post.files[index].thumbnailImage = image
                             } else {
-                                post.images.append(UIImage(named: "placeholder")!)
+                                post.files[index].thumbnailImage = UIImage(named: "placeholder")!
                             }
                             self.postsArray[indexPath.row] = post
+                            
                             DispatchQueue.main.async {
-                                if let cell = self.tableView.cellForRow(at: indexPath) as? PostTableViewCell,
-                                   cell.postIdString == "\(post.postId)" {
-                                    cell.setupThumbnails(images: post.images)
+                                if
+                                    let cell = self.tableView.cellForRow(at: indexPath) as? PostTableViewCell,
+                                   	cell.postIdString == "\(post.postId)" {
+                                    cell.setupThumbnails(files: post.files)
                                 }
                             }
                         }

@@ -18,11 +18,13 @@ class PostTableViewCell: BoardsListTableViewCell {
     var commentFrame: CGRect = .zero
     var dateFrame: CGRect = .zero
     var postRepliesFrame: CGRect = .zero
+
     override var actionViewBackgroundColor: UIColor 	{
         return Constants.Design.Color.backgroundReplyAction
     }
+
     lazy var postId = createHeaderLabelWithFont(Constants.Design.Fonts.footnote)
-    var thumbnails = [UIImage]()
+    var files = Array<File>()
     let thumbnailCollectionCellId = "thumbnailCollectionCellId"
     var postIdString = ""
 
@@ -110,21 +112,22 @@ class PostTableViewCell: BoardsListTableViewCell {
     // MARK: - Methods
     
     override func prepareForReuse() {
+        super.prepareForReuse()
         self.postIdFrame  = .zero
         self.dateFrame  = .zero
         self.commentFrame  = .zero
         self.thumbnailsFrame  = .zero
         self.postRepliesFrame = .zero
         self.postId.text = nil
-        self.thumbnails = []
-        self.thumbnailsCollectionView.reloadData()
+        self.files = []
         self.comment.attributedText = nil
         self.date.text = nil
         self.postReplies.setTitle(nil, for: .normal)
     }
     
-    func setupThumbnails(images: [UIImage], post: PostWithIntId) {
-        self.thumbnails = images
+//    func setupThumbnails(images: [UIImage]) {
+    func setupThumbnails(files: [File]) {
+        self.files = files
         self.thumbnailsCollectionView.reloadData()
     }
     
@@ -144,10 +147,11 @@ class PostTableViewCell: BoardsListTableViewCell {
         self.dateFrame = post.dateFrame
         postIdString = "\(post.postId)"
         self.postId.text = "\(post.name) • #\(post.postId)"
-        self.setupThumbnails(images: post.images)
+        self.setupThumbnails(files: post.files)
         self.comment.attributedText = post.attributedComment
         self.date.text = post.dateString
         let repliesCount = post.replies.count
+
         if repliesCount != 0 {
             postReplies.setTitle(
                 "\(repliesCount) repl\(repliesCount > 1 ? "ies" : "y")", for: .normal
@@ -218,7 +222,7 @@ extension PostTableViewCell: UITextViewDelegate {
 
 extension PostTableViewCell: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        thumbnails.count
+        files.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -226,7 +230,7 @@ extension PostTableViewCell: UICollectionViewDataSource, UICollectionViewDelegat
             withReuseIdentifier: thumbnailCollectionCellId,
             for: indexPath
         ) as! ThumnailCollectionViewCell
-        cell.thumbnail.image = thumbnails[indexPath.row]
+        cell.thumbnail.image = files[indexPath.row].thumbnailImage
         return cell
     }
 }
