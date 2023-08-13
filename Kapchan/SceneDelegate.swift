@@ -46,7 +46,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let historyViewController = HistoryViewController()
         let boardsNavigationViewController = UINavigationController(
             rootViewController: BoardsTableViewController(
-                style: UITableView.Style.plain
+                style: UITableView.Style.insetGrouped
             )
         )
         
