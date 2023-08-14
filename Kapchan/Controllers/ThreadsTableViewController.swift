@@ -215,7 +215,8 @@ extension ThreadsTableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        let threadTVC = ThreadTableViewController(style: .plain)
+        let threadTVC = ThreadTableViewController(style: .insetGrouped)
+
         threadTVC.boardId = boardId
         threadTVC.threadId = sectionsArray[indexPath.row].threadId
         threadTVC.threadName = sectionsArray[indexPath.row].opPost.subject
