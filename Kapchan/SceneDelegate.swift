@@ -40,8 +40,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         UIBarButtonItem.appearance().tintColor = Constants.Design.Color.orange
         let tabBarController = UITabBarController()
-        tabBarController.tabBar.standardAppearance = appearance
-//        tabBarController.tabBar.isTranslucent = false
         let savedViewController = FavoritesViewController()
         let historyViewController = HistoryViewController()
         let boardsNavigationViewController = UINavigationController(
