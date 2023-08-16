@@ -31,20 +31,19 @@ class ThreadTableViewController: UITableViewController {
     var cellId = "postCell"
     
     // MARK: View Properties
-    
+
     var fakeTableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.backgroundColor = .clear
         tableView.separatorStyle = .none
-        tableView.isUserInteractionEnabled = false
         tableView.transform = CGAffineTransform(rotationAngle: CGFloat.pi)
         let refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: #selector(loadPosts), for: .valueChanged)
         tableView.refreshControl = refreshControl
+        tableView.isUserInteractionEnabled = false
         return tableView
     }()
-    
+
     var scrollToBottomButton: UIButton = {
         let button = UIButton(type: .custom)
         button.addTarget(self, action: #selector(scrollToBottomButtonAction(_:)), for: .touchUpInside)
@@ -119,7 +118,7 @@ class ThreadTableViewController: UITableViewController {
     
 
     // MARK: - Methods
-    
+
     func setupViews() {
         let navigationController = self.navigationController!
         navigationController.view.addSubview(self.fakeTableView)
@@ -134,7 +133,7 @@ class ThreadTableViewController: UITableViewController {
             constant: -self.tabBarController!.tabBar.frame.height
         ).isActive = true
         self.fakeTableView.heightAnchor.constraint(
-            equalToConstant: 60.0
+            equalToConstant: 400.0
         ).isActive = true
         self.tableView.addSubview(self.scrollToBottomButton)
         self.scrollToBottomButton.heightAnchor.constraint(equalToConstant: 44.0).isActive = true
@@ -395,7 +394,7 @@ extension ThreadTableViewController: UIGestureRecognizerDelegate {
             let verticalComponent = abs(panGesture.velocity(in: self.view).y)
             return horizontalComponent > verticalComponent
         }
-        
+
         // otherwise ignore pan gesture of contentView in favor of parent
         // contentView pan gesture
         return false
@@ -479,50 +478,82 @@ extension ThreadTableViewController: SwipeableCellDelegate {
 // MARK: - UIScrollViewDelegate
 
 extension ThreadTableViewController {
-    
-    // MARK: - Methods
-    
-    // MARK: UIScrollViewDelegate protocol methods
-    
+    override func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        let visibleRowsIndexPaths = self.tableView.indexPathsForVisibleRows!
+        self.tableView(self.tableView, prefetchRowsAt: visibleRowsIndexPaths)
+        self.newPosts = []
+    }
+
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let contentSizeHeight = scrollView.contentSize.height
         let contentOffsetY = scrollView.contentOffset.y
         let scrollViewHeight = scrollView.bounds.height
         let adujustedInsetBottom = scrollView.adjustedContentInset.bottom
-        
+        let statusBarHeight = UIApplication.shared.keyWindow!.windowScene!.statusBarManager!.statusBarFrame.height
+
         guard contentSizeHeight > 0 else {
             return
         }
-    
-        if contentOffsetY + scrollViewHeight - adujustedInsetBottom >= contentSizeHeight {
+
+        if
+            contentOffsetY.rounded(.up) > -(navigationController!.navigationBar.frame.height + statusBarHeight) &&
+            contentOffsetY.rounded(.up) + scrollViewHeight - adujustedInsetBottom >= contentSizeHeight
+        {
             UIView.animate(withDuration: 0.2) {
                 self.scrollToBottomButton.alpha = 0.0
-            } completion: { isFinished in
+            } completion: { _ in
                 self.scrollToBottomButton.isHidden = true
             }
-            if contentOffsetY + scrollViewHeight - adujustedInsetBottom - contentSizeHeight <= 80  {
+            self.fakeTableView.refreshControl?.layer.opacity = 1.0
+
+            if -((scrollViewHeight - adujustedInsetBottom - (navigationController!.navigationBar.frame.height + statusBarHeight)) - (contentOffsetY + scrollViewHeight - adujustedInsetBottom)) <= 110 {
                 if !self.isDataSourceLoading {
+                    self.fakeTableView.contentOffset.y =
+                        (scrollViewHeight - adujustedInsetBottom -
+                            (navigationController!.navigationBar.frame.height + statusBarHeight)) - (contentOffsetY + scrollViewHeight - adujustedInsetBottom - 30)
+                }
+            } else if contentOffsetY + scrollViewHeight - adujustedInsetBottom - contentSizeHeight <= 110 {
+                if !self.isDataSourceLoading, !self.fakeTableView.refreshControl!.isRefreshing {
                     self.fakeTableView.contentOffset.y = -(contentOffsetY + scrollViewHeight - adujustedInsetBottom - contentSizeHeight)
                 }
             } else if !self.fakeTableView.refreshControl!.isRefreshing {
-                print(contentOffsetY + scrollViewHeight - adujustedInsetBottom - contentSizeHeight)
-                // make sure that finer still touching screen while dragging
+                // make sure that finger still touching screen while dragging
                 if !scrollView.isDecelerating {
                     self.fakeTableView.refreshControl?.beginRefreshing()
                 }
-                
             }
         } else {
-            UIView.animate(withDuration: 0.2) {
-                self.scrollToBottomButton.alpha = 1.0
-            } completion: { isFinished in
-                self.scrollToBottomButton.isHidden = false
-
+    		// TODO: - TODO: add isLoading flag check
+            if self.tableView.contentInset.bottom == 0.0 {
+                self.fakeTableView.refreshControl?.layer.opacity = 0.0
+            }
+            if contentSizeHeight > scrollViewHeight && self.newPosts.count != 1 {
+                UIView.animate(withDuration: 0.2) {
+                    self.scrollToBottomButton.alpha = 1.0
+                } completion: { _ in
+                    self.scrollToBottomButton.isHidden = false
+                }
+            } else {
+                self.scrollToBottomButton.alpha = 0.0
+                self.scrollToBottomButton.isHidden = true
             }
         }
-        
     }
-    
+
+    override func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        if !self.isDataSourceLoading {
+            UIView.animate(withDuration: 0.3) {
+                self.tableView.contentInset = UIEdgeInsets(
+                    top: 0.0,
+                    left: 0.0,
+                    bottom: 0.0,
+                    right: 0.0
+                )
+            }
+            self.fakeTableView.refreshControl?.endRefreshing()
+        }
+    }
+
     override func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
             let offset = scrollView.contentOffset
             let bounds = scrollView.bounds
